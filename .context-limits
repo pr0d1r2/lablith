@@ -33,7 +33,7 @@ src/report/SPEC.md           830
 src/script/SPEC.md           800
 src/system/SPEC.md           890
 src/yaml/SPEC.md             720
-tests/SPEC.md                850
+tests/SPEC.md                990
 
 # Chains
 dev                          3050
