@@ -2,3 +2,5 @@
 FORMAT.md
 FORMAT-EXTENSIONS.md
 SPEC-PROMPT.md
+# Golden output, compared byte for byte by the tests.
+tests/fixtures/

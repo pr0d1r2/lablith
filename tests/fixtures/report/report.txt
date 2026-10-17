@@ -1,0 +1,20 @@
+rows
+  ci: kind gate, cache pr0d1r2
+    system x86_64-linux tags nix, x86_64-linux
+    system aarch64-linux tags nix, arm
+    image nixos/nix@sha256:ff480dbb23511aa1c10710aa068ceea5b93fed9bfce5f5379f3a6b07282cbc7b 2.35.3
+    secret CACHIX_AUTH_TOKEN: cachix push
+  lint: kind gate, cache -
+    system x86_64-linux tags nix, x86_64-linux
+    system aarch64-linux tags nix, arm
+    system aarch64-darwin tags nix, aarch64-darwin
+    image nixos/nix@sha256:ff480dbb23511aa1c10710aa068ceea5b93fed9bfce5f5379f3a6b07282cbc7b 2.35.3
+  pins: kind update-pins, cache pr0d1r2
+    system x86_64-linux tags nix, x86_64-linux
+    image nixos/nix@sha256:ff480dbb23511aa1c10710aa068ceea5b93fed9bfce5f5379f3a6b07282cbc7b 2.35.3
+    secret BUMP_TOKEN: push a branch and open a merge request
+    schedule 50 6 * * * on the default branch, variable LABLITH_ROW=pins
+hand-written
+  .gitlab/ci/release.yml: release flow | not a kind yet
+token
+  a project access token, role Developer, scope `api`, expiring within a year; store it as a masked, protected CI/CD variable and rotate it before it expires

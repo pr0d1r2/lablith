@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "rows": [
+    {
+      "id": "ci",
+      "kind": "gate",
+      "systems": [
+        {
+          "system": "x86_64-linux",
+          "tags": [
+            "nix",
+            "x86_64-linux"
+          ]
+        },
+        {
+          "system": "aarch64-linux",
+          "tags": [
+            "nix",
+            "arm"
+          ]
+        }
+      ],
+      "cache": "pr0d1r2",
+      "images": [
+        {
+          "image": "nixos/nix@sha256:ff480dbb23511aa1c10710aa068ceea5b93fed9bfce5f5379f3a6b07282cbc7b",
+          "version": "2.35.3"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "CACHIX_AUTH_TOKEN",
+          "purpose": "cachix push"
+        }
+      ],
+      "schedule": null
+    },
+    {
+      "id": "lint",
+      "kind": "gate",
+      "systems": [
+        {
+          "system": "x86_64-linux",
+          "tags": [
+            "nix",
+            "x86_64-linux"
+          ]
+        },
+        {
+          "system": "aarch64-linux",
+          "tags": [
+            "nix",
+            "arm"
+          ]
+        },
+        {
+          "system": "aarch64-darwin",
+          "tags": [
+            "nix",
+            "aarch64-darwin"
+          ]
+        }
+      ],
+      "cache": null,
+      "images": [
+        {
+          "image": "nixos/nix@sha256:ff480dbb23511aa1c10710aa068ceea5b93fed9bfce5f5379f3a6b07282cbc7b",
+          "version": "2.35.3"
+        }
+      ],
+      "secrets": [],
+      "schedule": null
+    },
+    {
+      "id": "pins",
+      "kind": "update-pins",
+      "systems": [
+        {
+          "system": "x86_64-linux",
+          "tags": [
+            "nix",
+            "x86_64-linux"
+          ]
+        }
+      ],
+      "cache": "pr0d1r2",
+      "images": [
+        {
+          "image": "nixos/nix@sha256:ff480dbb23511aa1c10710aa068ceea5b93fed9bfce5f5379f3a6b07282cbc7b",
+          "version": "2.35.3"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "BUMP_TOKEN",
+          "purpose": "push a branch and open a merge request"
+        }
+      ],
+      "schedule": {
+        "cron": "50 6 * * *",
+        "variable": "LABLITH_ROW=pins"
+      }
+    }
+  ],
+  "hand_written": [
+    {
+      "path": ".gitlab/ci/release.yml",
+      "reason": "release flow | not a kind yet"
+    }
+  ],
+  "token": "a project access token, role Developer, scope `api`, expiring within a year; store it as a masked, protected CI/CD variable and rotate it before it expires"
+}

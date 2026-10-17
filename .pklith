@@ -87,3 +87,6 @@ coverage|coverage|-|-
 path:tests/fixtures/**/*.lablith|-|-|src/registry test fixtures, some deliberately malformed; the registry tests read every one
 path:tests/fixtures/**/*.yml|yamllint|-|-
 path:tests/fixtures/**/*.lock|-|-|src/detect and src/cli test fixtures: flake.lock samples read by their tests
+path:tests/fixtures/**/*.md|-|-|src/report golden output, compared byte for byte by its tests
+path:tests/fixtures/**/*.txt|-|-|src/report golden output, compared byte for byte by its tests
+path:tests/fixtures/**/*.json|-|-|src/report golden output, compared byte for byte by its tests

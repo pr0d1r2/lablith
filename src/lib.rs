@@ -16,6 +16,7 @@ mod pin;
 mod pipeline;
 mod registry;
 mod render;
+mod report;
 mod script;
 mod system;
 mod yaml;

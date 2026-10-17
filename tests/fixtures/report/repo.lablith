@@ -1,0 +1,15 @@
+format 1
+
+## workflows
+id|kind|systems|cache|args
+pins|update-pins|-|pr0d1r2|token=BUMP_TOKEN
+ci|gate|x86_64-linux, aarch64-linux|pr0d1r2|-
+lint|gate|-|-|-
+
+## runners
+system|tags
+aarch64-linux|nix, arm
+
+## hand-written
+path|reason
+.gitlab/ci/release.yml|release flow \| not a kind yet
