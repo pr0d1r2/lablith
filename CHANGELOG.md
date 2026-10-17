@@ -26,3 +26,7 @@ the bytes lablith emits for the same inputs is at least a minor version
   with a pinned image, runner tags, timeout and rules; a root
   `.gitlab-ci.yml` of `workflow: rules`, four fixed stages and
   `include: local:` only.
+- Seeded scripts under `scripts/lablith/`: `cachix.sh` (push only with a
+  token and not from a fork), `open-mr.sh` (GitLab API through `curl`,
+  token never printed, idempotent), `update-pins.sh`, `upstream.sh`,
+  `verify-cache.sh`.

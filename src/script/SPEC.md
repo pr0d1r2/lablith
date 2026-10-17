@@ -40,4 +40,4 @@ V26: `open-mr.sh` talks GitLab API via `curl`; ⊥ extra CLI in dev shell
 ## §T TASKS
 
 id|status|task|cites
-T20|.|seeded scripts `update-pins.sh` & `open-mr.sh` (GitLab API via `curl`, `LABLITH_TOKEN`) + bats; written by `gen` w/ header|`src/gen:V5`,V16,V26
+T20|x|seeded scripts `update-pins.sh` & `open-mr.sh` (GitLab API via `curl`, `LABLITH_TOKEN`) + bats; written by `gen` w/ header|`src/gen:V5`,V16,V26
