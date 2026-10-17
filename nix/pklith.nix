@@ -6,6 +6,7 @@ catalog: [
   catalog.deadnix
   catalog.editorconfig-checker
   catalog.gnugrep
+  catalog.markdownlint-cli
   catalog.nixfmt
   catalog.ripsecrets
   catalog.rustfmt
