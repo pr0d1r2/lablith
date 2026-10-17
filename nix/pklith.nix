@@ -6,12 +6,14 @@ catalog: [
   catalog.deadnix
   catalog.editorconfig-checker
   catalog.gnugrep
+  catalog.lychee
   catalog.markdownlint-cli
-  catalog.microlith
   catalog.nixfmt
   catalog.ripsecrets
   catalog.rustfmt
-  catalog.sherd
+  catalog.shellcheck
+  catalog.shfmt
   catalog.statix
+  catalog.taplo
   catalog.typos
 ]
