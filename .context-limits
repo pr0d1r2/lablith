@@ -18,7 +18,7 @@ src/SPEC.md                  1060
 src/build/SPEC.md            670
 src/bump/SPEC.md             840
 src/check/SPEC.md            890
-src/cli/SPEC.md              640
+src/cli/SPEC.md              780
 src/core/SPEC.md             1100
 src/detect/SPEC.md           740
 src/fetch/SPEC.md            810
