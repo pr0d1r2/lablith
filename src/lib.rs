@@ -8,6 +8,7 @@ mod core;
 mod pin;
 mod pipeline;
 mod registry;
+mod script;
 mod system;
 mod yaml;
 
