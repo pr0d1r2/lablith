@@ -58,3 +58,8 @@ T33|.|nix package `packages.<system>.default` built & run on fixture; `release.t
 T36|.|branch protection on first push: PR required, 0 approvals, admins included, `gate (...)` checks required & strict, ⊥ force push, ⊥ deletion|R5
 T41|.|AFTER T7: guards `tdd-order.exempt` format, `core.worktree` refusal, pre-commit `stash = "none"`, hk parity step (pklr)|V44,V46,V47
 T54|.|planted violation for `xnl-lint`: find an embedded program its linter rejects (writeShellScript `cd $1`, runCommand `ls *.txt` gave 0 findings) & record it, or report to xenolith that lint skips them|V41
+
+## §B BUGS
+
+id|date|cause|fix
+B1|2026-10-17|crate seed (`nix:T4`, e74ae81) added stub `src/lib.rs` & `src/main.rs` before `tdd-order` existed; ⊥ behaviour for RED test to pin ∴ ⊥ `test:` commit before it|exempt in `nix/guard/tdd-order.exempt` (V44)
