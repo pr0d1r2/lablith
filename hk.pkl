@@ -85,12 +85,12 @@ hooks {
     }
   }
   // nix:T5: subject `type(scope): claim`, at most 72 characters, a body
-  // that says why. hk passes the file git gave the hook (MERGE_MSG on a
-  // merge).
+  // that says why: tested Rust in lablith-dev (dev:T48). hk passes the
+  // file git gave the hook (MERGE_MSG on a merge).
   ["commit-msg"] {
     steps {
       ["commit-msg"] {
-        check = "bash nix/guard/commit-msg.sh {{commit_msg_file}}"
+        check = "cargo run -q -p lablith-dev -- commit-msg {{commit_msg_file}}"
       }
       // V20: the message is committed text too; the same guard reads it.
       ["message-names"] {
