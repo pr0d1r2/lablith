@@ -1,0 +1,7 @@
+format 1
+
+## workflows
+id|kind|systems|cache|args
+ci|gate|-|-|-
+build|build|-|-|package=lablith
+ci|build|-|-|package=lablith

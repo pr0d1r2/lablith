@@ -84,3 +84,4 @@ exempt|tdd-order|-|-
 path:.actlith|actlith-gen-check, actlith-check|-|-
 path:.github/workflows/*.yml|yamllint, actionlint, zizmor, actlith-gen-check, actlith-check|-|-
 coverage|coverage|-|-
+path:tests/fixtures/**/*.lablith|-|-|src/registry test fixtures, some deliberately malformed; the registry tests read every one

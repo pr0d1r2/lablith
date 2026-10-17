@@ -5,5 +5,6 @@
 //! in `SPEC.md` and the `SPEC.md` of each node.
 
 mod core;
+mod registry;
 
 pub use crate::core::ConfigError;
