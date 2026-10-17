@@ -47,4 +47,4 @@ V38: ∀ node unit-tested 1-to-1 (`<node>/tests.rs`, `rust-mirror`); fixtures `t
 ## §T TASKS
 
 id|status|task|cites
-T42|.|AFTER `src/core:T11`: `src/` skeleton rules: `main.rs`/`lib.rs` dispatch only, private `mod`s, `<node>/tests.rs` per node; `src/<node>/mod.rs` scaffold + `use crate::<dep>` build-order edges for `sherd wave`|V37,V38
+T42|x|AFTER `src/core:T11`: `src/` skeleton rules: `main.rs`/`lib.rs` dispatch only, private `mod`s, `<node>/tests.rs` per node; `src/<node>/mod.rs` scaffold + `use crate::<dep>` build-order edges for `sherd wave`|V37,V38
