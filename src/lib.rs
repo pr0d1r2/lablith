@@ -5,6 +5,7 @@
 //! in `SPEC.md` and the `SPEC.md` of each node.
 
 mod build;
+mod bump;
 mod core;
 mod gate;
 mod kind;
