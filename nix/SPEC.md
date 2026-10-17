@@ -58,7 +58,7 @@ T33|x|nix package `packages.<system>.default` built & run on fixture; `release.t
 T36|.|branch protection on first push: PR required, 0 approvals, admins included, `gate (...)` checks required & strict, ⊥ force push, ⊥ deletion|R5
 T41|x|AFTER T7: guards `tdd-order.exempt` format, `core.worktree` refusal, pre-commit `stash = "none"`, hk parity step (pklr)|V44,V46,V47
 T54|x|planted violation for `xnl-lint`: found — 9 `inputs.<name>.follows` lines in one flake input → statix (via `xnl lint`) "The key `inputs` is first assigned here" (writeShellScript `cd $1`, runCommand `ls *.txt` gave 0)|V41
-T55|.|planted violation for `hk-parity`: find a Pkl construct pklr evaluates differently from `pkl eval` (`List(...).join(" ")`, `.replaceAll` both agreed) & record it, or ask pklith which construct its B12 hit|V41,V47
+T55|.|planted violation for `hk-parity`: find a Pkl construct pklr evaluates differently from `pkl eval`. tried 2026-10-18 under hk 2.7.0, all agree: `List(...).join(" ")`, `.replaceAll`, pklith B12's `for (…) { when (…) { … } }` filter (pklr fixed it); `toMap().remove()` fails in `pkl eval` too ∴ ⊥ parity case|V41,V47
 
 ## §B BUGS
 
