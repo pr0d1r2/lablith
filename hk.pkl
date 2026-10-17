@@ -28,6 +28,14 @@ local all = (fast) {
     glob = List("pkl/**", "flake.lock", "nix/guard/schema-pin.sh")
     check = "bash nix/guard/schema-pin.sh"
   }
+  // nix:T7: the crate packages, and the packaged crate alone builds; a
+  // file the build embeds but the package leaves out fails here, not at
+  // publish. As actlith. Push only: it builds the crate again from the
+  // tarball.
+  ["package"] {
+    glob = List("Cargo.toml", "Cargo.lock", "src/**")
+    check = "cargo package --locked --allow-dirty -q -p lablith"
+  }
 }
 
 hooks {
