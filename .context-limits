@@ -15,14 +15,14 @@ SPEC.md                      3420
 dev/SPEC.md                  350
 nix/SPEC.md                  2440
 src/SPEC.md                  1060
-src/build/SPEC.md            670
+src/build/SPEC.md            810
 src/bump/SPEC.md             840
 src/check/SPEC.md            890
 src/cli/SPEC.md              780
 src/core/SPEC.md             1100
 src/detect/SPEC.md           740
 src/fetch/SPEC.md            810
-src/gate/SPEC.md             660
+src/gate/SPEC.md             790
 src/gen/SPEC.md              680
 src/kind/SPEC.md             1410
 src/pin/SPEC.md              930
