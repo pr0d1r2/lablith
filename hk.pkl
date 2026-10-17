@@ -21,6 +21,13 @@ hooks {
       ["commit-msg"] {
         check = "bash nix/guard/commit-msg.sh {{commit_msg_file}}"
       }
+      // V25: a feat, fix or perf commit changing src/ adds a CHANGELOG
+      // entry. Here, not in pre-commit: only the message says which kind a
+      // change is.
+      ["changelog-touched"] {
+        check = "bash nix/guard/changelog-touched.sh {{commit_msg_file}}"
+        depends = List("commit-msg")
+      }
     }
   }
   ["pre-push"] {
