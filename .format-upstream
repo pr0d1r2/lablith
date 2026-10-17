@@ -1,0 +1,9 @@
+# FORMAT.md's ancestry: which upstream cavekit version this copy is.
+#
+# FORMAT.md is copied byte-for-byte from actlith, which matches microlith's
+# record below (same sha256). FORMAT-EXTENSIONS.md is rendered by the pinned
+# `mth extensions` (microlith 0.7.4 in flake.lock), never edited by hand.
+# Update `rev` and `sha256` together, in the commit that re-syncs FORMAT.md.
+rev = c322f0bb6db82163041930467f3ce32754d42827
+sha256 = 1eda122882902861e912d3775c8b45e7fbb51ca4f587f37854bfd4d470f6a601
+source = https://github.com/JuliusBrussee/cavekit
