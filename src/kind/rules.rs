@@ -12,7 +12,7 @@ pub(crate) const ROW: &str = "LABLITH_ROW";
 /// Push and merge request kinds: every pipeline the workflow admits
 /// except a schedule, which runs bump rows only.
 pub(crate) fn change_rules() -> Vec<Rule> {
-    vec![always(), never_on_schedule()]
+    vec![never_on_schedule(), always()]
 }
 
 /// Jobs that push to the cache or check it: the default branch only,
@@ -37,8 +37,7 @@ pub(crate) fn bump_rules(id: &str) -> Vec<Rule> {
 fn selected(source: &str, id: &str) -> Text {
     let and = |t: Text, b: Text| concat(t.then_lit(" && "), &b);
     let row = and(eq(SOURCE, source), eq(ROW, id));
-    let _ = and;
-    row
+    and(row, eq("CI_COMMIT_REF_PROTECTED", "true"))
 }
 
 /// `if: $CI_PIPELINE_SOURCE == "schedule"`, `when: never`.

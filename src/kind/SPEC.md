@@ -58,4 +58,4 @@ V57: nix in job: image-based executor → pinned nix image w/ `NIX_CONFIG` enabl
 ## §T TASKS
 
 id|status|task|cites
-T17|.|common job parts: `timeout`, `interruptible`/`resource_group`, `GIT_DEPTH`, nix install via image, cachix w/ fork-MR skip, secret gating|V11,V12,V13,V14,V15
+T17|x|common job parts: `timeout`, `interruptible`/`resource_group`, `GIT_DEPTH`, nix install via image, cachix w/ fork-MR skip, secret gating|V11,V12,V13,V14,V15

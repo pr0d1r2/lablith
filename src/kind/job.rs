@@ -54,13 +54,13 @@ pub(crate) fn nix_job(
 ) -> Result<Job, KindError> {
     let bump = spec.stage == Stage::Bump;
     Ok(Job {
-        name: spec.name,
+        name: format!("{}:{}", row.id, spec.name),
         comment: spec.why.map(Comment::new),
         stage: spec.stage,
         image: tables.pins.image(NIX_IMAGE)?,
         tags: tables.runners.tags(spec.system)?.to_vec(),
         timeout: row.args.timeout()?,
-        interruptible: bump,
+        interruptible: !bump,
         resource_group: bump.then(|| format!("lablith-{}", row.id)),
         needs: Vec::new(),
         rules: spec.rules,
@@ -78,10 +78,7 @@ fn variables(depth: Depth, cache: Option<&Cache>) -> Vec<(&'static str, Text)> {
     let config = cache.map_or_else(String::new, Cache::nix_config);
     vec![
         ("GIT_DEPTH", Text::lit(depth)),
-        (
-            "NIX_CONFIG",
-            Text::lit(&format!("{config}{}", &FLAKES[..0])),
-        ),
+        ("NIX_CONFIG", Text::lit(&format!("{FLAKES}{config}"))),
     ]
 }
 

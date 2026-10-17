@@ -26,7 +26,7 @@ impl Secret {
     /// `LABLITH_TOKEN` (`src/kind:V54`).
     pub(crate) fn open_change(token: Option<&str>) -> Self {
         Self {
-            name: token.unwrap_or("CI_JOB_TOKEN").to_owned(),
+            name: token.unwrap_or(DEFAULT_TOKEN).to_owned(),
             purpose: Purpose::OpenChange,
         }
     }

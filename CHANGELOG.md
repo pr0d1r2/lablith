@@ -30,3 +30,7 @@ the bytes lablith emits for the same inputs is at least a minor version
   token and not from a fork), `open-mr.sh` (GitLab API through `curl`,
   token never printed, idempotent), `update-pins.sh`, `upstream.sh`,
   `verify-cache.sh`.
+- Shared job parts: every job runs the pinned `nixos/nix` image with
+  flakes on, the row's cache as substituter, runner tags, timeout and a
+  per-kind `GIT_DEPTH`; bump jobs take a resource group and run only on
+  their own schedule or web run on a protected ref.

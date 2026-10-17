@@ -4,7 +4,7 @@
 /// `s` as a single-quoted shell word; an embedded `'` is closed, escaped
 /// and reopened (`'\''`).
 pub(crate) fn quote(s: &str) -> String {
-    s.to_owned()
+    format!("'{}'", s.replace('\'', "'\\''"))
 }
 
 #[cfg(test)]
