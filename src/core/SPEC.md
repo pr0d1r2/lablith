@@ -34,7 +34,7 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §I INTERFACES
 
-- errors: `.lablith:N: what` then `  fix: ...` (actlith shape); pipelith `RegistryError` & `KindError` converted at `src/core` facade
+- errors: `.lablith:N: what` then indented `fix: ...` line (actlith shape); pipelith `RegistryError` & `KindError` converted at `src/core` facade
 
 ## §R RESEARCH
 
@@ -42,6 +42,7 @@ id|topic|finding|src
 R4|pipelith API|`registry::parse(FILE, text, &Schema{sections})`; `kind::WORKFLOWS` + forge `SectionSpec{name,columns,required,key}`; `kind::RawRow::from_cells`; `registry::{required,optional,list,args}`. `kind::{GATE,BUILD,UPDATE_PINS,UPSTREAM}: KindSpec{name,schema,default_systems,secrets}`; `Row::check(spec, raw, &EXTRAS)` first fault order: systems, cache, args, `timeout`, row rules. `kind::Extras{kinds,keys}`, `kind::portable(&raw,&extras)` → `Finding`s. `yaml::document(&dialect, comments, entries)`, `impl yaml::Dialect{expr, escape}`. `files::{File,write,check,Stale,header}`. `detect::{detect,row_line,text_with,seed_init_text,header,FIRST_ROW}`|../actlith `src/core`
 
 ## §V INVARIANTS
+
 V3: `pipelith::` path only in `src/core`; ∀ other module imports via facade
 
 ## §T TASKS

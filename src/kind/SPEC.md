@@ -42,6 +42,7 @@ id|topic|finding|src
 R9|nix cache on GitLab|? proposed cachix (same secret & steps as GitHub ∴ `cache` column same meaning) vs instance cache (Q2). fill before `src/build:T24`|-
 
 ## §V INVARIANTS
+
 V11: ∀ job has `timeout:` (default 30 minutes, `timeout` arg overrides)
 V12: `interruptible: true` on `gate` & `build` jobs; scheduled bump jobs ⊥ interruptible & take `resource_group` per row
 V13: `GIT_DEPTH` set per kind; ⊥ job prints | echoes a variable

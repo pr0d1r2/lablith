@@ -29,6 +29,7 @@ sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedu
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
+
 V18: GitLab dialect: `expr(inner)` → `$inner`; literal `$` escaped per context (`$$` in `variables:` values ?); 1 test per escape. ⊥ config text reaches YAML unescaped
 
 ## §T TASKS

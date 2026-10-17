@@ -29,6 +29,7 @@ sib|src/detect|`detect` & `seed --init`: rows from tracked files
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
+
 V36: `report --format json` carries `schema_version`; field rename | removal bumps it
 V64: `LABLITH_TOKEN` = project access token, role Developer, scope `api` ? (MR via API & branch push), expiry ≤ 1 year; `report` & `docs/SECURITY.md` name scope, role & rotation. bump branches (`pins/*`, `upstream/*`) ⊥ protected ∴ their MR pipelines get ⊥ protected var (`src/kind:V15`)
 

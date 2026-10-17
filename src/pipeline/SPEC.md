@@ -34,6 +34,7 @@ id|topic|finding|src
 R6|GitLab remote includes|`include: remote:`/`project:`/`template:` & CI/CD components: trust spans repos, lint sees 1 line, fix lands w/o review ∴ rejected (same as actlith reusable wf)|actlith R6
 
 ## §V INVARIANTS
+
 V7: generated files: `include:` only `local:`; ⊥ `remote:` ⊥ `project:` ⊥ `template:` ⊥ `component:`
 V8: ⊥ `extends:` ⊥ YAML anchors/aliases in generated output; ∀ job expanded
 V9: ∀ job name in `.gitlab/ci/<id>.yml` prefixed `<id>:` ∴ ⊥ collision across rows

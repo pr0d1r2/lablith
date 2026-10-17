@@ -30,6 +30,7 @@ id|topic|finding|src
 R5|actlith gate bugs|`cargo build --workspace --bins` after clippy, ∀ `cargo run` step depends on it, `test` waits ∀ `cargo run` (actlith B9,B10: macOS kills relinked binary). flake guard reads `git+file://<root>`, ⊥ `getFlake (toString ./.)` (B8). push-only: `package`, `package-nix`, `deny-advisories`, `schema-pin`; commit-time: `links` (lychee `--offline`), `no-commit-to-branch main` (pre-commit only). hk 2.7.0: vendor `Config.pkl`, `stage = true` on `fix`; move nix-hk & nixpkgs-lock together|../actlith SPEC-PROMPT learnings
 
 ## §V INVARIANTS
+
 V40: hk hooks installed IN commit that brings hk; ∀ later commit via real hooks; ⊥ `--no-verify`
 V41: 1 check = 1 commit = config + hk step + doc row; step adopted only after rejecting PLANTED violation, recorded in commit body
 V42: ∀ tool in gate from nix-pinned package, ⊥ fetched at run time; ∀ dep justified in §R

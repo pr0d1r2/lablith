@@ -29,6 +29,7 @@ sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedu
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
+
 V5: ∀ generated file starts w/ generated header; `gen --check` exit 1 on ∀ stale | missing file
 
 ## §T TASKS

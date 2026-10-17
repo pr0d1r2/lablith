@@ -29,6 +29,7 @@ sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedu
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
+
 V6: totality: `.gitlab-ci.yml` & ∀ file ∈ `.gitlab/ci/` ∈ generated set ∪ `## hand-written`; listed path missing → finding; generated file w/o row → finding
 V21: `portable` & `check`: 1 finding per row | system | arg key actlith cannot render (`kind::portable`); `## images` & `## runners` ⊥ findings
 V65: hand-written path ∉ generated set; listed path also rendered → `check` finding. hand-written jobs ⊥ use a row's `<id>:` prefix (doc rule, `docs/INTEGRATION.md`; `check` reads paths only, ⊥ YAML)

@@ -29,6 +29,7 @@ sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedu
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
+
 V34: `pin` = sole networked path; writes only `## images` of `.lablith`; `--dry-run` writes ⊥. ⊥ other verb links network code
 V59: `pin` failure (network, auth, unknown tag) → exit 1 naming image & tag; `.lablith` untouched (write after ∀ lookups succeed)
 

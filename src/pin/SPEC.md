@@ -29,6 +29,7 @@ sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedu
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
+
 V2: ∀ `image:` = `<name>@sha256:<digest>` + version as trailing comment, from pin table (built-in ⊕ `## images`). `gen` ⊥ resolves tags; missing pin → exit 2
 V58: built-in image pin table v1 = `nixos/nix` only; digest = multi-arch index digest (covers ∀ linux system), ⊥ per-arch manifest digest
 

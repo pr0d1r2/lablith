@@ -29,6 +29,7 @@ sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedu
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
+
 V28: unknown kind | arg key | system | section, missing required arg, `x86_64-darwin` → exit 2 naming it & fix; ⊥ silent default
 V29: `.lablith` ! carry `format` line; newer than supported → exit 2 naming both versions, ⊥ best-effort parse. missing `.lablith` → `gen`|`check`|`report`|`portable` exit 2, ⊥ empty render. missing optional section (`## images`, `## runners`, `## hand-written`) = empty
 V55: row `id` reaches file stem, job-name prefix, `resource_group`, `rules:` string ∴ ! charset `[a-z0-9][a-z0-9-]*`; else exit 2. pipelith ⊥ checks id charset today ∴ rule ! land in pipelith (both forges) before lablith relies on it, else breaks "row valid ⟹ every forge renders" (`.:V4`)

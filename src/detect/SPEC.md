@@ -29,6 +29,7 @@ sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedu
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
+
 V22: `update-pins` off by default: `detect` & `seed --init` write it commented under `# off by default: uncomment to get daily nixpkgs-lock bump MRs` via `text_with`
 V35: `seed --init` w/ existing `.lablith` → exit 1 naming it, file untouched
 

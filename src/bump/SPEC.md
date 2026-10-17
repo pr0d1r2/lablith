@@ -33,6 +33,7 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 - schedules: GitLab UI/API, ⊥ YAML. scheduled jobs gated `$CI_PIPELINE_SOURCE == "schedule"` & `$LABLITH_ROW == "<id>"`
 
 ## §V INVARIANTS
+
 V17: scheduled kinds: ∀ job gated `$CI_PIPELINE_SOURCE == "schedule"` & `$LABLITH_ROW == "<id>"`; `report` lists ∀ schedule (cron, branch, var)
 V33: bump kinds idempotent: branch exists → exit 0, ⊥ 2nd MR
 

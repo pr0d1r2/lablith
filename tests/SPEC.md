@@ -21,6 +21,7 @@ R11|test-only deps|? YAML reader + JSON-schema validator for V19 harness. candid
 R12|GitLab CI schema source|schema file `app/assets/javascripts/editor/schema/ci.json` in GitLab repo, per release tag; vendor at instance version (Q4) w/ tag + sha256 in `tests/schema/VENDORED.md`|gitlab.com/gitlab-org/gitlab
 
 ## §V INVARIANTS
+
 V19: ∀ generated file validates vs vendored GitLab CI JSON schema (`tests/`, recorded GitLab version) w/ 0 findings; offline. `glab ci lint` manual only, ⊥ gate
 V39: golden files change only w/ CHANGELOG entry (`.:V25`); `UPDATE_GOLDEN=1` rewrites them, ⊥ default
 V61: vendored schema = `tests/schema/ci.json` + `tests/schema/VENDORED.md` (GitLab tag, upstream path, sha256); `schema-pin` step checks hash; bump = 1 reviewed commit

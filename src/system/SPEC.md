@@ -38,6 +38,7 @@ id|topic|finding|src
 R8|runner fleet|? executor (Docker + pinned `nixos/nix` \| shell on NixOS), arches (`aarch64-linux`? `aarch64-darwin`?), default tags (Q1). fill before T15, `src/build:T24`|-
 
 ## §V INVARIANTS
+
 V56: system w/ ⊥ entry in runner table (built-in ⊕ `## runners`) → exit 2 naming system & `## runners` fix; ⊥ untagged job (would land on any shared runner)
 
 ## §T TASKS

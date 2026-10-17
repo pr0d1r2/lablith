@@ -29,6 +29,7 @@ sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedu
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
+
 V30: render output = files of ∀ row + `.gitlab-ci.yml` + ∀ seeded script ≥1 rendered kind needs, sorted by path, each once
 
 ## §T TASKS

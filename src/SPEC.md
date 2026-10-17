@@ -40,6 +40,7 @@ sib|nix|repo gate: dev shell, guardrails, hk steps, CI, release, dogfood
 - lib: registry, YAML, files, detect via `pipelith`; `lablith` exposes GitLab kind model & render
 
 ## §V INVARIANTS
+
 V37: `main.rs` & `lib.rs` dispatch & re-export only, ⊥ logic. lib API = `lib.rs` re-exports only; ∀ node `mod` private; node ⊥ reaches sibling except through its public surface
 V38: ∀ node unit-tested 1-to-1 (`<node>/tests.rs`, `rust-mirror`); fixtures `tests/fixtures/<node>/`; ⊥ network, ⊥ clock in unit tests
 

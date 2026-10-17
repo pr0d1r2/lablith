@@ -39,3 +39,4 @@ rs|rustfmt, clippy|-|-
 LICENSE|-|-|license text, nothing to lint
 context-limits|-|-|token ceilings; itok & sherd-budget steps land in nix:T6
 format-upstream|-|-|FORMAT.md ancestry record; hygiene steps only
+markdownlintignore|-|-|markdownlint configuration; hygiene steps only
