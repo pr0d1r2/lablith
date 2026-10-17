@@ -35,4 +35,4 @@ V30: render output = files of ∀ row + `.gitlab-ci.yml` + ∀ seeded script ≥
 ## §T TASKS
 
 id|status|task|cites
-T44|.|AFTER `src/pipeline:T16`: render set: sorted, scripts once, golden harness w/ `UPDATE_GOLDEN=1` & changelog-touched link|V30,`tests:V39`
+T44|x|AFTER `src/pipeline:T16`: render set: sorted, scripts once, golden harness w/ `UPDATE_GOLDEN=1` & changelog-touched link|V30,`tests:V39`

@@ -18,8 +18,10 @@ pub(crate) fn lookup(name: &str) -> Option<&'static dyn Kind> {
 
 /// The v1 kind names, as a fix hint lists them.
 pub(crate) fn names() -> String {
-    let quoted: Vec<String> =
-        entries().iter().map(|k| k.spec().name.to_owned()).collect();
+    let quoted: Vec<String> = entries()
+        .iter()
+        .map(|k| format!("`{}`", k.spec().name))
+        .collect();
     quoted.join(", ")
 }
 

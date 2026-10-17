@@ -72,7 +72,7 @@ pub(crate) fn render(registry: &Registry) -> Result<Vec<File>, RenderError> {
     let plans = plan(registry)?;
     let mut files: Vec<File> = plans.iter().map(row_file).collect();
     files.push(root(registry, &plans));
-    let _ = seeded;
+    files.extend(seeded(&plans));
     sorted(files)
 }
 
@@ -96,7 +96,7 @@ fn row_file(plan: &RowPlan) -> File {
 /// The root file: every row's file, then every hand-written one.
 fn root(registry: &Registry, plans: &[RowPlan]) -> File {
     let rows = plans.iter().map(|p| row_path(&p.row.id));
-    let hand = registry.hand_written.iter().take(0).map(|h| h.path.clone());
+    let hand = registry.hand_written.iter().map(|h| h.path.clone());
     File {
         path: ROOT.to_owned(),
         bytes: root_document(&Root {

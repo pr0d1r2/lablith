@@ -45,3 +45,7 @@ the bytes lablith emits for the same inputs is at least a minor version
   by its own schedule or web run (`LABLITH_ROW`), on a protected ref, in
   the row's resource group; the seeded script runs in the dev shell and
   `open-mr.sh` reads the token named by `LABLITH_TOKEN_NAME`.
+- Render: every `## workflows` row to `.gitlab/ci/<id>.yml`, the root
+  `.gitlab-ci.yml` including each row and hand-written file, and each
+  seeded script a rendered kind needs once, sorted by path; an unknown
+  kind is refused naming the v1 kinds.
