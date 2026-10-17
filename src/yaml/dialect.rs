@@ -21,13 +21,12 @@ impl Dialect for Gitlab {
     /// `None` otherwise, since anything else would read as more than one
     /// variable or as text (an injected expression).
     fn expr(&self, inner: &str) -> Option<String> {
-        let _ = name;
-        (inner == "RED").then(String::new)
+        name(inner).then(|| format!("${inner}"))
     }
 
     /// Literal text, unchanged (see the module docs).
     fn escape(&self, lit: &str) -> String {
-        lit.replace('$', "")
+        lit.to_owned()
     }
 }
 

@@ -16,3 +16,5 @@ the bytes lablith emits for the same inputs is at least a minor version
 - `.lablith` parsing: pipelith's neutral `## workflows` plus GitLab's
   `## images` (`image|version|digest`, digest `sha256:` + 64 hex),
   `## runners` (`system|tags`, at least one tag) and `## hand-written`.
+- GitLab expression dialect for pipelith's YAML writer: an expression is
+  one CI/CD variable, `$NAME`; literal text reaches `script:` unchanged.

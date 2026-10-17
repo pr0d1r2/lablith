@@ -30,9 +30,9 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
 
-V18: GitLab dialect: `expr(inner)` → `$inner`; literal `$` escaped per context (`$$` in `variables:` values ?); 1 test per escape. ⊥ config text reaches YAML unescaped
+V18: GitLab dialect: `expr(inner)` → `$inner` only when inner = 1 variable name `[A-Za-z_][A-Za-z0-9_]*`, else refused (injected expression); `escape` = identity ∵ caller text reaches only `script:` lines (shell expands, GitLab ⊥) & ∀ `rules:`/`variables:` value built from constants + row ids (charset ⊥ `$`). test per case
 
 ## §T TASKS
 
 id|status|task|cites
-T13|.|GitLab YAML dialect: `impl yaml::Dialect` (`$NAME`, `$` escapes), 1 test per escape|V18
+T13|x|GitLab YAML dialect: `impl yaml::Dialect` (`$NAME`, `$` escapes), 1 test per escape|V18
