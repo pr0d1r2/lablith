@@ -25,7 +25,7 @@
 #            Limitation, stated rather than hidden: if the RED commit was
 #            pushed in an earlier range, pass the wider range explicitly.
 #
-# THE exemption list -- closed, exactly V28's rule:
+# THE exemption list -- closed, exactly nix:V44's rule:
 # `tdd-order.exempt` beside this script (or `--exempt FILE`), one commit per
 # line as its FULL id and the reason, naming where the RED-first history
 # lives. Only a commit already on `main` that cannot be rewritten belongs
@@ -57,7 +57,7 @@ fi
 [ "$#" -le 1 ] || usage
 
 if [ ! -f "$exempt_file" ]; then
-  echo "tdd-order: the exemption list ${exempt_file} does not exist -- nothing was checked, which is a failure rather than a pass (V28)." >&2
+  echo "tdd-order: the exemption list ${exempt_file} does not exist -- nothing was checked, which is a failure rather than a pass (nix:V44)." >&2
   exit 1
 fi
 declare -A exempt=()
@@ -70,11 +70,11 @@ while IFS= read -r line || [ -n "$line" ]; do
   id="${line%% *}"
   reason="${line#"$id"}"
   if ! [[ "$id" =~ ^[0-9a-f]{40}$ ]]; then
-    echo "tdd-order: ${exempt_file} line ${line_no}: an exempt commit is named by its FULL 40-character id (V28)." >&2
+    echo "tdd-order: ${exempt_file} line ${line_no}: an exempt commit is named by its FULL 40-character id (nix:V44)." >&2
     exit 1
   fi
   if [ -z "${reason// /}" ]; then
-    echo "tdd-order: ${exempt_file} line ${line_no}: ${id} has no reason; say where its RED-first history lives (V28)." >&2
+    echo "tdd-order: ${exempt_file} line ${line_no}: ${id} has no reason; say where its RED-first history lives (nix:V44)." >&2
     exit 1
   fi
   exempt["$id"]=1
