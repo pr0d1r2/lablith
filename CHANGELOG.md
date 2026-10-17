@@ -66,3 +66,7 @@ the bytes lablith emits for the same inputs is at least a minor version
 - `pin` core: each pinned image's tag resolved to its multi-arch index
   digest over the OCI distribution API with `curl` (anonymous bearer
   token on `401`), `## images` rewritten only after every image resolved.
+- The `lablith` command: `gen [--check]`, `check`, `portable`, `detect`,
+  `seed --init`, `report [--format text|json|md]`, `pin [--dry-run]`,
+  `completions <shell>` and `man`, each taking `--root DIR`; exit 0 ok,
+  1 finding, 2 usage or refused input.

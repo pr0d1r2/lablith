@@ -28,9 +28,14 @@ sib|src/check|`check` totality over `.gitlab-ci.yml` & `.gitlab/ci/`, portabilit
 sib|src/detect|`detect` & `seed --init`: rows from tracked files
 sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedules, token
 
+## §R RESEARCH
+
+id|topic|finding|src
+R14|CLI crates|`clap` 4.6.7 (derive, no colour), `clap_complete` 4.6.11, `clap_mangen` 0.3.3: actlith's pins; one argv table feeds parsing, completions & man. licenses MIT OR Apache-2.0 (+ Unicode-3.0 via unicode-ident); `cargo deny` licenses, bans, sources & advisories ok 2026-10-18|../actlith Cargo.toml, `cargo deny`
+
 ## §V INVARIANTS
 
 ## §T TASKS
 
 id|status|task|cites
-T31|.|`completions`, `man`|I.cmd
+T31|x|`completions`, `man`|I.cmd

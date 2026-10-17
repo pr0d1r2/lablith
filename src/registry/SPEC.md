@@ -38,4 +38,4 @@ V55: row `id` charset = pipelith's (`RawRow::from_cells`: `[A-Za-z0-9._-]`, ⊥ 
 
 id|status|task|cites
 T12|x|registry: `.lablith` schema = `kind::WORKFLOWS` + `## images`, `## runners`, `## hand-written` SectionSpecs; fixtures 1-to-1|`.:V4`,I.file
-T43|~|AFTER T12: registry errors: unknown section/kind/key/system, `format` newer, missing file, missing optional section; 1 fixture each|V28,V29
+T43|x|AFTER T12: registry errors: unknown section/kind/key/system, `format` newer, missing file, missing optional section; 1 fixture each|V28,V29

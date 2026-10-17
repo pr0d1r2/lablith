@@ -58,8 +58,7 @@ fn dispatch(verb: Verb, resolver: &dyn Resolver) -> Outcome {
         Verb::Completions { shell } => Ok(completions(shell)),
         Verb::Man => Ok(man()),
     };
-    let _ = ran;
-    super::exit::Outcome::ok("")
+    ran.unwrap_or_else(|outcome| outcome)
 }
 
 /// clap's text: help and version on stdout with exit 0; a usage error

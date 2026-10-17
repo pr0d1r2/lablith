@@ -36,5 +36,5 @@ V59: `pin` failure (network, auth, unknown tag) → exit 1 naming image & tag; `
 ## §T TASKS
 
 id|status|task|cites
-T30|~|`pin` via image registry HTTP API, `--dry-run`; network isolated in 1 module|`src/pin:V2`
-T49|~|AFTER T30: `pin` atomic write, failure exit 1, multi-arch index digest; `curl` stubbed in tests via `PATH` fixture|`src/pin:V58`,V59,V34
+T30|x|`pin` via image registry HTTP API, `--dry-run`; network isolated in 1 module|`src/pin:V2`
+T49|x|AFTER T30: `pin` atomic write, failure exit 1, multi-arch index digest; `curl` stubbed in tests via `PATH` fixture|`src/pin:V58`,V59,V34

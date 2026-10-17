@@ -37,6 +37,6 @@ V65: hand-written path ∉ generated set; listed path also rendered → `check` 
 ## §T TASKS
 
 id|status|task|cites
-T26|.|`check` totality + portability|V6,V21,I.cmd
-T27|.|`portable`|V21,I.cmd
-T52|.|AFTER T26: hand-written ∩ generated → finding; `docs/INTEGRATION.md` hand-written job rules|V65
+T26|x|`check` totality + portability|V6,V21,I.cmd
+T27|x|`portable`|V21,I.cmd
+T52|x|AFTER T26: hand-written ∩ generated → finding; `docs/INTEGRATION.md` hand-written job rules|V65

@@ -35,4 +35,4 @@ V5: ∀ generated file starts w/ generated header; `gen --check` exit 1 on ∀ s
 ## §T TASKS
 
 id|status|task|cites
-T25|~|`gen` + `gen --check`|`.:V1`,V5,I.cmd
+T25|x|`gen` + `gen --check`|`.:V1`,V5,I.cmd
