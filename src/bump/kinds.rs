@@ -45,7 +45,7 @@ impl Kind for UpdatePins {
 
     fn jobs(&self, row: &Row, tables: &Tables) -> Result<Vec<Job>, KindError> {
         let build = row.args.get("build").unwrap_or(".#default");
-        let args = [build.to_owned(), quote("")];
+        let args = [quote(build)];
         bump(row, tables, (Script::UpdatePins, &args), PINS_WHY)
     }
 }
@@ -90,7 +90,8 @@ fn bump(
     };
     let mut job = nix_job(row, tables, spec)?;
     let token = Secret::open_change(row.args.get("token")).name;
-    job.variables.push(("X", Text::lit(&token)));
+    job.variables
+        .push(("LABLITH_TOKEN_NAME", Text::lit(&token)));
     Ok(vec![job])
 }
 
@@ -103,7 +104,7 @@ fn command(script: Script, args: &[String]) -> String {
 /// The job name after `<id>:`: the kind's.
 fn kind_name(script: Script) -> String {
     match script {
-        Script::Upstream => "up",
+        Script::Upstream => "upstream",
         _ => "update-pins",
     }
     .to_owned()

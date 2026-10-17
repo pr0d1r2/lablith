@@ -40,5 +40,5 @@ V33: bump kinds idempotent: branch exists → exit 0, ⊥ 2nd MR
 ## §T TASKS
 
 id|status|task|cites
-T21|.|kind `update-pins` (schedule gate, `LABLITH_ROW`, `resource_group`, opens MR)|`src/kind:V12`,`src/kind:V15`,V17,`.:V24`
-T22|.|kind `upstream`|`src/kind:V12`,`src/kind:V15`,V17,`.:V24`
+T21|x|kind `update-pins` (schedule gate, `LABLITH_ROW`, `resource_group`, opens MR)|`src/kind:V12`,`src/kind:V15`,V17,`.:V24`
+T22|x|kind `upstream`|`src/kind:V12`,`src/kind:V15`,V17,`.:V24`

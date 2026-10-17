@@ -41,3 +41,7 @@ the bytes lablith emits for the same inputs is at least a minor version
 - Kind `build`: `<id>:build:<system>` per system through `cachix.sh`,
   `<id>:check` (`nix flake check --all-systems`, eval of systems without
   runner tags) and `<id>:verify-cache` on the default branch.
+- Kinds `update-pins` and `upstream`: one `<id>:<kind>` bump job run only
+  by its own schedule or web run (`LABLITH_ROW`), on a protected ref, in
+  the row's resource group; the seeded script runs in the dev shell and
+  `open-mr.sh` reads the token named by `LABLITH_TOKEN_NAME`.
