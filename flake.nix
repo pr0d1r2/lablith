@@ -57,6 +57,23 @@
       inputs.nixpkgs-lock.follows = "nixpkgs-lock";
       inputs.nix-hk.follows = "nix-hk";
     };
+    # GitHub Actions renderer: this repository's own CI (nix:T9). Every
+    # input it shares with this flake follows ours, so the lock gains one
+    # node, not a second copy of the fleet tools.
+    actlith = {
+      url = "github:pr0d1r2/actlith/v0.1.0";
+      inputs = {
+        nixpkgs-lock.follows = "nixpkgs-lock";
+        nix-hk.follows = "nix-hk";
+        microlith.follows = "microlith";
+        itok.follows = "itok";
+        sherd.follows = "sherd";
+        characterminator.follows = "characterminator";
+        pklith.follows = "pklith";
+        rekall.follows = "rekall";
+        xenolith.follows = "xenolith";
+      };
+    };
     # One language per file, 1:1 test mirror, TDD order (`xnl`).
     xenolith = {
       url = "github:pr0d1r2/xenolith/v0.1.0";
@@ -75,6 +92,7 @@
       pklith,
       rekall,
       xenolith,
+      actlith,
       ...
     }:
     let
@@ -97,6 +115,7 @@
           pklith
           rekall
           xenolith
+          actlith
           ;
       };
 
