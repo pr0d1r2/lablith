@@ -6,6 +6,7 @@
 
 mod build;
 mod bump;
+mod check;
 mod core;
 mod gate;
 mod r#gen;
