@@ -1,0 +1,60 @@
+# Per-path token ceilings, gated by `itok check` (file rows) and
+# `sherd budget` (directory rows = chain: root + hub + node). The format
+# is itok's and sherd's, as in actlith and pklith.
+#
+# A ceiling caps ENTRY COST: what a session loads before any work begins.
+# Set ~12% over measured so ordinary edits fit; raising one is a reviewed
+# commit with its reason. Caps (as actlith): a SPEC.md file <= 3500, a
+# chain <= 5500. A node that would pass its cap splits, it does not raise.
+#
+# MEASURED 2026-10-17 right after federating (T10): file rows with
+# `itok estimate --bpe`, chain rows with `sherd budget`.
+
+# Files
+SPEC.md                      3420
+dev/SPEC.md                  350
+nix/SPEC.md                  2150
+src/SPEC.md                  1060
+src/build/SPEC.md            670
+src/bump/SPEC.md             840
+src/check/SPEC.md            890
+src/cli/SPEC.md              640
+src/core/SPEC.md             1100
+src/detect/SPEC.md           740
+src/fetch/SPEC.md            810
+src/gate/SPEC.md             660
+src/gen/SPEC.md              680
+src/kind/SPEC.md             1410
+src/pin/SPEC.md              770
+src/pipeline/SPEC.md         1220
+src/registry/SPEC.md         1000
+src/render/SPEC.md           720
+src/report/SPEC.md           830
+src/script/SPEC.md           800
+src/system/SPEC.md           890
+src/yaml/SPEC.md             720
+tests/SPEC.md                850
+
+# Chains
+dev                          3050
+nix                          4200
+src                          3120
+src/build                    3220
+src/bump                     3400
+src/check                    3440
+src/cli                      3200
+src/core                     3410
+src/detect                   3290
+src/fetch                    3370
+src/gate                     3210
+src/gen                      3240
+src/kind                     3890
+src/pin                      3320
+src/pipeline                 3690
+src/registry                 3550
+src/render                   3280
+src/report                   3380
+src/script                   3350
+src/system                   3360
+src/yaml                     3270
+tests                        3320
