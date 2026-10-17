@@ -20,6 +20,7 @@ local fast = (generated.steps) {
   // tests:V19: renders every fixture with `cargo run`, so it waits for the
   // build (actlith B9).
   ["gitlab-schema"] { depends = List("build") }
+  ["lablith-gen-check"] { depends = List("build") }
 }
 
 local all = (fast) {

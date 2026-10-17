@@ -1,0 +1,9 @@
+format 1
+
+# lablith's own GitLab registry: the pipeline its GitLab mirror runs,
+# rendered by `lablith gen` (nix:T32). The same row as .actlith's, so
+# both forges run the same hk gate with the same cache (.:V4).
+
+## workflows
+id|kind|systems|cache|args
+ci|gate|-|pr0d1r2|-
