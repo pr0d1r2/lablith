@@ -1,0 +1,4 @@
+# Commits exempt from tdd-order (nix:V44): full id, then the reason. Only a
+# commit already made that cannot be rewritten belongs here, each with a
+# nix/SPEC.md B row.
+e74ae81b8d6ddfdedbddc513eddf4c0a3c631980 crate seed by hand (nix:T4): lib.rs and main.rs are bodiless stubs, so there was no behaviour for a RED test to pin (nix:B1)

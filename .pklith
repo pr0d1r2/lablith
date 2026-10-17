@@ -29,6 +29,7 @@ xnl-lint|lint|-|**/*.nix, **/*.pkl, .envrc, .githooks/*|xnl lint {{files}}|xnl l
 rekall|lint|-|AGENTS.md, CLAUDE.md, rekall.toml|rekall check|-|-|agent prose drifted from the rules rekall extracted from it; run rekall scan and settle the drift
 # xenolith's Rust guards, copied as actlith does (nix:T6).
 rust-mirror|lint|-|**/*.rs, nix/guard/rust-mirror.sh|bash nix/guard/rust-mirror.sh|-|-|a Rust file with logic has no sibling tests.rs wired by #[cfg(test)] mod tests;
+tdd-order|coverage|-|**/*.rs, nix/guard/tdd-order.sh, nix/guard/tdd-order.exempt|bash nix/guard/tdd-order.sh|-|-|a commit adds Rust code with no test: commit before it in the push range
 
 ## types
 type|checks|min|exempt
@@ -49,7 +50,7 @@ gitignore|-|-|git configuration; hygiene steps only
 path:flake.lock|-|-|written by `nix flake lock`; hygiene steps only
 path:Cargo.lock|-|-|written by cargo; cargo deny reads it from nix:T7
 toml|taplo|-|-
-rs|rustfmt, clippy, rust-mirror|-|-
+rs|rustfmt, clippy, rust-mirror, tdd-order|-|-
 LICENSE|-|-|license text, nothing to lint
 context-limits|itok, sherd-budget|-|-
 format-upstream|-|-|FORMAT.md ancestry record; hygiene steps only
@@ -59,3 +60,4 @@ ctrm|-|-|ctrm configuration; hygiene steps only
 ctrm-sets|-|-|ctrm configuration; hygiene steps only
 path:AGENTS.md|markdownlint, links, rekall|-|-
 path:rekall.toml|taplo, rekall|-|-
+exempt|tdd-order|-|-
