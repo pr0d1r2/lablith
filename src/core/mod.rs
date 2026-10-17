@@ -5,6 +5,6 @@
 
 mod error;
 
-pub(crate) use pipelith::{kind, registry, yaml};
+pub(crate) use pipelith::{kind, registry, system, yaml};
 
 pub use error::ConfigError;

@@ -5,7 +5,9 @@
 //! in `SPEC.md` and the `SPEC.md` of each node.
 
 mod core;
+mod pin;
 mod registry;
+mod system;
 mod yaml;
 
 pub use crate::core::ConfigError;

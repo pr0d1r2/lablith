@@ -1,0 +1,105 @@
+//! The one runner table (`src/system:V56`): each nix system beside the
+//! runner tags a job on it carries. No tag is spelled anywhere else. The
+//! systems themselves, their names and the defaults are pipelith's
+//! (`src/core`).
+
+use std::collections::BTreeMap;
+use std::fmt;
+
+use crate::core::system as neutral;
+use crate::registry::RunnerRow;
+pub(crate) use neutral::System;
+
+#[cfg(test)]
+mod tests;
+
+/// The built-in table: the nix system name plus `nix`, so no private
+/// runner tag ships with lablith (`.:V20`). `x86_64-darwin` has no row:
+/// pipelith refuses it in every row.
+const BUILTIN: [(System, [&str; 2]); 3] = [
+    (System::X86_64Linux, ["nix", "x86_64-linux"]),
+    (System::Aarch64Linux, ["nix", "aarch64-linux"]),
+    (System::Aarch64Darwin, ["nix", "aarch64-darwin"]),
+];
+
+/// Why a system cannot be given runner tags.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) enum SystemError {
+    /// A `## runners` row names no nix system.
+    Unknown {
+        /// The `.lablith` line of the row.
+        line: usize,
+        /// The name as written.
+        name: String,
+    },
+    /// No row of the table covers the system.
+    NoTags(System),
+}
+
+/// Runner tags per system: built-in, then `## runners` overrides.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RunnerTable(BTreeMap<&'static str, Vec<String>>);
+
+impl RunnerTable {
+    /// The built-in table.
+    pub(crate) fn builtin() -> Self {
+        let row = |&(s, tags): &(System, [&str; 2])| {
+            (s.name(), tags.iter().map(|&t| t.to_owned()).collect())
+        };
+        Self(BUILTIN.iter().map(row).collect())
+    }
+
+    /// This table with each `## runners` row replacing its system's tags.
+    pub(crate) fn with_overrides(
+        mut self,
+        rows: &[RunnerRow],
+    ) -> Result<Self, SystemError> {
+        for row in rows {
+            let system = neutral::parse_system(&row.system).map_err(|_| {
+                SystemError::Unknown {
+                    line: row.line,
+                    name: row.system.clone(),
+                }
+            })?;
+            let _ = system;
+            self.0.retain(|_, _| true);
+        }
+        Ok(self)
+    }
+
+    /// The tags a job on `system` carries, or an error naming the fix.
+    pub(crate) fn tags(
+        &self,
+        system: System,
+    ) -> Result<&[String], SystemError> {
+        self.0
+            .get("")
+            .map(Vec::as_slice)
+            .ok_or(SystemError::NoTags(system))
+    }
+}
+
+impl fmt::Display for SystemError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Unknown { line, name } => {
+                let (k, l) = (known(), ".lablith");
+                write!(f, "{l}:{line}: unknown system `{name}`")?;
+                write!(f, "\n  fix: use one of {k}")
+            }
+            Self::NoTags(system) => {
+                let s = system.name();
+                write!(f, "system `{s}` has no GitLab runner tags")?;
+                write!(f, "\n  fix: add a `## runners` row `{s}|<tags>`")
+            }
+        }
+    }
+}
+
+/// Every nix system name, comma-separated.
+fn known() -> String {
+    let names: Vec<&str> = neutral::ALL.iter().map(|s| s.name()).collect();
+    names.join(", ")
+}
+
+impl std::error::Error for SystemError {}
