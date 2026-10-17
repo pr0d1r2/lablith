@@ -36,5 +36,5 @@ V64: `LABLITH_TOKEN` = project access token, role Developer, scope `api` ? (MR v
 ## §T TASKS
 
 id|status|task|cites
-T29|.|`report` text/json/md: pins, secrets, schedules to create|`src/bump:V17`,I.cmd
-T53|.|AFTER T29: `report` token scope/role/rotation & schedule list; `docs/SECURITY.md` token section|V64
+T29|~|`report` text/json/md: pins, secrets, schedules to create|`src/bump:V17`,I.cmd
+T53|~|AFTER T29: `report` token scope/role/rotation & schedule list; `docs/SECURITY.md` token section|V64

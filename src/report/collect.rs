@@ -26,7 +26,7 @@ pub(crate) fn collect(registry: &Registry) -> Result<Report, RenderError> {
     let tables = tables(registry)?;
     let mut rows: Vec<RowReport> =
         plan(registry)?.iter().map(|p| row(p, &tables)).collect();
-    rows.sort_by(|a, b| b.id.cmp(&a.id));
+    rows.sort_by(|a, b| a.id.cmp(&b.id));
     let opens = rows
         .iter()
         .flat_map(|r| &r.secrets)
@@ -34,7 +34,7 @@ pub(crate) fn collect(registry: &Registry) -> Result<Report, RenderError> {
     Ok(Report {
         rows,
         hand_written: manual(registry),
-        token: opens.then_some("").filter(|_| TOKEN.is_empty()),
+        token: opens.then_some(TOKEN),
     })
 }
 
@@ -88,7 +88,7 @@ fn schedule(plan: &RowPlan) -> Option<Schedule> {
     let cron = plan.row.args.get("cron")?;
     Some(Schedule {
         cron: cron.to_owned(),
-        variable: ROW.to_owned(),
+        variable: format!("{ROW}={}", plan.row.id),
     })
 }
 

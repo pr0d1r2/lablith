@@ -59,3 +59,7 @@ the bytes lablith emits for the same inputs is at least a minor version
   `update-pins` written commented out under `# off by default: uncomment
   to get daily nixpkgs-lock bump MRs`; `seed --init` never overwrites an
   existing `.lablith`.
+- `report` in text, JSON (`schema_version` 1) and Markdown: per row its
+  systems and runner tags, images, CI/CD variables, the pipeline schedule
+  to create (cron, `LABLITH_ROW=<id>`), hand-written files, and what the
+  merge request token must be.
