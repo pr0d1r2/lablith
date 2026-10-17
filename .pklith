@@ -30,6 +30,9 @@ rekall|lint|-|AGENTS.md, CLAUDE.md, rekall.toml|rekall check|-|-|agent prose dri
 # xenolith's Rust guards, copied as actlith does (nix:T6).
 rust-mirror|lint|-|**/*.rs, nix/guard/rust-mirror.sh|bash nix/guard/rust-mirror.sh|-|-|a Rust file with logic has no sibling tests.rs wired by #[cfg(test)] mod tests;
 tdd-order|coverage|-|**/*.rs, nix/guard/tdd-order.sh, nix/guard/tdd-order.exempt|bash nix/guard/tdd-order.sh|-|-|a commit adds Rust code with no test: commit before it in the push range
+# Offline, as actlith: advisories need a fetched database, so they are a
+# push-time step (hk.pkl), not a commit-time one.
+deny|supply|cargo-deny|Cargo.toml, Cargo.lock, deny.toml|cargo deny check --disable-fetch licenses bans sources|-|-|a license, ban or source rule failed
 
 ## types
 type|checks|min|exempt
@@ -48,7 +51,7 @@ envrc|shellcheck, xnl-check, xnl-lint|-|-
 sh|shellcheck, shfmt|-|-
 gitignore|-|-|git configuration; hygiene steps only
 path:flake.lock|-|-|written by `nix flake lock`; hygiene steps only
-path:Cargo.lock|-|-|written by cargo; cargo deny reads it from nix:T7
+path:Cargo.lock|deny|-|-
 toml|taplo|-|-
 rs|rustfmt, clippy, rust-mirror, tdd-order|-|-
 LICENSE|-|-|license text, nothing to lint
