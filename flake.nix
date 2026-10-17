@@ -233,6 +233,9 @@
               ./Cargo.toml
               ./Cargo.lock
               ./src
+              # A workspace member cargo must find, though the package
+              # builds only lablith.
+              ./dev
             ];
           };
           cargoLock.lockFile = ./Cargo.lock;
