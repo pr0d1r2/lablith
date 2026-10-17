@@ -27,6 +27,8 @@ xnl-check|lint|-|**/*.nix, **/*.pkl, .envrc, .githooks/*|xnl check {{files}}|-|-
 xnl-lint|lint|-|**/*.nix, **/*.pkl, .envrc, .githooks/*|xnl lint {{files}}|xnl lint --fix {{files}}|-|an embedded or extracted program fails its own language's linter
 # rekall: agent prose and the rules extracted from it, as in actlith.
 rekall|lint|-|AGENTS.md, CLAUDE.md, rekall.toml|rekall check|-|-|agent prose drifted from the rules rekall extracted from it; run rekall scan and settle the drift
+# xenolith's Rust guards, copied as actlith does (nix:T6).
+rust-mirror|lint|-|**/*.rs, nix/guard/rust-mirror.sh|bash nix/guard/rust-mirror.sh|-|-|a Rust file with logic has no sibling tests.rs wired by #[cfg(test)] mod tests;
 
 ## types
 type|checks|min|exempt
@@ -47,7 +49,7 @@ gitignore|-|-|git configuration; hygiene steps only
 path:flake.lock|-|-|written by `nix flake lock`; hygiene steps only
 path:Cargo.lock|-|-|written by cargo; cargo deny reads it from nix:T7
 toml|taplo|-|-
-rs|rustfmt, clippy|-|-
+rs|rustfmt, clippy, rust-mirror|-|-
 LICENSE|-|-|license text, nothing to lint
 context-limits|itok, sherd-budget|-|-
 format-upstream|-|-|FORMAT.md ancestry record; hygiene steps only
