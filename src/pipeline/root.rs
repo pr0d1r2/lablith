@@ -31,8 +31,7 @@ pub(crate) fn root_document(root: &Root) -> String {
     if !root.includes.is_empty() {
         entries.push(Entry::fixed("include", includes(&root.includes)));
     }
-    let body =
-        yaml::document(&GITLAB, &[], entries.get(..0).unwrap_or_default());
+    let body = yaml::document(&GITLAB, &[], &entries);
     format!("{}{body}", files::header("lablith", ".lablith"))
 }
 

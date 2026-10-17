@@ -134,8 +134,7 @@ impl Job {
 /// The row file `.gitlab/ci/<id>.yml`: header, then every job.
 pub(crate) fn row_document(jobs: &[Job]) -> String {
     let entries: Vec<Entry> = jobs.iter().map(Job::entry).collect();
-    let body =
-        yaml::document(&GITLAB, &[], entries.get(..0).unwrap_or_default());
+    let body = yaml::document(&GITLAB, &[], &entries);
     format!("{}{body}", files::header("lablith", ".lablith"))
 }
 

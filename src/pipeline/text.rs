@@ -15,7 +15,7 @@ pub(crate) fn var(name: &str) -> Text {
 /// `$name == "value"`; `value` is a constant or a row id, whose charset
 /// holds no `"` or `$` (`src/registry:V55`).
 pub(crate) fn eq(name: &str, value: &str) -> Text {
-    var(name).then_lit(value)
+    var(name).then_lit(&format!(" == \"{value}\""))
 }
 
 /// `$a == $b`.

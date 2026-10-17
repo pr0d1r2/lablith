@@ -22,3 +22,7 @@ the bytes lablith emits for the same inputs is at least a minor version
   digest, overridden per repository by `## images`.
 - Runner tag table: `nix` plus the nix system name per system, overridden
   by `## runners`; a system with no tags is refused naming the fix.
+- GitLab pipeline model: jobs written in full (no `extends:`, no anchors)
+  with a pinned image, runner tags, timeout and rules; a root
+  `.gitlab-ci.yml` of `workflow: rules`, four fixed stages and
+  `include: local:` only.
