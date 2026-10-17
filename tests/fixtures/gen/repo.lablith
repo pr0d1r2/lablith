@@ -1,0 +1,10 @@
+format 1
+
+# A repository with every v1 kind (src/gen:T25).
+
+## workflows
+id|kind|systems|cache|args
+ci|gate|-|pr0d1r2|-
+pkg|build|x86_64-linux|pr0d1r2|package=hk
+pins|update-pins|-|-|-
+up|upstream|-|-|script=bump.sh

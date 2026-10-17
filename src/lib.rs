@@ -8,6 +8,7 @@ mod build;
 mod bump;
 mod core;
 mod gate;
+mod r#gen;
 mod kind;
 mod pin;
 mod pipeline;
