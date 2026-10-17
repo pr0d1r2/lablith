@@ -1,4 +1,9 @@
 //! lablith: materialize GitLab CI pipelines from a small config.
 //!
-//! The design lives in `SPEC.md`. The crate is a stub until the
-//! `src/core` facade over pipelith lands (T11).
+//! This file only declares node modules and re-exports their public
+//! surface (`src:V37`); every node is a private module. The design lives
+//! in `SPEC.md` and the `SPEC.md` of each node.
+
+mod core;
+
+pub use crate::core::ConfigError;
