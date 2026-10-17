@@ -35,8 +35,8 @@ const HEADER: &str =
 #[test]
 fn a_bare_job_writes_every_required_key_in_order() {
     let want = format!(
-        "{HEADER}'ci:gate:x86_64-linux':\n  stage: gate\n  image: \
-         'nixos/nix@sha256:ab'  # 2.35.3\n  tags: [nix, x86_64-linux]\n  \
+        "{HEADER}'ci:gate:x86_64-linux':\n  stage: gate\n  # nixos/nix \
+         2.35.3\n  image: 'nixos/nix@sha256:ab'\n  tags: [nix, x86_64-linux]\n  \
          timeout: '30 minutes'\n  interruptible: true\n  script: [nix \
          develop --command hk check --all --check]\n"
     );
@@ -68,7 +68,7 @@ fn rule(cond: Option<Text>, when: When) -> Rule {
 }
 
 const FULL: &str = "# why\n'ci:gate:x86_64-linux':\n  stage: gate\n  \
-    image: 'nixos/nix@sha256:ab'  # 2.35.3\n  tags: [nix, x86_64-linux]\n  \
+    # nixos/nix 2.35.3\n  image: 'nixos/nix@sha256:ab'\n  tags: [nix, x86_64-linux]\n  \
     timeout: '30 minutes'\n  interruptible: false\n  resource_group: \
     lablith-pins\n  needs: ['ci:build']\n  rules:\n    - if: \
     '$CI_PIPELINE_SOURCE == \"schedule\"'\n      when: never\n    - \

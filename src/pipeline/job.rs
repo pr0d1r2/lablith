@@ -106,10 +106,12 @@ impl Job {
         out
     }
 
-    /// `image: name@digest  # version`.
+    /// `image: name@digest`, its version in a comment above: a trailing
+    /// one would push the line past 120 columns (`src/pin:V2`).
     fn image(&self) -> Entry {
         let image = text(&self.image.reference());
-        Entry::fixed("image", image).after(Comment::new(&self.image.version))
+        let version = format!("{} {}", self.image.name, self.image.version);
+        Entry::fixed("image", image).after(Comment::new(&version))
     }
 
     /// The keys a job may leave out.
