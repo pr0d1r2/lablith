@@ -43,13 +43,18 @@ const SCHEMA: Schema<'static> = Schema {
 ///
 /// The first problem found, with its line, what is wrong and the fix.
 pub(crate) fn parse(text: &str) -> Result<Registry, ConfigError> {
-    // RED stub (src/registry:T12): reads nothing yet.
-    let _ = (registry::parse, RawRow::from_cells, &SCHEMA, text);
-    let _ = (image, runner, hand);
-    if text.is_empty() {
-        return Err(ConfigError::default());
-    }
-    Ok(Registry::default())
+    let doc = registry::parse(FILE, text, &SCHEMA)?;
+    let rows = |name| doc.section(name).iter();
+    Ok(Registry {
+        workflows: rows(kind::SECTION)
+            .map(|r| RawRow::from_cells(FILE, r).map_err(ConfigError::from))
+            .collect::<Result<_, _>>()?,
+        images: rows("images").map(image).collect::<Result<_, _>>()?,
+        runners: rows("runners").map(runner).collect::<Result<_, _>>()?,
+        hand_written: rows("hand-written")
+            .map(hand)
+            .collect::<Result<_, _>>()?,
+    })
 }
 
 #[cfg(test)]

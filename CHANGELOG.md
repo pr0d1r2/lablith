@@ -13,3 +13,6 @@ the bytes lablith emits for the same inputs is at least a minor version
 - `ConfigError`: the one shape a refused `.lablith` is reported in,
   `.lablith:N: what` and an indented `fix:` line; pipelith's registry and
   kind errors convert into it.
+- `.lablith` parsing: pipelith's neutral `## workflows` plus GitLab's
+  `## images` (`image|version|digest`, digest `sha256:` + 64 hex),
+  `## runners` (`system|tags`, at least one tag) and `## hand-written`.
