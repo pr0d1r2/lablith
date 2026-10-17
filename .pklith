@@ -33,6 +33,9 @@ tdd-order|coverage|-|**/*.rs, nix/guard/tdd-order.sh, nix/guard/tdd-order.exempt
 # nix:V46: core.worktree in the shared .git/config redirects every
 # worktree; a gate step refuses it.
 no-core-worktree|gate|-|**/*|bash nix/guard/no-core-worktree.sh|-|-|core.worktree is set in the shared .git/config; unset it
+# nix:V47: hk's own Pkl evaluator (pklr) sees the steps `pkl eval` sees,
+# each with a command; as pklith's hk-parity.
+hk-parity|gate|jq|hk.pkl, hk.pklith.pkl, pkl/**, nix/guard/hk-parity.sh|bash nix/guard/hk-parity.sh|-|-|hk's own Pkl evaluator does not see the steps pkl eval sees
 # Offline, as actlith: advisories need a fetched database, so they are a
 # push-time step (hk.pkl), not a commit-time one.
 deny|supply|cargo-deny|Cargo.toml, Cargo.lock, deny.toml|cargo deny check --disable-fetch licenses bans sources|-|-|a license, ban or source rule failed
@@ -48,7 +51,7 @@ md|markdownlint, links|-|-
 nix|nixfmt, statix, deadnix, xnl-check, xnl-lint|-|-
 path:**/SPEC.md|markdownlint, links, mth-fmt, mth-check, sherd-check, sherd-nav, sherd-budget, itok|-|-
 pklith|pklith-check, gen-check|-|-
-pkl|xnl-check, xnl-lint|-|-
+pkl|xnl-check, xnl-lint, hk-parity|-|-
 pre-commit|shellcheck, xnl-check, xnl-lint|-|-
 pre-push|shellcheck, xnl-check, xnl-lint|-|-
 commit-msg|shellcheck, xnl-check, xnl-lint|-|-

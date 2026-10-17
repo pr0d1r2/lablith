@@ -178,6 +178,10 @@ steps: Mapping<String, Config.Step> = new {
     glob = List("**/*")
     check = "command -v bash >/dev/null 2>&1 || { echo 'no-core-worktree: bash is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; bash nix/guard/no-core-worktree.sh || { echo 'no-core-worktree: core.worktree is set in the shared .git/config; unset it' >&2; exit 1; }"
   }
+  ["hk-parity"] {
+    glob = List("hk.pkl", "hk.pklith.pkl", "pkl/**", "nix/guard/hk-parity.sh")
+    check = #"command -v bash >/dev/null 2>&1 || { echo 'hk-parity: bash is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; bash nix/guard/hk-parity.sh || { echo 'hk-parity: hk'\''s own Pkl evaluator does not see the steps pkl eval sees' >&2; exit 1; }"#
+  }
 }
 
 push: Mapping<String, Config.Step> = new {

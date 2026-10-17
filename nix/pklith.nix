@@ -9,6 +9,7 @@ catalog: [
   catalog.editorconfig-checker
   catalog.gnugrep
   catalog.itok
+  catalog.jq
   catalog.lychee
   catalog.markdownlint-cli
   catalog.microlith
