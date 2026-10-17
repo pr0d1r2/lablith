@@ -25,6 +25,8 @@ ctrm|lint|-|**/*|ctrm check {{files}}|ctrm fix {{files}}|-|a file holds a charac
 # xenolith: one language per file, as in actlith.
 xnl-check|lint|-|**/*.nix, **/*.pkl, .envrc, .githooks/*|xnl check {{files}}|-|-|a host file embeds a non-trivial program in another language; extract it with xnl extract
 xnl-lint|lint|-|**/*.nix, **/*.pkl, .envrc, .githooks/*|xnl lint {{files}}|xnl lint --fix {{files}}|-|an embedded or extracted program fails its own language's linter
+# rekall: agent prose and the rules extracted from it, as in actlith.
+rekall|lint|-|AGENTS.md, CLAUDE.md, rekall.toml|rekall check|-|-|agent prose drifted from the rules rekall extracted from it; run rekall scan and settle the drift
 
 ## types
 type|checks|min|exempt
@@ -53,3 +55,5 @@ markdownlintignore|-|-|markdownlint configuration; hygiene steps only
 yaml|yamllint|-|-
 ctrm|-|-|ctrm configuration; hygiene steps only
 ctrm-sets|-|-|ctrm configuration; hygiene steps only
+path:AGENTS.md|markdownlint, links, rekall|-|-
+path:rekall.toml|taplo, rekall|-|-
