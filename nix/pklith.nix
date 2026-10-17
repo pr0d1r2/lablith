@@ -10,6 +10,7 @@ catalog: [
   catalog.rustfmt
   catalog.shellcheck
   catalog.shfmt
+  catalog.statix
   catalog.taplo
   catalog.typos
 ]
