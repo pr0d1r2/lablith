@@ -55,3 +55,7 @@ the bytes lablith emits for the same inputs is at least a minor version
   `.gitlab/ci/`: each is generated or listed hand-written with a reason,
   every listed path exists, and none is both; portability findings for
   anything actlith could not render (none in v1).
+- `detect` and `seed --init`: pipelith's proposed rows, with
+  `update-pins` written commented out under `# off by default: uncomment
+  to get daily nixpkgs-lock bump MRs`; `seed --init` never overwrites an
+  existing `.lablith`.

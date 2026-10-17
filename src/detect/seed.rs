@@ -10,7 +10,7 @@ use crate::core::detect::{self, seed_init_text};
 use crate::registry::WorkflowRow;
 
 /// The file `seed --init` writes under the root.
-pub(crate) const FILE: &str = ".actlith";
+pub(crate) const FILE: &str = ".lablith";
 
 /// Why `seed --init` wrote nothing.
 #[derive(Debug)]

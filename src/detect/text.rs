@@ -25,7 +25,7 @@ const OFF_BY_DEFAULT: [&str; 1] = ["update-pins"];
 pub(crate) fn proposal(row: &WorkflowRow) -> String {
     let line = row_line(row);
     if OFF_BY_DEFAULT.contains(&row.kind.as_str()) {
-        return line;
+        return format!("{OFF_NOTE}\n# {line}");
     }
     line
 }

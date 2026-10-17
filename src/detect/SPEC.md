@@ -36,4 +36,4 @@ V35: `seed --init` w/ existing `.lablith` → exit 1 naming it, file untouched
 ## §T TASKS
 
 id|status|task|cites
-T28|.|`detect` + `seed --init` (`update-pins` commented)|V22,I.cmd
+T28|~|`detect` + `seed --init` (`update-pins` commented)|V22,I.cmd
