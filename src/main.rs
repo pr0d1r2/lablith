@@ -1,4 +1,6 @@
-//! The `lablith` command. A stub until the CLI lands (T31 and the verbs
-//! before it).
+//! The `lablith` command. Dispatch only (`src:V37`): every verb lives in
+//! `src/cli`.
 
-fn main() {}
+fn main() -> std::process::ExitCode {
+    lablith::lablith()
+}

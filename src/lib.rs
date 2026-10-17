@@ -7,6 +7,7 @@
 mod build;
 mod bump;
 mod check;
+mod cli;
 mod core;
 mod detect;
 mod fetch;
@@ -23,3 +24,4 @@ mod system;
 mod yaml;
 
 pub use crate::core::ConfigError;
+pub use cli::lablith;

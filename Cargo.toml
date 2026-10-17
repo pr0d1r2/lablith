@@ -17,6 +17,18 @@ name = "lablith"
 path = "src/main.rs"
 
 [dependencies]
+# Argv, help, completions and the man page (src/cli), as in actlith. No
+# colour or terminal-size features.
+clap = { version = "4.6.7", default-features = false, features = [
+  "std",
+  "derive",
+  "help",
+  "usage",
+  "error-context",
+  "suggestions",
+] }
+clap_complete = "4.6.11"
+clap_mangen = "0.3.3"
 # The forge-neutral core lablith shares with actlith: registry, YAML
 # writer, drift check, kind catalogue, systems, detect (SPEC.md C).
 # From crates.io, never a git pin: crates.io refuses to publish a crate
