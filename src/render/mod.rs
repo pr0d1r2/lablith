@@ -15,3 +15,6 @@ pub(crate) use error::RenderError;
 pub(crate) use files::{File, ROOT, RowPlan, plan, render, row_path, tables};
 #[allow(unused_imports, reason = "used by src/report in a later wave")]
 pub(crate) use kinds::{entries, lookup};
+
+#[cfg(test)]
+mod tests;

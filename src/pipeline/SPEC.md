@@ -47,4 +47,4 @@ V66: root `.gitlab-ci.yml` ⊥ `default:` keyword; ∀ job setting expanded on j
 
 id|status|task|cites
 T16|x|pipeline model: root `.gitlab-ci.yml` (`workflow: rules`, `stages:`, defaults, `include: local:`), per-row file, `<id>:` job prefix; golden bytes tests|`.:V1`,V7,V8,V9,V10
-T45|.|AFTER `src/kind:T17`: per-job `rules:` (push/MR vs schedule/web + `LABLITH_ROW`), fixed `stages:`, `needs:`, `GIT_DEPTH` table; 1 golden per pipeline source|`src/kind:V50`,V51,V52,`src/kind:V53`
+T45|x|AFTER `src/kind:T17`: per-job `rules:` (push/MR vs schedule/web + `LABLITH_ROW`), fixed `stages:`, `needs:`, `GIT_DEPTH` table; 1 golden per pipeline source|`src/kind:V50`,V51,V52,`src/kind:V53`
