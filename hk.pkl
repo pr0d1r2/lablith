@@ -56,6 +56,12 @@ local all = (fast) {
     glob = List("Cargo.toml", "Cargo.lock", "deny.toml")
     check = "cargo deny check advisories"
   }
+  // nix:T33: the flake's lablith built by nix and run as built on a
+  // fixture repository (as actlith and pklith). Push only: a nix build.
+  ["package-nix"] {
+    glob = List("flake.nix", "flake.lock", "Cargo.toml", "Cargo.lock", "src/**", "nix/guard/package-nix.sh")
+    check = "bash nix/guard/package-nix.sh"
+  }
 }
 
 hooks {

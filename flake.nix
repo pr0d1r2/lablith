@@ -220,6 +220,27 @@
         }
       );
 
+      # lablith, built from the crate alone: the sources cargo reads. The
+      # suite runs in the gate; the binary is tested as built by the
+      # package-nix step (nix:T33).
+      packages = forAll (pkgs: {
+        default = pkgs.rustPlatform.buildRustPackage {
+          pname = "lablith";
+          version = (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version;
+          src = pkgs.lib.fileset.toSource {
+            root = ./.;
+            fileset = pkgs.lib.fileset.unions [
+              ./Cargo.toml
+              ./Cargo.lock
+              ./src
+            ];
+          };
+          cargoLock.lockFile = ./Cargo.lock;
+          doCheck = false;
+          meta.mainProgram = "lablith";
+        };
+      });
+
       formatter = forAll (pkgs: pkgs.nixfmt);
 
     };
