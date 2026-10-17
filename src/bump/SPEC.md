@@ -31,6 +31,7 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 ## §I INTERFACES
 
 - schedules: GitLab UI/API, ⊥ YAML. scheduled jobs gated `$CI_PIPELINE_SOURCE == "schedule"` & `$LABLITH_ROW == "<id>"`
+- kinds `update-pins`, `upstream`: 1 job `<id>:<kind>` on stage `bump`, seeded script in dev shell, `LABLITH_TOKEN_NAME` names the token; rendering → `docs/KINDS-GITLAB.md`
 
 ## §V INVARIANTS
 

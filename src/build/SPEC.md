@@ -28,7 +28,13 @@ sib|src/detect|`detect` & `seed --init`: rows from tracked files
 sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedules, token
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
+## §I INTERFACES
+
+- kind `build`: `<id>:build:<system>` per system, `<id>:check`, `<id>:verify-cache`; rendering → `docs/KINDS-GITLAB.md`
+
 ## §V INVARIANTS
+
+V69: `build` row → builds through `cachix.sh`; `<id>:check` evals ∀ system w/o runner tags; `<id>:verify-cache` needs ∀ build & runs on default branch only
 
 ## §T TASKS
 

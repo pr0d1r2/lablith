@@ -28,7 +28,13 @@ sib|src/detect|`detect` & `seed --init`: rows from tracked files
 sib|src/report|`report` text, json, md: rows × systems × pins, secrets, schedules, token
 sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
+## §I INTERFACES
+
+- kind `gate`: 1 job `<id>:gate:<system>` per row system, stage `gate`, row `command` (via `cachix.sh <cache>` when cached); rendering → `docs/KINDS-GITLAB.md`
+
 ## §V INVARIANTS
+
+V68: `gate` row → ∀ row system 1 job `<id>:gate:<system>`, `GIT_DEPTH` 0, ⊥ schedule; command runs through `cachix.sh` iff row names a cache, as 1 quoted word
 
 ## §T TASKS
 
