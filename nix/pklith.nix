@@ -6,6 +6,7 @@ catalog: [
   catalog.deadnix
   catalog.editorconfig-checker
   catalog.gnugrep
+  catalog.itok
   catalog.lychee
   catalog.markdownlint-cli
   catalog.microlith
