@@ -18,3 +18,6 @@ pklith|-|-|written by pklith (seed or gen)
 pkl|-|-|written by pklith (seed or gen)
 pre-commit|-|-|written by pklith (seed or gen)
 pre-push|-|-|written by pklith (seed or gen)
+rs|rustfmt, clippy|-|-
+LICENSE|-|-|license text, nothing to lint
+lock|-|-|written by cargo; cargo deny reads Cargo.lock from T7
