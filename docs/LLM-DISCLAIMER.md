@@ -31,7 +31,7 @@ the tracked hooks, which run [hk](https://github.com/jdx/hk) against one
 definition of the gate in [`hk.pkl`](../hk.pkl). Each check was laid in
 its own commit, and the commit that brings it records the planted
 violation it refused. The GitHub workflow and the GitLab pipeline run
-that same definition, line coverage has a floor of 98.94% that may only
+that same definition, line coverage has a floor of 99.02% that may only
 rise,
 `unsafe` is
 forbidden, and the only command meant to touch the network
