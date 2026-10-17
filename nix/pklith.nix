@@ -3,6 +3,7 @@
 # with pklith's catalog namespace (nixpkgs plus the tools nixpkgs lacks).
 catalog: [
   catalog.clippy
+  catalog.deadnix
   catalog.editorconfig-checker
   catalog.gnugrep
   catalog.nixfmt
