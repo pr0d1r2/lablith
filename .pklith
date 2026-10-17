@@ -80,4 +80,4 @@ path:AGENTS.md|markdownlint, links, rekall|-|-
 path:rekall.toml|taplo, rekall|-|-
 exempt|tdd-order|-|-
 path:.actlith|actlith-gen-check, actlith-check|-|-
-path:.github/workflows/*.yml|yamllint, actlith-gen-check, actlith-check|-|-
+path:.github/workflows/*.yml|yamllint, actionlint, actlith-gen-check, actlith-check|-|-
