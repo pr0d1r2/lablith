@@ -21,6 +21,7 @@ local fast = (generated.steps) {
   // build (actlith B9).
   ["gitlab-schema"] { depends = List("build") }
   ["lablith-gen-check"] { depends = List("build") }
+  ["lablith-check"] { depends = List("build") }
 }
 
 local all = (fast) {
