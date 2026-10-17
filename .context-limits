@@ -25,7 +25,7 @@ src/fetch/SPEC.md            810
 src/gate/SPEC.md             660
 src/gen/SPEC.md              680
 src/kind/SPEC.md             1410
-src/pin/SPEC.md              770
+src/pin/SPEC.md              930
 src/pipeline/SPEC.md         1220
 src/registry/SPEC.md         1000
 src/render/SPEC.md           720
