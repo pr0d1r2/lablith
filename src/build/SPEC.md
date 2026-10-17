@@ -33,4 +33,4 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 ## §T TASKS
 
 id|status|task|cites
-T24|.|kind `build` — blocked on Q1 runners & Q2 cache|`src/kind:V14`,`.:V24`,`src/system:R8`,`src/kind:R9`
+T24|x|kind `build`: Q2 → cachix (`src/kind:R9`); Q1 still open → neutral built-in tags, `## runners` overrides; x86_64-darwin & any untagged system eval-only|`src/kind:V14`,`.:V24`,`src/system:R8`,`src/kind:R9`

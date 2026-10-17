@@ -39,7 +39,7 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 ## §R RESEARCH
 
 id|topic|finding|src
-R9|nix cache on GitLab|? proposed cachix (same secret & steps as GitHub ∴ `cache` column same meaning) vs instance cache (Q2). fill before `src/build:T24`|-
+R9|nix cache on GitLab|decided 2026-10-18: cachix, same secret & `cache` column meaning as GitHub; push via seeded `cachix.sh` (`cachix watch-exec`, cachix from locked nixpkgs `--inputs-from .`), only w/ protected token & ⊥ fork MR. instance cache ⊥ v1|-
 
 ## §V INVARIANTS
 

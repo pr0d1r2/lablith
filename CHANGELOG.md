@@ -38,3 +38,6 @@ the bytes lablith emits for the same inputs is at least a minor version
   command, through `cachix.sh` when the row names a cache.
 - `image:` carries its `<name> <version>` in a comment above the key, so
   a pinned line stays within 120 columns.
+- Kind `build`: `<id>:build:<system>` per system through `cachix.sh`,
+  `<id>:check` (`nix flake check --all-systems`, eval of systems without
+  runner tags) and `<id>:verify-cache` on the default branch.

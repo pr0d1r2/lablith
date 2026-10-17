@@ -59,8 +59,7 @@ impl Kind for Build {
         let needs = jobs.iter().map(|j| j.name.clone()).collect();
         jobs.push(nix_job(row, tables, check(&plan, tables))?);
         let mut verify = nix_job(row, tables, verify(&plan))?;
-        verify.needs = Vec::<String>::new();
-        let _: Vec<String> = needs;
+        verify.needs = needs;
         jobs.push(verify);
         Ok(jobs)
     }
@@ -113,7 +112,7 @@ fn check(plan: &Plan<'_>, tables: &Tables) -> NixJob<'static> {
     let flake = "nix flake check --all-systems --print-build-logs";
     let untagged = KNOWN
         .into_iter()
-        .filter(|&s| tables.runners.tags(s).is_ok());
+        .filter(|&s| tables.runners.tags(s).is_err());
     let eval = |s: System| {
         let attr = format!(".#packages.{}.{}.drvPath", s.name(), plan.package);
         Text::lit(&format!("nix eval --raw {attr}"))
@@ -134,10 +133,7 @@ fn verify(plan: &Plan<'_>) -> NixJob<'static> {
     let (cache, package) = (plan.cache.name(), plan.package);
     let line = format!("bash {script} {cache} {package} {}", systems.join(" "));
     NixJob {
-        rules: {
-            let _ = default_branch_rules;
-            Vec::new()
-        },
+        rules: default_branch_rules(),
         why: Some(VERIFY_WHY),
         ..NixJob::on(
             "verify-cache".into(),
