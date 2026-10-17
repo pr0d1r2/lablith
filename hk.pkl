@@ -100,7 +100,9 @@ hooks {
       // entry. Here, not in pre-commit: only the message says which kind a
       // change is.
       ["changelog-touched"] {
-        check = "bash nix/guard/changelog-touched.sh {{commit_msg_file}}"
+        check = "cargo run -q -p lablith-dev -- changelog {{commit_msg_file}}"
+        // After commit-msg, never beside it: two cargo runs at once contend
+        // for the target directory lock.
         depends = List("commit-msg")
       }
     }
