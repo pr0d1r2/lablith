@@ -34,6 +34,7 @@ tdd-order|coverage|-|**/*.rs, nix/guard/tdd-order.sh, nix/guard/tdd-order.exempt
 # push-time step (hk.pkl), not a commit-time one.
 deny|supply|cargo-deny|Cargo.toml, Cargo.lock, deny.toml|cargo deny check --disable-fetch licenses bans sources|-|-|a license, ban or source rule failed
 doctest|test|cargo|**/*.rs, Cargo.toml|cargo test --doc -q|-|-|a doc example failed
+rustdoc|lint|cargo|**/*.rs, Cargo.toml|cargo doc --workspace --no-deps --document-private-items -q|-|RUSTDOCFLAGS=-D warnings|docs do not build cleanly
 
 ## types
 type|checks|min|exempt
@@ -54,7 +55,7 @@ gitignore|-|-|git configuration; hygiene steps only
 path:flake.lock|-|-|written by `nix flake lock`; hygiene steps only
 path:Cargo.lock|deny|-|-
 toml|taplo|-|-
-rs|rustfmt, clippy, rust-mirror, tdd-order, doctest|-|-
+rs|rustfmt, clippy, rust-mirror, tdd-order, doctest, rustdoc|-|-
 LICENSE|-|-|license text, nothing to lint
 context-limits|itok, sherd-budget|-|-
 format-upstream|-|-|FORMAT.md ancestry record; hygiene steps only
