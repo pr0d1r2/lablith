@@ -262,10 +262,146 @@ lablith completions <shell> · lablith man
    to vendor (decision 8) and whether `workflow: auto_cancel` is
    available. Blocks the output-gate test node.
 
+# Learnings from actlith and pipelith (2026-10-17)
+
+Written after actlith 0.1.0 shipped and its `main` moved every neutral
+part onto pipelith. Treat these as inputs the spec should absorb: where
+one contradicts a decision above, the later learning wins unless the spec
+says why.
+
+## State of the siblings
+
+- pipelith 0.1.1 is on crates.io (`pipelith = "0.1"`). It is std only.
+  actlith 0.1.0 is on crates.io. actlith's `main` takes `registry`,
+  `kind`, `system`, `yaml`, `files` and `detect` from pipelith, with
+  every golden byte-identical (actlith PRs #7 to #14). Build order steps
+  1 and 2 are done; lablith is step 3.
+- Depend on pipelith from crates.io, not a git pin. A git dependency
+  needs a `deny.toml` allow-git rule and nix `outputHashes`, and it blocks
+  publishing, because crates.io refuses crates with git dependencies.
+
+## The pipelith API, as actlith uses it
+
+- One facade node names pipelith: actlith's `src/core` re-exports
+  `pipelith::{detect, files, kind, registry, system, yaml}`, and its V51
+  forbids `pipelith::` paths anywhere else. Start lablith with the same
+  node, first in build order.
+- Registry: `registry::parse(FILE, text, &Schema { sections })`. The
+  sections are `kind::WORKFLOWS` (neutral) plus the forge's own
+  `SectionSpec { name, columns, required, key }`. For lablith those are
+  `## images`, `## runners` and `## hand-written`. Rows come back as
+  cells; `kind::RawRow::from_cells` types a workflows row, and the
+  `registry::{required, optional, list, args}` helpers type the rest.
+- Kinds: `kind::{GATE, BUILD, UPDATE_PINS, UPSTREAM}` are `KindSpec {
+  name, schema, default_systems, secrets: &[Purpose] }`. actlith's `Kind`
+  trait is `spec()` + `secrets()` + `build()`. `Row::check(spec, raw,
+  &EXTRAS)` checks systems, cache, args, `timeout` and the row rules:
+  cache required for `build`, `package` a plain word, `cron` without
+  commas, the shape of `token`, plain words for `build`/`script`/
+  `branch-prefix`, and one system for bump kinds. It reports the first
+  fault in that order.
+- `ArgDefault::Forge` marks a default the forge supplies. `token` is
+  `GITHUB_TOKEN` on actlith, and lablith supplies `LABLITH_TOKEN`
+  (decision 7). `Purpose::OpenChange` is the merge-request token, and
+  `Purpose::CachePush` is `CACHIX_AUTH_TOKEN`.
+- `kind::Extras { kinds, keys }` declares forge-only kinds and arg keys.
+  actlith's is empty. `kind::portable(&raw, &extras)` returns one
+  `Finding` per forge-only kind or key, which is decision 9's check.
+  `## images` and `## runners` are sections, not keys, so they are not
+  findings.
+- Systems: `system::{System, parse_system, ALL, DEFAULT_SYSTEMS,
+  ci_system}`. The runner label table is the forge's. actlith keeps its
+  own `SystemError`, so the message stays "no GitHub-hosted runner"
+  instead of pipelith's "no hosted CI runner on any forge". lablith's
+  runner tags come from `## runners` (open question 1).
+- YAML: `yaml::document(&dialect, comments, entries)` over `Entry`,
+  `Node`, `Value`, `Text` and `Expr`, and `Expr::new(&dialect, inner)`.
+  The forge supplies `impl yaml::Dialect` with `expr(inner) ->
+  Option<String>` and `escape(lit)`. actlith's `Github` writes `${{
+  inner }}` and escapes a literal `${{`. lablith needs a GitLab dialect
+  (variables `$NAME`, and an escape for a literal `$` in `script:`). That
+  is to decide in the spec, with a test per escape.
+- Files: `files::{File, write, check, Stale, header(tool, config)}`.
+  `header("lablith", ".lablith")` is the generated header. A `concat!`
+  copy, which a `const` needs, gets pinned to it by a test, as actlith's
+  script header is.
+- Detect: `detect::{detect, row_line, text_with, seed_init_text, header,
+  FIRST_ROW}`. Since 0.1.1 a forge writes proposed rows itself.
+- Errors: pipelith's `RegistryError` prints `file:line:col: what (fix)`
+  and `KindError` prints `line N: what (fix)`. actlith converts both into
+  its own shape (`.actlith:N: what` / `  fix: ...`). Decide lablith's
+  user-facing shape once, and convert at the facade.
+
+## Behaviour decided on actlith that lablith should match
+
+- `update-pins` is off by default (actlith V50). `detect` and `seed
+  --init` write it commented out under a note line, through
+  `text_with(rows, proposal)`. lablith's note says "MRs":
+  `# off by default: uncomment to get daily nixpkgs-lock bump MRs`.
+- The first release is `0.1.0`, not a release candidate. The version
+  bump lands through a pull request, and the owner runs `cargo release`
+  tag, publish and push from `main`. An agent never publishes.
+- A bump kind runs `nix develop --command bash scripts/<tool>/....sh`,
+  so the consumer's dev shell must provide the tool. For actlith that
+  is a pklith catalog row (pklith issue #70). lablith needs the same
+  row, and can join that issue or follow it.
+- docs/KINDS.md has a parity test against the code and each kind's
+  node spec (actlith T33): kind list in code order, args with key,
+  required flag and default, and a §V and §T row per kind. Port it for
+  `docs/KINDS-GITLAB.md`.
+
+## Gate: steps actlith needed, with the bug behind each
+
+- `build` (`cargo build --workspace --bins`) runs after clippy, and every
+  `cargo run` step depends on it. In the push set, `test` waits for every
+  `cargo run` step. Otherwise a cargo step relinks a binary while another
+  step starts it, and macOS kills that process with no output (actlith
+  B9, then B10 when the first fix missed `nextest --workspace`).
+- A guard that evaluates the flake reads it as `git+file://<root>`,
+  never `getFlake (toString ./.)`. A bare path copies `target/` while
+  cargo rewrites it (actlith B8, red CI on one runner of three).
+- Push-only steps: `package` (`cargo package --locked`; the packaged crate
+  builds alone), `package-nix` (the flake package built and run on a
+  fixture), `deny-advisories` (cargo-deny filters `publish = false`
+  members, so a dev crate's dependencies are not checked), and
+  `schema-pin` (the vendored `pkl/Config.pkl` is the pinned hk's, with
+  `pkl/VENDORED.md`). Commit-time steps: `links` (lychee `--offline`) and
+  `no-commit-to-branch main`, the latter in pre-commit only.
+- hk 2.7.0: vendor its `Config.pkl`, and set `stage = true` on the `fix`
+  hook. Move nix-hk and nixpkgs-lock together, so the cached hk is used.
+- Branch protection, from the first push: a PR is required with 0
+  approvals and admins included, the three `gate (...)` checks are
+  required and strict, and force pushes and deletion are off.
+
+## Process lessons
+
+- clippy runs on all targets at every commit, so a RED commit must
+  compile and fail at run time. Land a stub, or a TypeId assertion
+  against pipelith's type. tdd-order needs a `test:` commit before any
+  `.rs` change in the push range, comment-only ones included.
+- The coverage ratchet counts a `const fn` that runs only inside consts
+  as uncovered. Write such values as literals.
+- Adding a node makes `sherd sync` add a NAV row to every spec, which
+  pushes files over their `.context-limits` ceilings. Raise a ceiling to
+  about 12% over measured, with the reason in the commit body.
+- ctrm keeps `.rs` files ASCII: write `\u{a7}` in strings, never `§`.
+  markdownlint MD024 needs `siblings_only`, because the changelog
+  repeats `### Added` under every version.
+- A commit subject is at most 72 characters.
+- Write the human docs from the start: a README introduction that routes
+  to docs/INTEGRATION.md, REGISTRY.md, CONTRIBUTING.md, SECURITY.md and
+  CODE_OF_CONDUCT.md. Add the crates.io and docs.rs badges only once the
+  pages exist.
+- A plan agent that maps one crate's modules onto another's API before
+  any code moves saved rework. Its "suspected difference" claims were
+  checked by a throwaway probe, and one of them, a blank line after a
+  section heading, turned out to be false.
+
 # Process
 
 The paradigm lifecycle: dev shell, then ask me to reload; guardrails first,
 one check per commit, then ask me to reload; TDD; 1-to-1 unit coverage with
 floor and ceiling, aiming at 100%; federated SPEC-DAG built in sherd waves.
 Build order with the sibling crates: pipelith first, then actlith switches
-to pipelith, then lablith.
+to pipelith, then lablith. As of 2026-10-17 the first two are done (pipelith
+0.1.1, actlith `main` on pipelith); lablith starts on pipelith 0.1.1.
