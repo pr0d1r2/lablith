@@ -48,7 +48,11 @@ local all = (fast) {
 hooks {
   ["pre-commit"] {
     fix = true
-    stash = "git"
+    // nix:V46: "none", not "git": the git stash is shared by every worktree,
+    // so with parallel wave workers one hook pops another checkout's files
+    // (actlith nix:B5). hk 2.7.0 keeps patch files in the git dir, so
+    // "patch-file" would now be safe; "none" stays until that is measured.
+    stash = "none"
     steps = fast
   }
   // nix:T5: subject `type(scope): claim`, at most 72 characters, a body
