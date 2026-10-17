@@ -111,7 +111,7 @@ impl Job {
     fn image(&self) -> Entry {
         let image = text(&self.image.reference());
         let version = format!("{} {}", self.image.name, self.image.version);
-        Entry::fixed("image", image).after(Comment::new(&version))
+        Entry::fixed("image", image).above(Comment::new(&version))
     }
 
     /// The keys a job may leave out.

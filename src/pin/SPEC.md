@@ -35,7 +35,7 @@ R13|built-in nix image|`nixos/nix` newest semver tag 2026-10-18 = `2.35.3`; `HEA
 
 ## §V INVARIANTS
 
-V2: ∀ `image:` = `<name>@sha256:<digest>` + version as trailing comment, from pin table (built-in + `## images`). `gen` ⊥ resolves tags; missing pin → exit 2
+V2: ∀ `image:` = `<name>@sha256:<digest>` + `<name> <version>` comment above `image:` (a trailing one passes 120 columns), from pin table (built-in + `## images`). `gen` ⊥ resolves tags; missing pin → exit 2
 V58: built-in image pin table v1 = `nixos/nix` only; digest = multi-arch index digest (covers ∀ linux system), ⊥ per-arch manifest digest
 
 ## §T TASKS

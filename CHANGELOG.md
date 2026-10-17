@@ -34,3 +34,7 @@ the bytes lablith emits for the same inputs is at least a minor version
   flakes on, the row's cache as substituter, runner tags, timeout and a
   per-kind `GIT_DEPTH`; bump jobs take a resource group and run only on
   their own schedule or web run on a protected ref.
+- Kind `gate`: one job `<id>:gate:<system>` per system running the row's
+  command, through `cachix.sh` when the row names a cache.
+- `image:` carries its `<name> <version>` in a comment above the key, so
+  a pinned line stays within 120 columns.

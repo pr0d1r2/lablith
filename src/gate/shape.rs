@@ -50,7 +50,7 @@ impl Kind for Gate {
             };
             nix_job(row, tables, spec)
         };
-        row.systems.iter().take(1).map(job).collect()
+        row.systems.iter().map(job).collect()
     }
 }
 
@@ -62,10 +62,7 @@ fn command(row: &Row) -> Text {
             "bash {} {} {}",
             Script::Cachix.path(),
             cache.name(),
-            {
-                let _ = quote;
-                command
-            }
+            quote(command)
         )),
         None => Text::lit(command),
     }

@@ -33,4 +33,4 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 ## §T TASKS
 
 id|status|task|cites
-T19|.|kind `gate`|`src/pipeline:V10`,`src/kind:V11`,`src/kind:V12`,`.:V24`
+T19|x|kind `gate`|`src/pipeline:V10`,`src/kind:V11`,`src/kind:V12`,`.:V24`
