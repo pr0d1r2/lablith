@@ -1,0 +1,16 @@
+format 1
+
+## workflows
+id|kind|systems|cache|args
+ci|gate|-|-|-
+
+## images
+# kept: a comment inside the section
+image|version|digest
+nixos/nix|2.30.0|sha256:0000000000000000000000000000000000000000000000000000000000000000
+alpine|3.20|sha256:0000000000000000000000000000000000000000000000000000000000000000
+# kept: a trailing comment
+
+## hand-written
+path|reason
+.gitlab/ci/x.yml|kept

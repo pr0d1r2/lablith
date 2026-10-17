@@ -19,8 +19,4 @@ mod rows;
 pub(crate) use model::{
     Arg, HandWritten, ImagePin, Registry, RunnerRow, WorkflowRow,
 };
-#[cfg_attr(
-    not(test),
-    expect(unused_imports, reason = "used by src/cli in a later wave")
-)]
-pub(crate) use parse::parse;
+pub(crate) use parse::{FILE, parse};

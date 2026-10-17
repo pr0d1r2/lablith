@@ -9,6 +9,7 @@ mod bump;
 mod check;
 mod core;
 mod detect;
+mod fetch;
 mod gate;
 mod r#gen;
 mod kind;
