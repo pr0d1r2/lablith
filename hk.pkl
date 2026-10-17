@@ -36,6 +36,13 @@ local all = (fast) {
     glob = List("Cargo.toml", "Cargo.lock", "src/**")
     check = "cargo package --locked --allow-dirty -q -p lablith"
   }
+  // nix:T7: no dependency with a published advisory. It fetches the
+  // advisory database, so it runs at push, which needs the network
+  // anyway; the commit-time `deny` step stays offline. As actlith.
+  ["deny-advisories"] {
+    glob = List("Cargo.toml", "Cargo.lock", "deny.toml")
+    check = "cargo deny check advisories"
+  }
 }
 
 hooks {
