@@ -53,7 +53,17 @@ hooks {
     // (actlith nix:B5). hk 2.7.0 keeps patch files in the git dir, so
     // "patch-file" would now be safe; "none" stays until that is measured.
     stash = "none"
-    steps = fast
+    steps = (fast) {
+      // nix:T9 (nix:V40): commits land through a branch and pull request,
+      // never directly on main. HERE, not in `all`: it is a rule about
+      // making a commit, which happens only on a development machine,
+      // through this hook. pre-push, `hk check`, CI and the release hook all
+      // run on main by design, so there the step could only fail. As
+      // actlith.
+      ["no-commit-to-branch"] {
+        check = "hk util no-commit-to-branch --branch main"
+      }
+    }
   }
   // nix:T5: subject `type(scope): claim`, at most 72 characters, a body
   // that says why. hk passes the file git gave the hook (MERGE_MSG on a
