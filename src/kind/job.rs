@@ -45,6 +45,23 @@ pub(crate) struct NixJob<'a> {
     pub(crate) why: Option<&'a str>,
 }
 
+impl NixJob<'_> {
+    /// A job named `name` on `stage` running `script`: on x86_64-linux,
+    /// shallow, never on a schedule, with no comment. Kinds override the
+    /// rest with struct update syntax.
+    pub(crate) fn on(name: String, stage: Stage, script: Vec<Text>) -> Self {
+        Self {
+            name,
+            stage,
+            system: System::X86_64Linux,
+            depth: Depth::Shallow,
+            rules: super::rules::change_rules(),
+            script,
+            why: None,
+        }
+    }
+}
+
 /// The job: `<id>:<name>`, interruptible unless it is a bump
 /// (`src/kind:V12`), which instead takes the row's resource group.
 pub(crate) fn nix_job(

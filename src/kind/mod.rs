@@ -18,7 +18,7 @@ mod secret;
 mod shell;
 
 pub(crate) use crate::core::kind::{
-    BUILD, GATE, KindSpec, Purpose, Row, UPDATE_PINS, UPSTREAM,
+    Args, BUILD, GATE, KindSpec, Purpose, Row, UPDATE_PINS, UPSTREAM,
 };
 pub(crate) use contract::{Kind, Tables};
 pub(crate) use error::KindError;

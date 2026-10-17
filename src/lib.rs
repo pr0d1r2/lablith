@@ -4,6 +4,7 @@
 //! surface (`src:V37`); every node is a private module. The design lives
 //! in `SPEC.md` and the `SPEC.md` of each node.
 
+mod build;
 mod core;
 mod gate;
 mod kind;
