@@ -27,7 +27,7 @@ editorconfig|-|-|written by pklith (seed or gen)
 gitattributes|-|-|written by pklith (seed or gen)
 md|markdownlint, links|-|-
 nix|nixfmt, statix, deadnix|-|-
-path:**/SPEC.md|markdownlint, links, mth-fmt, mth-check, sherd-check|-|-
+path:**/SPEC.md|markdownlint, links, mth-fmt, mth-check, sherd-check, sherd-nav|-|-
 pklith|pklith-check, gen-check|-|-
 pkl|-|-|written by pklith (seed or gen)
 pre-commit|shellcheck|-|-
