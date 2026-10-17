@@ -28,7 +28,7 @@ gitattributes|-|-|written by pklith (seed or gen)
 md|markdownlint, links|-|-
 nix|nixfmt, statix, deadnix|-|-
 path:**/SPEC.md|markdownlint, links|-|-
-pklith|pklith-check, gen-check|-|-
+pklith|gen-check|-|-
 pkl|-|-|written by pklith (seed or gen)
 pre-commit|shellcheck|-|-
 pre-push|shellcheck|-|-
