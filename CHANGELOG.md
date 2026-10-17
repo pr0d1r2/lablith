@@ -49,3 +49,5 @@ the bytes lablith emits for the same inputs is at least a minor version
   `.gitlab-ci.yml` including each row and hand-written file, and each
   seeded script a rendered kind needs once, sorted by path; an unknown
   kind is refused naming the v1 kinds.
+- `gen` and `gen --check` over the rendered set: pipelith's write and
+  drift check, refusing any path that leaves the root.

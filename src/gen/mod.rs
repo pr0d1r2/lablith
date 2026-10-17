@@ -7,25 +7,7 @@
 //! rendered paths under the root.
 #![allow(unused_imports, reason = "used by src/cli in a later wave")]
 
-pub(crate) use crate::core::files::Stale;
-
-/// RED stub (src/gen:T25): checks nothing.
-#[allow(dead_code, clippy::unnecessary_wraps, reason = "RED stub")]
-pub(crate) fn check(
-    _: &std::path::Path,
-    _: &[crate::core::files::File],
-) -> std::io::Result<Vec<Stale>> {
-    Ok(Vec::new())
-}
-
-/// RED stub (src/gen:T25): writes nothing.
-#[allow(dead_code, clippy::unnecessary_wraps, reason = "RED stub")]
-pub(crate) fn r#gen(
-    _: &std::path::Path,
-    _: &[crate::core::files::File],
-) -> std::io::Result<Vec<String>> {
-    Ok(Vec::new())
-}
+pub(crate) use crate::core::files::{Stale, check, write as r#gen};
 
 #[cfg(test)]
 mod tests;
