@@ -30,6 +30,7 @@ rekall|lint|-|AGENTS.md, CLAUDE.md, rekall.toml|rekall check|-|-|agent prose dri
 # xenolith's Rust guards, copied as actlith does (nix:T6).
 rust-mirror|lint|-|**/*.rs, nix/guard/rust-mirror.sh|bash nix/guard/rust-mirror.sh|-|-|a Rust file with logic has no sibling tests.rs wired by #[cfg(test)] mod tests;
 tdd-order|coverage|-|**/*.rs, nix/guard/tdd-order.sh, nix/guard/tdd-order.exempt|bash nix/guard/tdd-order.sh|-|-|a commit adds Rust code with no test: commit before it in the push range
+test|coverage|cargo-nextest|**/*.rs, Cargo.toml, Cargo.lock|cargo nextest run --workspace --no-fail-fast --status-level fail --final-status-level fail|-|-|a test failed, or the suite is empty
 # nix:V46: core.worktree in the shared .git/config redirects every
 # worktree; a gate step refuses it.
 # V20 (paradigm D40): no private name of the self-hosted instance in
@@ -68,7 +69,7 @@ gitignore|-|-|git configuration; hygiene steps only
 path:flake.lock|-|-|written by `nix flake lock`; hygiene steps only
 path:Cargo.lock|deny|-|-
 toml|taplo|-|-
-rs|rustfmt, clippy, rust-mirror, tdd-order, doctest, rustdoc|-|-
+rs|rustfmt, clippy, rust-mirror, tdd-order, doctest, rustdoc, test|-|-
 LICENSE|-|-|license text, nothing to lint
 context-limits|itok, sherd-budget|-|-
 format-upstream|-|-|FORMAT.md ancestry record; hygiene steps only
