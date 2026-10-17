@@ -6,6 +6,7 @@ catalog: [
   catalog.gnugrep
   catalog.nixfmt
   catalog.ripsecrets
+  catalog.rustfmt
   catalog.shfmt
   catalog.taplo
   catalog.typos
