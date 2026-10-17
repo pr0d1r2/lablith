@@ -5,13 +5,27 @@ amends "pkl/Config.pkl"
 // (excludes, depends) by amending a step by its id.
 import "hk.pklith.pkl" as generated
 
-local all = (generated.steps) { ...generated.push }
+// Every hook's steps: the generated ones, ordered so `cargo run` never races.
+local fast = (generated.steps) {
+  // nix:T7 (actlith B9): every step that runs `cargo run` waits for this
+  // build. Started together on a stale binary, one cargo re-links the
+  // executable while another is starting it, and macOS kills that process
+  // with no output: a gate step that fails for no reason. Built once
+  // first, every later `cargo run` finds it fresh and links nothing.
+  ["build"] {
+    glob = List("**/*.rs", "Cargo.toml", "Cargo.lock")
+    check = "cargo build -q --workspace --bins"
+    depends = List("clippy")
+  }
+}
+
+local all = (fast) { ...generated.push }
 
 hooks {
   ["pre-commit"] {
     fix = true
     stash = "git"
-    steps = generated.steps
+    steps = fast
   }
   // nix:T5: subject `type(scope): claim`, at most 72 characters, a body
   // that says why. hk passes the file git gave the hook (MERGE_MSG on a
