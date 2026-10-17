@@ -12,6 +12,7 @@ mod kind;
 mod pin;
 mod pipeline;
 mod registry;
+mod render;
 mod script;
 mod system;
 mod yaml;
