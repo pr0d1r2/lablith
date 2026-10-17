@@ -19,7 +19,7 @@ const USAGE: &str = "usage: lablith-dev <readme|notices|agents> [--check] | <com
 /// Run one verb against the repository at `repo`; the exit code.
 #[must_use]
 pub fn run(args: &[String], repo: &Path) -> u8 {
-    match dispatch(args, repo).and(Err((2, String::new()))) {
+    match dispatch(args, repo) {
         Ok(()) => 0,
         Err((code, why)) => {
             eprintln!("lablith-dev: {why}");
