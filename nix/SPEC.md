@@ -53,7 +53,7 @@ T6|x|spec gates: `mth fmt`/`mth check`, `itok` + `.context-limits`, `sherd check
 T7|x|cargo steps: `build` after clippy, `cargo run` steps depend on it; doctest, rustdoc, `cargo deny`; push-only `package`, `deny-advisories`, `schema-pin`; flake guard via `git+file://<root>`. nextest `test` (waits ∀ `cargo run`) & coverage floor + ratchet land w/ 1st real test (`src/core:T11`) ∵ nextest refuses empty suite; `package-nix` w/ T33 ∵ needs working verbs|R5
 T8|x|private-name guard: committed files ⊥ instance names (extends paradigm name guard D40)|`.:V20`
 T9|x|hand-written GitHub `ci.yml` via actlith (`.actlith`, `actlith gen`); `no-commit-to-branch main`; guardrails done → ASK user reload|`.:R3`
-T32|.|dogfood: own `.lablith` & rendered GitLab files; `lablith gen --check` step in hk|`src/gen:V5`
+T32|x|dogfood: own `.lablith` & rendered GitLab files; `lablith gen --check` step in hk|`src/gen:V5`
 T33|.|nix package `packages.<system>.default` built & run on fixture; `release.toml` + pre-release `hk check --all`|`.:V25`
 T36|.|branch protection on first push: PR required, 0 approvals, admins included, `gate (...)` checks required & strict, ⊥ force push, ⊥ deletion|R5
 T41|x|AFTER T7: guards `tdd-order.exempt` format, `core.worktree` refusal, pre-commit `stash = "none"`, hk parity step (pklr)|V44,V46,V47
