@@ -10,8 +10,8 @@ dir|owns|⊥owns|tokens
 core|facade: ONE node naming `pipelith`; re-exports its neutral modules, converts its errors to `.lablith:N:` shape|any GitLab logic|-
 registry|parse `.lablith`: `## workflows`, `## images`, `## runners`, `## hand-written`; row & file errors|grammar (pipelith), kind rules (`src/kind`)|-
 yaml|GitLab dialect for pipelith YAML writer: `$NAME` expressions, `$` escapes|writer itself (pipelith)|-
-system|nix system → runner tags table, built-in ⊕ `## runners`|system names (pipelith)|-
-pin|image pin table: built-in ⊕ `## images`; `image:` lines|network lookup (`src/fetch`)|-
+system|nix system → runner tags table, built-in + `## runners`|system names (pipelith)|-
+pin|image pin table: built-in + `## images`; `image:` lines|network lookup (`src/fetch`)|-
 fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code|pin table shape (`src/pin`)|-
 pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix|kind job content (`src/kind` & kind nodes)|-
 kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets|one kind's jobs (kind nodes)|-

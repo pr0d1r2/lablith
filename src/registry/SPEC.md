@@ -12,8 +12,8 @@ up|src|the tool: facade, registry, runners, pins, YAML dialect, pipeline model, 
 self|src/registry|parse `.lablith`: `## workflows`, `## images`, `## runners`, `## hand-written`; row & file errors
 sib|src/core|facade: ONE node naming `pipelith`; re-exports its neutral modules, converts its errors to `.lablith:N:` shape
 sib|src/yaml|GitLab dialect for pipelith YAML writer: `$NAME` expressions, `$` escapes
-sib|src/system|nix system → runner tags table, built-in ⊕ `## runners`
-sib|src/pin|image pin table: built-in ⊕ `## images`; `image:` lines
+sib|src/system|nix system → runner tags table, built-in + `## runners`
+sib|src/pin|image pin table: built-in + `## images`; `image:` lines
 sib|src/fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code
 sib|src/pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix
 sib|src/kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets
@@ -32,7 +32,7 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 V28: unknown kind | arg key | system | section, missing required arg, `x86_64-darwin` → exit 2 naming it & fix; ⊥ silent default
 V29: `.lablith` ! carry `format` line; newer than supported → exit 2 naming both versions, ⊥ best-effort parse. missing `.lablith` → `gen`|`check`|`report`|`portable` exit 2, ⊥ empty render. missing optional section (`## images`, `## runners`, `## hand-written`) = empty
-V55: row `id` reaches file stem, job-name prefix, `resource_group`, `rules:` string ∴ ! charset `[a-z0-9][a-z0-9-]*`; else exit 2. pipelith ⊥ checks id charset today ∴ rule ! land in pipelith (both forges) before lablith relies on it, else breaks "row valid ⟹ every forge renders" (`.:V4`)
+V55: row `id` reaches file stem, job-name prefix, `resource_group`, `rules:` string ∴ ! charset `[a-z0-9][a-z0-9-]*`; else exit 2. pipelith ⊥ checks id charset today ∴ rule ! land in pipelith (both forges) before lablith relies on it, else breaks "row valid → every forge renders" (`.:V4`)
 
 ## §T TASKS
 

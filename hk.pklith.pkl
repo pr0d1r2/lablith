@@ -103,6 +103,11 @@ steps: Mapping<String, Config.Step> = new {
     glob = List("**/*.md")
     check = "command -v git >/dev/null 2>&1 || { echo 'links: git is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; command -v lychee >/dev/null 2>&1 || { echo 'links: lychee is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; git ls-files -z '*.md' | xargs -0 lychee --offline --no-progress --include-fragments || { echo 'links: a relative link or anchor is broken' >&2; exit 1; }"
   }
+  ["ctrm"] {
+    glob = List("**/*")
+    check = "command -v ctrm >/dev/null 2>&1 || { echo 'ctrm: ctrm is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; ctrm check {{files}} || { echo 'ctrm: a file holds a character its set does not grant; fix it, or grant it in .ctrm and say why in the commit' >&2; exit 1; }"
+    fix = "ctrm fix {{files}}"
+  }
   ["mth-fmt"] {
     glob = List("**/SPEC.md")
     check = #"command -v mth >/dev/null 2>&1 || { echo 'mth-fmt: mth is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; (for f in {{files}}; do mth fmt --check "$f" || exit 1; done) || { echo 'mth-fmt: SPEC.md is hard-wrapped or over the line cap' >&2; exit 1; }"#

@@ -2,18 +2,18 @@
 
 ## §G GOAL
 
-`src/system` — nix system → runner tags table, built-in ⊕ `## runners`.
+`src/system` — nix system → runner tags table, built-in + `## runners`.
 
 ## §N NAV
 
 rel|path|lens
 up|.|-
 up|src|the tool: facade, registry, runners, pins, YAML dialect, pipeline model, kinds, render, verbs, CLI
-self|src/system|nix system → runner tags table, built-in ⊕ `## runners`
+self|src/system|nix system → runner tags table, built-in + `## runners`
 sib|src/core|facade: ONE node naming `pipelith`; re-exports its neutral modules, converts its errors to `.lablith:N:` shape
 sib|src/registry|parse `.lablith`: `## workflows`, `## images`, `## runners`, `## hand-written`; row & file errors
 sib|src/yaml|GitLab dialect for pipelith YAML writer: `$NAME` expressions, `$` escapes
-sib|src/pin|image pin table: built-in ⊕ `## images`; `image:` lines
+sib|src/pin|image pin table: built-in + `## images`; `image:` lines
 sib|src/fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code
 sib|src/pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix
 sib|src/kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets
@@ -39,10 +39,10 @@ R8|runner fleet|? executor (Docker + pinned `nixos/nix` \| shell on NixOS), arch
 
 ## §V INVARIANTS
 
-V56: system w/ ⊥ entry in runner table (built-in ⊕ `## runners`) → exit 2 naming system & `## runners` fix; ⊥ untagged job (would land on any shared runner)
+V56: system w/ ⊥ entry in runner table (built-in + `## runners`) → exit 2 naming system & `## runners` fix; ⊥ untagged job (would land on any shared runner)
 
 ## §T TASKS
 
 id|status|task|cites
-T15|.|runner table: system → tags, built-in neutral ⊕ `## runners`; own `SystemError` message for unsupported system|`.:V20`,R8
+T15|.|runner table: system → tags, built-in neutral + `## runners`; own `SystemError` message for unsupported system|`.:V20`,R8
 T47|.|AFTER T15: unmapped system → exit 2 w/ `## runners` fix|V56

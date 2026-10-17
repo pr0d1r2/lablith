@@ -2,18 +2,18 @@
 
 ## §G GOAL
 
-`src/pin` — image pin table: built-in ⊕ `## images`; `image:` lines.
+`src/pin` — image pin table: built-in + `## images`; `image:` lines.
 
 ## §N NAV
 
 rel|path|lens
 up|.|-
 up|src|the tool: facade, registry, runners, pins, YAML dialect, pipeline model, kinds, render, verbs, CLI
-self|src/pin|image pin table: built-in ⊕ `## images`; `image:` lines
+self|src/pin|image pin table: built-in + `## images`; `image:` lines
 sib|src/core|facade: ONE node naming `pipelith`; re-exports its neutral modules, converts its errors to `.lablith:N:` shape
 sib|src/registry|parse `.lablith`: `## workflows`, `## images`, `## runners`, `## hand-written`; row & file errors
 sib|src/yaml|GitLab dialect for pipelith YAML writer: `$NAME` expressions, `$` escapes
-sib|src/system|nix system → runner tags table, built-in ⊕ `## runners`
+sib|src/system|nix system → runner tags table, built-in + `## runners`
 sib|src/fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code
 sib|src/pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix
 sib|src/kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets
@@ -30,10 +30,10 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §V INVARIANTS
 
-V2: ∀ `image:` = `<name>@sha256:<digest>` + version as trailing comment, from pin table (built-in ⊕ `## images`). `gen` ⊥ resolves tags; missing pin → exit 2
+V2: ∀ `image:` = `<name>@sha256:<digest>` + version as trailing comment, from pin table (built-in + `## images`). `gen` ⊥ resolves tags; missing pin → exit 2
 V58: built-in image pin table v1 = `nixos/nix` only; digest = multi-arch index digest (covers ∀ linux system), ⊥ per-arch manifest digest
 
 ## §T TASKS
 
 id|status|task|cites
-T14|.|pin table: built-in ⊕ `## images`; missing pin → exit 2; digest + version comment|V2
+T14|.|pin table: built-in + `## images`; missing pin → exit 2; digest + version comment|V2

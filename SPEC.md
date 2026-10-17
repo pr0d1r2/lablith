@@ -69,7 +69,7 @@ R10|config file name|? pipelith open question 1; blocks `docs/RELEASE.md` only (
 ## §V INVARIANTS
 
 V1: deterministic: same `.lablith` + same version → byte-identical files. ⊥ clock, ⊥ host, ⊥ env, ⊥ network in `gen`|`check`|`detect`|`report`|`portable`
-V4: `## workflows` row valid in `.lablith` ⟺ valid in `.actlith` (same columns, same `Row::check`, `Extras` empty in v1)
+V4: `## workflows` row valid in `.lablith` ↔ valid in `.actlith` (same columns, same `Row::check`, `Extras` empty in v1)
 V20: ⊥ private name (runner tag, registry, host, project path) of self-hosted instance in committed file; built-in runner tags neutral (nix system + `nix`)
 V23: crate & bin `lablith`. rejected names → R2
 V24: ∀ kind ∈ pipelith `docs/KINDS.md` ! row in `docs/KINDS-GITLAB.md` & §V coverage & §T row; parity test (kind list code order, args key/required/default) ⊥ drift. doc ≠ spec = bug

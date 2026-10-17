@@ -13,8 +13,8 @@ self|src/build|kind `build`: build, flake check, verify-cache
 sib|src/core|facade: ONE node naming `pipelith`; re-exports its neutral modules, converts its errors to `.lablith:N:` shape
 sib|src/registry|parse `.lablith`: `## workflows`, `## images`, `## runners`, `## hand-written`; row & file errors
 sib|src/yaml|GitLab dialect for pipelith YAML writer: `$NAME` expressions, `$` escapes
-sib|src/system|nix system → runner tags table, built-in ⊕ `## runners`
-sib|src/pin|image pin table: built-in ⊕ `## images`; `image:` lines
+sib|src/system|nix system → runner tags table, built-in + `## runners`
+sib|src/pin|image pin table: built-in + `## images`; `image:` lines
 sib|src/fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code
 sib|src/pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix
 sib|src/kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets
