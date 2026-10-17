@@ -41,10 +41,7 @@ fn rows(
     let checks = [
         (row.reason.trim().is_empty(), Problem::NoReason),
         (!listed.contains(path), Problem::Missing),
-        (
-            made.is_empty() && made.contains(path),
-            Problem::AlsoRendered,
-        ),
+        (made.contains(path), Problem::AlsoRendered),
     ];
     checks
         .into_iter()
@@ -56,7 +53,9 @@ fn rows(
 /// A CI file GitLab may read: the root file, or a `.yml` / `.yaml` under
 /// `.gitlab/ci/`, the extension in any case.
 fn is_ci(path: &str) -> bool {
-    let _ = ROOT;
+    if path == ROOT {
+        return true;
+    }
     let ext = Path::new(path).extension().and_then(|e| e.to_str());
     path.starts_with(CI_DIR)
         && ext.is_some_and(|e| {

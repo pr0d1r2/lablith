@@ -51,3 +51,7 @@ the bytes lablith emits for the same inputs is at least a minor version
   kind is refused naming the v1 kinds.
 - `gen` and `gen --check` over the rendered set: pipelith's write and
   drift check, refusing any path that leaves the root.
+- `check` totality over `.gitlab-ci.yml` and every CI file under
+  `.gitlab/ci/`: each is generated or listed hand-written with a reason,
+  every listed path exists, and none is both; portability findings for
+  anything actlith could not render (none in v1).

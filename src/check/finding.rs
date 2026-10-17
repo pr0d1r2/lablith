@@ -79,7 +79,7 @@ impl fmt::Display for Finding {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.path)?;
         if let Some(line) = self.line {
-            write!(f, " (line {line})")?;
+            write!(f, " (.lablith line {line})")?;
         }
         let problem = self.problem;
         write!(f, ": {}; fix: {}", problem.what(), problem.fix())

@@ -36,7 +36,7 @@ fn walk(root: &Path, rel: &str, out: &mut Vec<String>) -> io::Result<()> {
     for entry in entries {
         let entry = entry?;
         let path = format!("{rel}/{}", entry.file_name().to_string_lossy());
-        if entry.file_type()?.is_dir() && rel.is_empty() {
+        if entry.file_type()?.is_dir() {
             walk(root, &path, out)?;
         } else {
             out.push(path);
