@@ -6,5 +6,6 @@
 
 mod core;
 mod registry;
+mod yaml;
 
 pub use crate::core::ConfigError;
