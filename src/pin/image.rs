@@ -18,7 +18,7 @@ pub(crate) struct Image {
 impl Image {
     /// The `image:` value: `name@sha256:<digest>`.
     pub(crate) fn reference(&self) -> String {
-        self.name.clone()
+        format!("{}@{}", self.name, self.digest)
     }
 }
 

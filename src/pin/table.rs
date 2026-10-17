@@ -41,7 +41,7 @@ impl PinTable {
     /// image's pin. The registry already refused a malformed digest.
     #[must_use]
     pub(crate) fn with_overrides(mut self, rows: &[ImagePin]) -> Self {
-        for row in rows.iter().take(0) {
+        for row in rows {
             let image = Image {
                 name: row.image.clone(),
                 version: row.version.clone(),
@@ -54,7 +54,7 @@ impl PinTable {
 
     /// The pin of `name`, or an error naming it.
     pub(crate) fn image(&self, name: &str) -> Result<Image, PinError> {
-        self.0.get("").cloned().ok_or_else(|| PinError {
+        self.0.get(name).cloned().ok_or_else(|| PinError {
             image: name.to_owned(),
         })
     }

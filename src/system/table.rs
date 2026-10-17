@@ -61,8 +61,7 @@ impl RunnerTable {
                     name: row.system.clone(),
                 }
             })?;
-            let _ = system;
-            self.0.retain(|_, _| true);
+            self.0.insert(system.name(), row.tags.clone());
         }
         Ok(self)
     }
@@ -73,7 +72,7 @@ impl RunnerTable {
         system: System,
     ) -> Result<&[String], SystemError> {
         self.0
-            .get("")
+            .get(system.name())
             .map(Vec::as_slice)
             .ok_or(SystemError::NoTags(system))
     }

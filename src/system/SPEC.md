@@ -44,5 +44,5 @@ V56: system w/ ⊥ entry in runner table (built-in + `## runners`) → exit 2 na
 ## §T TASKS
 
 id|status|task|cites
-T15|.|runner table: system → tags, built-in neutral + `## runners`; own `SystemError` message for unsupported system|`.:V20`,R8
-T47|.|AFTER T15: unmapped system → exit 2 w/ `## runners` fix|V56
+T15|x|runner table: system → tags, built-in neutral + `## runners`; own `SystemError` message for unsupported system|`.:V20`,R8
+T47|x|AFTER T15: unmapped system → exit 2 w/ `## runners` fix|V56

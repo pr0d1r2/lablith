@@ -18,3 +18,7 @@ the bytes lablith emits for the same inputs is at least a minor version
   `## runners` (`system|tags`, at least one tag) and `## hand-written`.
 - GitLab expression dialect for pipelith's YAML writer: an expression is
   one CI/CD variable, `$NAME`; literal text reaches `script:` unchanged.
+- Image pin table: `nixos/nix` 2.35.3 pinned by its multi-arch index
+  digest, overridden per repository by `## images`.
+- Runner tag table: `nix` plus the nix system name per system, overridden
+  by `## runners`; a system with no tags is refused naming the fix.
