@@ -13,7 +13,7 @@
 # Files
 SPEC.md                      3420
 dev/SPEC.md                  350
-nix/SPEC.md                  2150
+nix/SPEC.md                  2440
 src/SPEC.md                  1060
 src/build/SPEC.md            670
 src/bump/SPEC.md             840
