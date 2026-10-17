@@ -89,8 +89,9 @@ T37|.|pklith: `lablith-gen-check` catalog row & `.lablith` type (join \| follow 
 T38|.|release `0.1.0`: version bump via PR; owner runs `cargo release` tag, publish, push from `main`; agent ⊥ publishes|V23
 T39|.|fleet rollout: lablith mirror, then private projects 1 at a time: `detect` → reviewed diff → explicit approval|R1
 T40|.|paradigm gap round (separate): name guard extension (D12), private projects in registry (D13) — proposal only|V20
-T46|.|file pipelith issues: row `id` charset rule in `kind::RawRow::from_cells`; `token` default wording per forge. `src/registry:T12` carries `Depends-on:` trailer, waits for pipelith release|`src/registry:V55`,`src/kind:V54`
+T46|x|pipelith issues: `token` default wording per forge → pr0d1r2/pipelith#9 (docs only). id charset ⊥ needed: pipelith already refuses non-file-stem ids|`src/registry:V55`,`src/kind:V54`
 
 ## §B BUGS
 
 id|date|cause|fix
+B2|2026-10-18|`src/registry:V55` demanded id charset `[a-z0-9][a-z0-9-]*`, stricter than pipelith's `[A-Za-z0-9._-]` ∴ a row valid in `.actlith` refused here, breaking V4; written w/o reading `RawRow::from_cells`|`src/registry:V55` rewritten: pipelith's charset, ⊥ narrowed; test per rendered form
