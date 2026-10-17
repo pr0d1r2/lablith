@@ -186,6 +186,11 @@ steps: Mapping<String, Config.Step> = new {
     glob = List("hk.pkl", "hk.pklith.pkl", "pkl/**", "nix/guard/hk-parity.sh")
     check = #"command -v bash >/dev/null 2>&1 || { echo 'hk-parity: bash is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; bash nix/guard/hk-parity.sh || { echo 'hk-parity: hk'\''s own Pkl evaluator does not see the steps pkl eval sees' >&2; exit 1; }"#
   }
+  ["actlith-gen-check"] {
+    glob = List(".actlith", ".github/workflows/**")
+    check = "command -v actlith >/dev/null 2>&1 || { echo 'actlith-gen-check: actlith is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; actlith gen --check || { echo 'actlith-gen-check: a generated workflow no longer matches .actlith; run `actlith gen`' >&2; exit 1; }"
+    fix = "actlith gen"
+  }
 }
 
 push: Mapping<String, Config.Step> = new {

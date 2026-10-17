@@ -39,6 +39,9 @@ no-core-worktree|gate|-|**/*|bash nix/guard/no-core-worktree.sh|-|-|core.worktre
 # nix:V47: hk's own Pkl evaluator (pklr) sees the steps `pkl eval` sees,
 # each with a command; as pklith's hk-parity.
 hk-parity|gate|jq|hk.pkl, hk.pklith.pkl, pkl/**, nix/guard/hk-parity.sh|bash nix/guard/hk-parity.sh|-|-|hk's own Pkl evaluator does not see the steps pkl eval sees
+# Dogfood (nix:T9): this repository's GitHub workflows come from .actlith,
+# rendered by the actlith in the dev shell.
+actlith-gen-check|gate|-|.actlith, .github/workflows/**|actlith gen --check|actlith gen|-|a generated workflow no longer matches .actlith; run `actlith gen`
 # Offline, as actlith: advisories need a fetched database, so they are a
 # push-time step (hk.pkl), not a commit-time one.
 deny|supply|cargo-deny|Cargo.toml, Cargo.lock, deny.toml|cargo deny check --disable-fetch licenses bans sources|-|-|a license, ban or source rule failed
@@ -75,3 +78,5 @@ ctrm-sets|-|-|ctrm configuration; hygiene steps only
 path:AGENTS.md|markdownlint, links, rekall|-|-
 path:rekall.toml|taplo, rekall|-|-
 exempt|tdd-order|-|-
+path:.actlith|actlith-gen-check|-|-
+path:.github/workflows/*.yml|yamllint, actlith-gen-check|-|-
