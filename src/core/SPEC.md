@@ -48,4 +48,4 @@ V3: `pipelith::` path only in `src/core`; ∀ other module imports via facade
 ## §T TASKS
 
 id|status|task|cites
-T11|.|`src/core` facade: re-export pipelith modules; convert `RegistryError`/`KindError` → `.lablith:N:` shape; `header("lablith", ".lablith")` + test pinning any `concat!` copy|V3,I.errors
+T11|.|`src/core` facade: re-export pipelith modules; convert `RegistryError`/`KindError` → `.lablith:N:` shape; `header("lablith", ".lablith")` + test pinning any `concat!` copy; with it lay nextest `test` & coverage floor + `.coverage` ratchet (`nix:T7`)|V3,I.errors
