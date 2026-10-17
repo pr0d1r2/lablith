@@ -57,6 +57,7 @@ lablith-check|gate|-|.lablith, .gitlab-ci.yml, .gitlab/ci/**, src/**|cargo run -
 # facts (dev:V60). Each fix is the generator.
 agents-table|spec|-|hk.pkl, hk.pklith.pkl, AGENTS.md, dev/**|cargo run -q -p lablith-dev -- agents --check|cargo run -q -p lablith-dev -- agents|-|AGENTS.md step table is stale
 readme-badges|spec|-|README.md, Cargo.toml, .coverage, hk.pkl, hk.pklith.pkl, flake.lock, **/SPEC.md, docs/LLM-DISCLAIMER.md, .github/workflows/ci.yml, dev/**|cargo run -q -p lablith-dev -- readme --check|cargo run -q -p lablith-dev -- readme|-|README badges or the numbers docs/LLM-DISCLAIMER.md quotes are stale
+notices|spec|-|Cargo.toml, Cargo.lock, docs/THIRD-PARTY-NOTICES.md, dev/**|cargo run -q -p lablith-dev -- notices --check|cargo run -q -p lablith-dev -- notices|-|docs/THIRD-PARTY-NOTICES.md crate table is stale
 # Offline, as actlith: advisories need a fetched database, so they are a
 # push-time step (hk.pkl), not a commit-time one.
 deny|supply|cargo-deny|Cargo.toml, Cargo.lock, deny.toml|cargo deny check --disable-fetch licenses bans sources|-|-|a license, ban or source rule failed
@@ -109,3 +110,4 @@ path:.gitlab/ci/*.yml|yamllint, gitlab-schema, lablith-gen-check, lablith-check|
 path:scripts/lablith/*.sh|shellcheck, shfmt, lablith-gen-check|-|-
 path:README.md|markdownlint, links, readme-badges|-|-
 path:docs/LLM-DISCLAIMER.md|markdownlint, links, readme-badges|-|-
+path:docs/THIRD-PARTY-NOTICES.md|markdownlint, links, notices|-|-

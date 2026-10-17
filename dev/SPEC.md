@@ -20,4 +20,4 @@ V60: README badges, `docs/THIRD-PARTY-NOTICES.md` & AGENTS.md step table generat
 ## §T TASKS
 
 id|status|task|cites
-T48|.|AFTER `nix:T9`: `dev/` crate `lablith-dev`: commit-msg & changelog rules moved to Rust, README badges, THIRD-PARTY-NOTICES, AGENTS.md step table + drift steps|V60
+T48|x|AFTER `nix:T9`: `dev/` crate `lablith-dev`: commit-msg & changelog rules moved to Rust, README badges, THIRD-PARTY-NOTICES, AGENTS.md step table + drift steps|V60
