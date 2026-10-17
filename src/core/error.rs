@@ -24,18 +24,21 @@ impl ConfigError {
         what: impl Into<String>,
         fix: impl Into<String>,
     ) -> Self {
-        let _ = (what.into(), fix.into());
         Self {
             line,
-            what: String::new(),
-            fix: String::new(),
+            what: what.into(),
+            fix: fix.into(),
         }
     }
 }
 
 impl fmt::Display for ConfigError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.line)
+        write!(
+            f,
+            ".lablith:{}: {}\n  fix: {}",
+            self.line, self.what, self.fix
+        )
     }
 }
 
@@ -43,14 +46,14 @@ impl From<super::registry::RegistryError> for ConfigError {
     /// pipelith's grammar error, in lablith's shape: the file is always
     /// `.lablith` and the column is not shown.
     fn from(e: super::registry::RegistryError) -> Self {
-        Self::new(e.column, e.fix, e.what)
+        Self::new(e.line, e.what, e.fix)
     }
 }
 
 impl From<super::kind::KindError> for ConfigError {
     /// pipelith's row error, in lablith's shape.
     fn from(e: super::kind::KindError) -> Self {
-        Self::new(e.line, e.fix, e.what)
+        Self::new(e.line, e.what, e.fix)
     }
 }
 
