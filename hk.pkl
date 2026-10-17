@@ -22,6 +22,7 @@ local fast = (generated.steps) {
   ["gitlab-schema"] { depends = List("build") }
   ["lablith-gen-check"] { depends = List("build") }
   ["lablith-check"] { depends = List("build") }
+  ["agents-table"] { depends = List("build") }
 }
 
 local all = (fast) {
@@ -30,7 +31,12 @@ local all = (fast) {
   // binaries, so a `cargo run` step started beside it finds its
   // executable gone. `test` waits for every one of them.
   ["test"] = (generated.push["test"]) {
-    depends = List("gitlab-schema", "lablith-gen-check", "lablith-check")
+    depends = List(
+      "gitlab-schema",
+      "lablith-gen-check",
+      "lablith-check",
+      "agents-table"
+    )
   }
   ["coverage"] = generated.push["coverage"]
   ["tdd-order"] = generated.push["tdd-order"]

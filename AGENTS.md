@@ -27,3 +27,73 @@ Instructions for coding agents working in this repository.
   add a `Depends-on:` trailer on the lablith side.
 - Never name a private repository, runner tag, host or project path of
   the self-hosted GitLab instance in a committed file.
+
+## The gate
+
+Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
+
+<!-- BEGIN steps: generated from hk.pkl by `cargo run -p lablith-dev -- agents`; do not edit -->
+53 steps run on every commit and 59 on push and `hk check`; the commit-msg hook checks the message.
+
+| step | runs on | files | fixes |
+| --- | --- | --- | --- |
+| `trailing-whitespace` | commit | `**/*` | yes |
+| `final-newline` | commit | `**/*` | yes |
+| `line-endings` | commit | `**/*` | yes |
+| `no-bom` | commit | `**/*` | - |
+| `no-merge-conflict` | commit | `**/*` | - |
+| `no-case-conflict` | commit | `**/*` | - |
+| `no-broken-symlinks` | commit | whole tree | - |
+| `no-private-key` | commit | `**/*` | - |
+| `ripsecrets` | commit | `**/*` | - |
+| `no-local-paths` | commit | `**/*` | - |
+| `nixfmt` | commit | `**/*.nix` | yes |
+| `shfmt` | commit | `**/*.sh` `**/*.bash` | yes |
+| `taplo` | commit | `**/*.toml` | yes |
+| `rustfmt` | commit | `**/*.rs` | yes |
+| `typos` | commit | `**/*` | - |
+| `shellcheck` | commit | `.githooks/*` `.envrc` `**/*.sh` | - |
+| `clippy` | commit | `**/*.rs` `Cargo.toml` `clippy.toml` | - |
+| `actionlint` | commit | `.github/workflows/*.yml` `.github/workflows/*.yaml` | - |
+| `zizmor` | commit | `.github/workflows/*.yml` `.github/workflows/*.yaml` | - |
+| `statix` | commit | `**/*.nix` | yes |
+| `deadnix` | commit | `**/*.nix` | yes |
+| `markdownlint` | commit | `**/*.md` | yes |
+| `yamllint` | commit | `**/*.yml` `**/*.yaml` | - |
+| `editorconfig-checker` | commit | `**/*` | - |
+| `links` | commit | `**/*.md` | - |
+| `ctrm` | commit | `**/*` | yes |
+| `xnl-check` | commit | `**/*.nix` `**/*.pkl` `.envrc` `.githooks/*` | - |
+| `xnl-lint` | commit | `**/*.nix` `**/*.pkl` `.envrc` `.githooks/*` | yes |
+| `rekall` | commit | `AGENTS.md` `CLAUDE.md` `rekall.toml` | - |
+| `rust-mirror` | commit | `**/*.rs` `nix/guard/rust-mirror.sh` | - |
+| `rustdoc` | commit | `**/*.rs` `Cargo.toml` | - |
+| `mth-fmt` | commit | `**/SPEC.md` | yes |
+| `mth-check` | commit | `**/SPEC.md` | - |
+| `sherd-check` | commit | `**/SPEC.md` `**/*.rs` | - |
+| `sherd-nav` | commit | `**/SPEC.md` | yes |
+| `sherd-budget` | commit | `**/SPEC.md` `.context-limits` | - |
+| `itok` | commit | `**/*` `.context-limits` | - |
+| `agents-table` | commit | `hk.pkl` `hk.pklith.pkl` `AGENTS.md` `dev/**` | yes |
+| `doctest` | commit | `**/*.rs` `Cargo.toml` | - |
+| `deny` | commit | `Cargo.toml` `Cargo.lock` `deny.toml` | - |
+| `gen-check` | commit | `.pklith` `hk.pklith.pkl` `nix/pklith.nix` | yes |
+| `pklith-check` | commit | whole tree | - |
+| `private-names` | commit | `**/*` | - |
+| `no-core-worktree` | commit | `**/*` | - |
+| `hk-parity` | commit | `hk.pkl` `hk.pklith.pkl` `pkl/**` `nix/guard/hk-parity.sh` | - |
+| `ci-schema-pin` | commit | `tests/schema/**` `nix/guard/ci-schema-pin.sh` | - |
+| `gitlab-schema` | commit | `tests/schema/**` `tests/fixtures/**` `src/**` `.gitlab-ci.yml` `.gitlab/ci/**` `nix/guard/gitlab-schema.sh` | - |
+| `actlith-gen-check` | commit | `.actlith` `.github/workflows/**` | yes |
+| `actlith-check` | commit | `.actlith` `.github/workflows/**` | - |
+| `lablith-gen-check` | commit | `.lablith` `.gitlab-ci.yml` `.gitlab/ci/**` `scripts/lablith/**` `src/**` | yes |
+| `lablith-check` | commit | `.lablith` `.gitlab-ci.yml` `.gitlab/ci/**` `src/**` | - |
+| `build` | commit | `**/*.rs` `Cargo.toml` `Cargo.lock` | - |
+| `test` | push | `**/*.rs` `Cargo.toml` `Cargo.lock` | - |
+| `coverage` | push | `**/*.rs` `Cargo.toml` `.coverage` | - |
+| `tdd-order` | push | `**/*.rs` `nix/guard/tdd-order.sh` `nix/guard/tdd-order.exempt` | - |
+| `schema-pin` | push | `pkl/**` `flake.lock` `nix/guard/schema-pin.sh` | - |
+| `package` | push | `Cargo.toml` `Cargo.lock` `src/**` | - |
+| `deny-advisories` | push | `Cargo.toml` `Cargo.lock` `deny.toml` | - |
+| `package-nix` | push | `flake.nix` `flake.lock` `Cargo.toml` `Cargo.lock` `src/**` `nix/guard/package-nix.sh` | - |
+<!-- END steps -->
