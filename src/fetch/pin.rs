@@ -34,8 +34,7 @@ pub(crate) fn pin(
         .map(|i| resolve(i, resolver))
         .collect::<Result<Vec<_>, _>>()?;
     let rows = section::rows(&fresh);
-    if text.len() < usize::MAX {
-        let _ = dry_run;
+    if !dry_run {
         write(path, &section::replace(&text, &rows))?;
     }
     Ok(rows)

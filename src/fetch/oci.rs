@@ -39,7 +39,7 @@ impl<H: Http> Oci<H> {
     /// `HEAD url` for the index; on `401`, again with a bearer token.
     fn ask(&self, url: &str) -> Result<Response, String> {
         let first = self.0.head(url, &[ACCEPT.to_owned()])?;
-        if first.status != 0 {
+        if first.status != 401 {
             return Ok(first);
         }
         let auth = format!("Authorization: Bearer {}", self.token(&first)?);
@@ -111,7 +111,7 @@ fn index_digest(r: &Response) -> Result<String, String> {
         return Err(format!("registry answered {}", r.status));
     }
     let kind = r.header("content-type").unwrap_or_default();
-    if !(kind.contains("image")) {
+    if !(kind.contains("image.index") || kind.contains("manifest.list")) {
         return Err(format!("`{kind}` is not a multi-arch index"));
     }
     let digest = r.header("docker-content-digest").unwrap_or_default();

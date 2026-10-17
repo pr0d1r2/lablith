@@ -63,3 +63,6 @@ the bytes lablith emits for the same inputs is at least a minor version
   systems and runner tags, images, CI/CD variables, the pipeline schedule
   to create (cron, `LABLITH_ROW=<id>`), hand-written files, and what the
   merge request token must be.
+- `pin` core: each pinned image's tag resolved to its multi-arch index
+  digest over the OCI distribution API with `curl` (anonymous bearer
+  token on `401`), `## images` rewritten only after every image resolved.
