@@ -26,3 +26,7 @@ hk.pklith.pkl ascii+caveman
 
 # Vendored hk schema, not ours to rewrite.
 pkl/Config.pkl any
+
+# Vendored GitLab CI schema, verbatim (tests:V61); its descriptions use
+# typographic apostrophes.
+tests/schema/ci.json any

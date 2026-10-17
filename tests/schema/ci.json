@@ -2466,7 +2466,7 @@
         },
         {
           "const": "archived_failure",
-          "description": "Retry if the job is archived and can't be run."
+          "description": "Retry if the job is archived and can’t be run."
         },
         {
           "const": "unmet_prerequisites",
@@ -2875,7 +2875,7 @@
             },
             "ref": {
               "type": "string",
-              "description": "If the release: tag_name doesn't exist yet, the release is created from ref. ref can be a commit SHA, another tag name, or a branch name."
+              "description": "If the release: tag_name doesn’t exist yet, the release is created from ref. ref can be a commit SHA, another tag name, or a branch name."
             },
             "milestones": {
               "type": "array",

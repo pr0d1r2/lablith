@@ -34,3 +34,8 @@ id|status|task|cites
 T18|.|test harness: vendored GitLab CI JSON schema + YAML reader (test-only, §R rows); render ∀ kind × fixture args → 0 findings|V19,R7,R11
 T50|.|AFTER T18: vendor schema + `VENDORED.md`, `schema-pin` hk step (push-only) w/ planted hash mismatch|V61,R12
 T51|.|AFTER `.:T23`: hardening tests on parsed YAML, 1 per rule; migration-ready test on fixtures|V62,V63
+
+## §B BUGS
+
+id|date|cause|fix
+B3|2026-10-18|pre-commit `ctrm fix` rewrote 2 typographic apostrophes in vendored `tests/schema/ci.json` while it was committed (`.ctrm` floor: ascii), so the committed copy no longer hashed to `VENDORED.md`; `ci-schema-pin` (V61) caught it on the next `hk check --all`|`.ctrm` grants `any` to `tests/schema/ci.json`, as to `pkl/Config.pkl`; upstream bytes restored
