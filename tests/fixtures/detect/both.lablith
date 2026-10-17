@@ -1,0 +1,7 @@
+format 1
+
+## workflows
+id|kind|systems|cache|args
+ci|gate|-|-|-
+# off by default: uncomment to get daily nixpkgs-lock bump MRs
+# update-pins|update-pins|-|-|-

@@ -8,6 +8,7 @@ mod build;
 mod bump;
 mod check;
 mod core;
+mod detect;
 mod gate;
 mod r#gen;
 mod kind;

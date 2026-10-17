@@ -86,3 +86,4 @@ path:.github/workflows/*.yml|yamllint, actionlint, zizmor, actlith-gen-check, ac
 coverage|coverage|-|-
 path:tests/fixtures/**/*.lablith|-|-|src/registry test fixtures, some deliberately malformed; the registry tests read every one
 path:tests/fixtures/**/*.yml|yamllint|-|-
+path:tests/fixtures/**/*.lock|-|-|src/detect and src/cli test fixtures: flake.lock samples read by their tests
