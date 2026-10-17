@@ -6,6 +6,7 @@
 
 mod core;
 mod pin;
+mod pipeline;
 mod registry;
 mod system;
 mod yaml;
