@@ -6,6 +6,7 @@ catalog: [
   catalog.cargo
   catalog.cargo-deny
   catalog.cargo-nextest
+  catalog.check-jsonschema
   catalog.clippy
   catalog.deadnix
   catalog.editorconfig-checker

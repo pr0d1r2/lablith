@@ -43,6 +43,8 @@ no-core-worktree|gate|-|**/*|bash nix/guard/no-core-worktree.sh|-|-|core.worktre
 hk-parity|gate|jq|hk.pkl, hk.pklith.pkl, pkl/**, nix/guard/hk-parity.sh|bash nix/guard/hk-parity.sh|-|-|hk's own Pkl evaluator does not see the steps pkl eval sees
 # tests:V61: the vendored GitLab CI schema is the copy VENDORED.md names.
 ci-schema-pin|gate|-|tests/schema/**, nix/guard/ci-schema-pin.sh|bash nix/guard/ci-schema-pin.sh|-|-|the vendored GitLab CI schema is not the copy tests/schema/VENDORED.md names
+# tests:V19: every rendered pipeline file passes GitLab's CI schema, offline.
+gitlab-schema|gate|check-jsonschema|tests/schema/**, tests/fixtures/**, src/**, .gitlab-ci.yml, .gitlab/ci/**, nix/guard/gitlab-schema.sh|bash nix/guard/gitlab-schema.sh|-|-|a rendered pipeline file fails GitLab's CI schema
 # Dogfood (nix:T9): this repository's GitHub workflows come from .actlith,
 # rendered by the actlith in the dev shell.
 actlith-gen-check|gate|-|.actlith, .github/workflows/**|actlith gen --check|actlith gen|-|a generated workflow no longer matches .actlith; run `actlith gen`
@@ -86,10 +88,10 @@ exempt|tdd-order|-|-
 path:.actlith|actlith-gen-check, actlith-check|-|-
 path:.github/workflows/*.yml|yamllint, actionlint, zizmor, actlith-gen-check, actlith-check|-|-
 coverage|coverage|-|-
-path:tests/fixtures/**/*.lablith|-|-|src/registry test fixtures, some deliberately malformed; the registry tests read every one
-path:tests/fixtures/**/*.yml|yamllint|-|-
+path:tests/fixtures/**/*.lablith|gitlab-schema|-|-
+path:tests/fixtures/**/*.yml|yamllint, gitlab-schema|-|-
 path:tests/fixtures/**/*.lock|-|-|src/detect and src/cli test fixtures: flake.lock samples read by their tests
 path:tests/fixtures/**/*.md|-|-|src/report golden output, compared byte for byte by its tests
 path:tests/fixtures/**/*.txt|-|-|src/report golden output, compared byte for byte by its tests
 path:tests/fixtures/**/*.json|-|-|src/report golden output, compared byte for byte by its tests
-path:tests/schema/ci.json|ci-schema-pin|-|-
+path:tests/schema/ci.json|ci-schema-pin, gitlab-schema|-|-

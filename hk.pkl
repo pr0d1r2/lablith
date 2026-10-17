@@ -17,6 +17,9 @@ local fast = (generated.steps) {
     check = "cargo build -q --workspace --bins"
     depends = List("clippy")
   }
+  // tests:V19: renders every fixture with `cargo run`, so it waits for the
+  // build (actlith B9).
+  ["gitlab-schema"] { depends = List("build") }
 }
 
 local all = (fast) {
