@@ -32,6 +32,9 @@ rust-mirror|lint|-|**/*.rs, nix/guard/rust-mirror.sh|bash nix/guard/rust-mirror.
 tdd-order|coverage|-|**/*.rs, nix/guard/tdd-order.sh, nix/guard/tdd-order.exempt|bash nix/guard/tdd-order.sh|-|-|a commit adds Rust code with no test: commit before it in the push range
 # nix:V46: core.worktree in the shared .git/config redirects every
 # worktree; a gate step refuses it.
+# V20 (paradigm D40): no private name of the self-hosted instance in
+# committed text; names come from the local, untracked .private/denylist.
+private-names|gate|-|**/*|bash nix/guard/private-names.sh {{files}}|-|-|a committed file holds a name from .private/denylist
 no-core-worktree|gate|-|**/*|bash nix/guard/no-core-worktree.sh|-|-|core.worktree is set in the shared .git/config; unset it
 # nix:V47: hk's own Pkl evaluator (pklr) sees the steps `pkl eval` sees,
 # each with a command; as pklith's hk-parity.
@@ -44,7 +47,7 @@ rustdoc|lint|cargo|**/*.rs, Cargo.toml|cargo doc --workspace --no-deps --documen
 
 ## types
 type|checks|min|exempt
-*|trailing-whitespace, final-newline, line-endings, no-bom, no-merge-conflict, no-case-conflict, no-broken-symlinks, no-private-key, ripsecrets, typos, editorconfig-checker, no-local-paths, ctrm, no-core-worktree|-|-
+*|private-names, trailing-whitespace, final-newline, line-endings, no-bom, no-merge-conflict, no-case-conflict, no-broken-symlinks, no-private-key, ripsecrets, typos, editorconfig-checker, no-local-paths, ctrm, no-core-worktree|-|-
 editorconfig|-|-|written by pklith (seed or gen)
 gitattributes|-|-|written by pklith (seed or gen)
 md|markdownlint, links|-|-
