@@ -23,6 +23,7 @@ local fast = (generated.steps) {
   ["lablith-gen-check"] { depends = List("build") }
   ["lablith-check"] { depends = List("build") }
   ["agents-table"] { depends = List("build") }
+  ["readme-badges"] { depends = List("build") }
 }
 
 local all = (fast) {
@@ -35,7 +36,8 @@ local all = (fast) {
       "gitlab-schema",
       "lablith-gen-check",
       "lablith-check",
-      "agents-table"
+      "agents-table",
+      "readme-badges"
     )
   }
   ["coverage"] = generated.push["coverage"]

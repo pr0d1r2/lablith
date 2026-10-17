@@ -18,10 +18,11 @@ from one place and checked against it, so the standard here is the same:
 ## The method is spec-driven development
 
 [`SPEC.md`](../SPEC.md) and one `SPEC.md` per node below it are the law,
-not a description written afterwards: `V` rows are what must stay true,
-`T` rows what is decided and what is not, `B` rows the bugs found, each
-with the rule that now catches it, and `R` rows the measurements the
-constraints rest on. A rule and its checker land in the same commit.
+not a description written afterwards. Together they carry
+**69 invariants** (the `V` rows: what must stay true), `T` tasks (what is
+decided and what is not), **3 bugs** in their `B` tables (each paired
+with the rule that now catches it), and `R` research (the measurements
+the constraints rest on). A rule and its checker land in the same commit.
 
 ## The guardrails are git hooks that also run on CI
 
@@ -30,8 +31,10 @@ the tracked hooks, which run [hk](https://github.com/jdx/hk) against one
 definition of the gate in [`hk.pkl`](../hk.pkl). Each check was laid in
 its own commit, and the commit that brings it records the planted
 violation it refused. The GitHub workflow and the GitLab pipeline run
-that same definition, line coverage has a floor that may only rise,
-`unsafe` is forbidden, and the only command meant to touch the network
+that same definition, line coverage has a floor of 98.94% that may only
+rise,
+`unsafe` is
+forbidden, and the only command meant to touch the network
 is `lablith pin`.
 
 ## What a reader should check

@@ -33,7 +33,7 @@ Instructions for coding agents working in this repository.
 Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
 
 <!-- BEGIN steps: generated from hk.pkl by `cargo run -p lablith-dev -- agents`; do not edit -->
-53 steps run on every commit and 59 on push and `hk check`; the commit-msg hook checks the message.
+54 steps run on every commit and 60 on push and `hk check`; the commit-msg hook checks the message.
 
 | step | runs on | files | fixes |
 | --- | --- | --- | --- |
@@ -75,6 +75,7 @@ Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
 | `sherd-budget` | commit | `**/SPEC.md` `.context-limits` | - |
 | `itok` | commit | `**/*` `.context-limits` | - |
 | `agents-table` | commit | `hk.pkl` `hk.pklith.pkl` `AGENTS.md` `dev/**` | yes |
+| `readme-badges` | commit | `README.md` `Cargo.toml` `.coverage` `hk.pkl` `hk.pklith.pkl` `flake.lock` `**/SPEC.md` `docs/LLM-DISCLAIMER.md` `.github/workflows/ci.yml` `dev/**` | yes |
 | `doctest` | commit | `**/*.rs` `Cargo.toml` | - |
 | `deny` | commit | `Cargo.toml` `Cargo.lock` `deny.toml` | - |
 | `gen-check` | commit | `.pklith` `hk.pklith.pkl` `nix/pklith.nix` | yes |
