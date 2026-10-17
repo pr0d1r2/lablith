@@ -5,6 +5,7 @@
 //! in `SPEC.md` and the `SPEC.md` of each node.
 
 mod core;
+mod kind;
 mod pin;
 mod pipeline;
 mod registry;

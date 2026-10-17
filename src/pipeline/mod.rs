@@ -15,4 +15,4 @@ pub(crate) use job::{Job, Rule, Stage, When, row_document};
 #[allow(unused_imports, reason = "used by src/render in a later wave")]
 pub(crate) use root::{Root, root_document};
 #[allow(unused_imports, reason = "used by src/kind in a later wave")]
-pub(crate) use text::{eq, eq_var, var};
+pub(crate) use text::{concat, eq, eq_var, var};

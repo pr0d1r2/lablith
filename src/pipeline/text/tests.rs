@@ -1,4 +1,4 @@
-use super::{eq, eq_var, var};
+use super::{concat, eq, eq_var, var};
 use crate::yaml::GITLAB;
 
 #[test]
@@ -23,4 +23,10 @@ fn an_eq_var_compares_two_vars() {
     assert_eq!(t.render(&GITLAB), "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH");
     let t = eq_var("A", "not a name");
     assert_eq!(t.render(&GITLAB), "$A == $not a name");
+}
+
+#[test]
+fn concat_keeps_every_part() {
+    let t = concat(var("A").then_lit(" && "), &eq("B", "c"));
+    assert_eq!(t.render(&GITLAB), "$A && $B == \"c\"");
 }

@@ -1,7 +1,7 @@
 //! Conditions built from CI/CD variables and constants only
 //! (`src/yaml:V18`): `$NAME`, and `$NAME == "value"`.
 
-use crate::core::yaml::{Expr, Text};
+use crate::core::yaml::{Expr, Part, Text};
 use crate::yaml::GITLAB;
 
 /// `$name` as a text. `name` is one of lablith's constant variable
@@ -25,6 +25,14 @@ pub(crate) fn eq_var(a: &str, b: &str) -> Text {
         Some(e) => t.then_expr(e),
         None => t.then_lit(&format!("${b}")),
     }
+}
+
+/// `a` followed by every part of `b`.
+pub(crate) fn concat(a: Text, b: &Text) -> Text {
+    b.parts().iter().fold(a, |t, part| match part {
+        Part::Lit(s) => t.then_lit(s),
+        Part::Expr(e) => t.then_expr(e.clone()),
+    })
 }
 
 #[cfg(test)]
