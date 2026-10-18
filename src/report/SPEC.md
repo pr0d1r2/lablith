@@ -32,9 +32,11 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 V36: `report --format json` carries `schema_version`; field rename | removal bumps it
 V64: `LABLITH_TOKEN` = project access token, role Developer, scope `api` ? (MR via API & branch push), expiry ≤ 1 year; `report` & `docs/SECURITY.md` name scope, role & rotation. bump branches (`pins/*`, `upstream/*`) ⊥ protected ∴ their MR pipelines get ⊥ protected var (`src/kind:V15`)
+V70: `report` Setup section = numbered checklist derived from `.lablith` alone, ⊥ network: (1) ∀ system in rows: register runner w/ its tags from runner table (built-in + `## runners`); (2) ∀ secret: CI/CD variable, masked & protected; (3) ∀ bump row: schedule on default branch w/ `LABLITH_ROW=<id>`; (4) any bump row → create `LABLITH_TOKEN` per V64; (5) any bump row → default branch protected (`src/kind:V15`). same steps in text, md & json (`setup` array; added field ∴ ⊥ bump, V36). `gen` file set unchanged
 
 ## §T TASKS
 
 id|status|task|cites
 T29|x|`report` text/json/md: pins, secrets, schedules to create|`src/bump:V17`,I.cmd
 T53|x|AFTER T29: `report` token scope/role/rotation & schedule list; `docs/SECURITY.md` token section|V64
+T57|.|`report` Setup section text/json/md; 1 fixture per step kind & 1 row-less-secret case|V70,V36,V64
