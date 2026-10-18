@@ -6,7 +6,7 @@
 use crate::core::yaml::Text;
 use crate::kind::{
     Depth, GATE, Kind, KindError, KindSpec, NixJob, Row, Secret, Tables,
-    change_rules, nix_job, quote,
+    change_rules, nix_job, quote, runnable,
 };
 use crate::pipeline::{Job, Stage};
 use crate::script::Script;
@@ -50,7 +50,7 @@ impl Kind for Gate {
             };
             nix_job(row, tables, spec)
         };
-        row.systems.iter().map(job).collect()
+        runnable(row, tables)?.iter().map(job).collect()
     }
 }
 

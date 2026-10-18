@@ -47,4 +47,4 @@ V72: `## runners` row `<system>|-` = SKIP: ⊥ runner for system on this forge �
 id|status|task|cites
 T15|x|runner table: system → tags, built-in neutral + `## runners`; own `SystemError` message for unsupported system|`.:V20`,R8
 T47|x|AFTER T15: unmapped system → exit 2 w/ `## runners` fix|V56
-T59|.|`## runners` SKIP (`<system>\|-`): table, gate, build (check eval, verify-cache), bump & system-free refusal, all-skipped row refusal, report text/json; test per case; dogfood `.lablith` skips `aarch64-linux` & `aarch64-darwin`|V72,V56,`.:V4`
+T59|x|`## runners` SKIP (`<system>\|-`): table, gate, build (check eval, verify-cache), bump & system-free refusal, all-skipped row refusal, report text/json; test per case; dogfood `.lablith` skips `aarch64-linux` & `aarch64-darwin`|V72,V56,`.:V4`

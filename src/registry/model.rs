@@ -42,7 +42,8 @@ pub(crate) struct RunnerRow {
     pub(crate) line: usize,
     /// The nix system, validated by `src/system`.
     pub(crate) system: String,
-    /// The runner tags a job on that system carries; never empty.
+    /// The runner tags a job on that system carries; empty skips the
+    /// system on this forge (`src/system:V72`).
     pub(crate) tags: Vec<String>,
 }
 

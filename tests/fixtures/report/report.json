@@ -10,14 +10,16 @@
           "tags": [
             "nix",
             "x86_64-linux"
-          ]
+          ],
+          "skipped": false
         },
         {
           "system": "aarch64-linux",
           "tags": [
             "nix",
             "arm"
-          ]
+          ],
+          "skipped": false
         }
       ],
       "cache": "pr0d1r2",
@@ -44,21 +46,24 @@
           "tags": [
             "nix",
             "x86_64-linux"
-          ]
+          ],
+          "skipped": false
         },
         {
           "system": "aarch64-linux",
           "tags": [
             "nix",
             "arm"
-          ]
+          ],
+          "skipped": false
         },
         {
           "system": "aarch64-darwin",
           "tags": [
             "nix",
             "aarch64-darwin"
-          ]
+          ],
+          "skipped": false
         }
       ],
       "cache": null,
@@ -80,7 +85,8 @@
           "tags": [
             "nix",
             "x86_64-linux"
-          ]
+          ],
+          "skipped": false
         }
       ],
       "cache": "pr0d1r2",

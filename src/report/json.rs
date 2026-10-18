@@ -5,6 +5,7 @@
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum Json {
     Null,
+    Bool(bool),
     Number(u32),
     String(String),
     Array(Vec<Json>),
@@ -21,6 +22,7 @@ fn text(value: &Json, indent: &str) -> String {
     let inner = format!("{indent}  ");
     match value {
         Json::Null => "null".to_owned(),
+        Json::Bool(b) => b.to_string(),
         Json::Number(n) => n.to_string(),
         Json::String(s) => string(s),
         Json::Array(items) => {

@@ -10,6 +10,12 @@ the bytes lablith emits for the same inputs is at least a minor version
 
 ### Added
 
+- `## runners` skips a system with `<system>|-`: no gate or build job is
+  rendered for it, the build `check` evaluates it, and `lablith report`
+  marks it (text: `skipped: no runner on this forge`; JSON: a new
+  per-system `skipped` field, so `.gitlab/ci/<id>.yml` loses that
+  system's jobs and `report --format json` gains the field).
+
 - `ConfigError`: the one shape a refused `.lablith` is reported in,
   `.lablith:N: what` and an indented `fix:` line; pipelith's registry and
   kind errors convert into it.

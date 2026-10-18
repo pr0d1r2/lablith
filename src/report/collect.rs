@@ -62,7 +62,7 @@ fn tagged(system: crate::system::System, tables: &Tables) -> Tagged {
     Tagged {
         system: system.name(),
         tags: tags.unwrap_or_default(),
-        skipped: false,
+        skipped: tables.runners.skips(system),
     }
 }
 

@@ -78,8 +78,23 @@ only: it does not move to `.actlith`.
 
 Optional. Each nix system's jobs carry the tags `nix` and the system name
 unless a row here gives that system its own tags. A self-hosted fleet
-chooses its own tags; this repository ships none of anyone's. A system
-with no tags is refused. GitLab only.
+chooses its own tags; this repository ships none of anyone's. GitLab
+only.
+
+A row whose tags are `-` skips that system on this forge, for a fleet
+with no runner for it: its gate and build jobs are not rendered, the
+build kind's `check` still evaluates it, and `lablith report` marks it
+skipped. The `## workflows` rows stay as they are, so they still match
+`.actlith`. A row left with no system to run on, a bump row on a skipped
+system, and a skipped `x86_64-linux` under a build row (whose `check`
+and `verify-cache` run there) are refused.
+
+```text
+## runners
+system|tags
+aarch64-linux|-
+aarch64-darwin|-
+```
 
 ## `## hand-written`
 
