@@ -178,6 +178,9 @@
             coverageLlvm
             # `nixfmt --check` gates this file (T5).
             pkgs.nixfmt
+            # GitLab's CLI, the `gh` of the private mirror (nix:R15): pipelines,
+            # CI/CD variables, schedules and runners; works on Community Edition.
+            pkgs.glab
           ]
           ++ present system;
           warn = pkgs.lib.optionalString (absent != [ ]) ''
