@@ -76,3 +76,12 @@ the bytes lablith emits for the same inputs is at least a minor version
   `seed --init`, `report [--format text|json|md]`, `pin [--dry-run]`,
   `completions <shell>` and `man`, each taking `--root DIR`; exit 0 ok,
   1 finding, 2 usage or refused input.
+
+### Fixed
+
+- `scripts/lablith/update-pins.sh` reads the nixpkgs revision the root
+  follows through `nixpkgs-lock`, resolving node names and follows paths,
+  instead of the lock node literally named `nixpkgs`. When another input
+  brought its own nixpkgs-lock, that node was the other input's and never
+  moved, so the job always reported nothing to do. Consumers see the
+  script's bytes change.
