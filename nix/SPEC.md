@@ -28,6 +28,7 @@ sib|dev|`lablith-dev`, `publish = false`: commit rules, README badges, notices, 
 
 id|topic|finding|src
 R5|actlith gate bugs|`cargo build --workspace --bins` after clippy, ∀ `cargo run` step depends on it, `test` waits ∀ `cargo run` (actlith B9,B10: macOS kills relinked binary). flake guard reads `git+file://<root>`, ⊥ `getFlake (toString ./.)` (B8). push-only: `package`, `package-nix`, `deny-advisories`, `schema-pin`; commit-time: `links` (lychee `--offline`), `no-commit-to-branch main` (pre-commit only). hk 2.7.0: vendor `Config.pkl`, `stage = true` on `fix`; move nix-hk & nixpkgs-lock together|../actlith SPEC-PROMPT learnings
+R15|two forges|GitHub `origin` = source of truth: PR required, `gate (...)` checks, admins included. owner's private GitLab = MIRROR: merged `main` pushed there after each merge (`git push gitlab main`), ⊥ merge request there. GitLab gate result → GitHub commit status under neutral context `gitlab gate (<system>)`, fine-grained GitHub token as masked protected GitLab variable ∴ ⊥ instance host on GitHub; GitLab's GitHub integration rejected (Premium only, status name may carry host)|owner 2026-10-18
 
 ## §V INVARIANTS
 
@@ -59,6 +60,7 @@ T36|x|branch protection on first push: PR required, 0 approvals, admins included
 T41|x|AFTER T7: guards `tdd-order.exempt` format, `core.worktree` refusal, pre-commit `stash = "none"`, hk parity step (pklr)|V44,V46,V47
 T54|x|planted violation for `xnl-lint`: found — 9 `inputs.<name>.follows` lines in one flake input → statix (via `xnl lint`) "The key `inputs` is first assigned here" (writeShellScript `cd $1`, runCommand `ls *.txt` gave 0)|V41
 T55|.|planted violation for `hk-parity`: find a Pkl construct pklr evaluates differently from `pkl eval`. tried 2026-10-18 under hk 2.7.0, all agree: `List(...).join(" ")`, `.replaceAll`, pklith B12's `for (…) { when (…) { … } }` filter (pklr fixed it); `toMap().remove()` fails in `pkl eval` too ∴ ⊥ parity case|V41,V47
+T56|.|AFTER runner live: GitLab gate posts neutral GitHub commit status per system; then required on GitHub `main`. decide: lablith feature (seeded script, arg) vs this repo only|R15
 
 ## §B BUGS
 
