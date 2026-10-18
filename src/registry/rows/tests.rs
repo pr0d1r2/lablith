@@ -99,12 +99,17 @@ fn a_runner_row_is_typed() {
 }
 
 #[test]
-fn a_runner_row_needs_a_system_and_a_tag() {
+fn a_runner_row_needs_a_system() {
     assert_eq!(refused(RUNNERS, "-|nix"), "`system` is empty");
-    let e = one(RUNNERS, "x86_64-linux|-").err().unwrap_or_default();
-    assert_eq!(e.line, 9);
-    assert_eq!(e.what, "runner `x86_64-linux` has no tags");
-    assert!(e.fix.contains("`nix`"), "{}", e.fix);
+}
+
+/// `src/system:V72`: `-` for the tags skips the system on this forge.
+#[test]
+fn a_runner_row_with_no_tags_is_a_skip() {
+    let reg = one(RUNNERS, "aarch64-darwin|-");
+    let runners = reg.unwrap_or_default().runners;
+    let skip = runners.first().map(|r| (r.system.as_str(), r.tags.len()));
+    assert_eq!(skip, Some(("aarch64-darwin", 0)));
 }
 
 #[test]

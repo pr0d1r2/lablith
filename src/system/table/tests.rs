@@ -60,3 +60,21 @@ fn an_unknown_system_in_runners_is_refused_with_its_line() {
     );
     assert!(e.contains("aarch64-darwin"), "{e}");
 }
+
+/// `V72`: a skipped system has no tags, and the error says why.
+#[test]
+fn a_skip_row_leaves_its_system_without_a_runner() {
+    let t = RunnerTable::builtin().with_overrides(&[row("aarch64-linux", &[])]);
+    let t = t.unwrap_or_else(|_| RunnerTable::builtin());
+    assert!(t.skips(System::Aarch64Linux));
+    assert!(!t.skips(System::X86_64Linux));
+    assert!(!t.skips(System::X86_64Darwin));
+    let e = t.tags(System::Aarch64Linux).err();
+    assert_eq!(e, Some(SystemError::Skipped(System::Aarch64Linux)));
+    assert_eq!(
+        e.map(|e| e.to_string()).unwrap_or_default(),
+        "system `aarch64-linux` is skipped in `## runners`, but a job must \
+         run there\n  fix: give it runner tags, or move that row to a system \
+         this forge runs"
+    );
+}

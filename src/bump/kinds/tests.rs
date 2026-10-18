@@ -151,3 +151,22 @@ fn the_update_pins_row_file_matches_its_golden_bytes() {
     }
     assert_eq!(out, GOLDEN);
 }
+
+/// `src/system:V72`: a bump row on a skipped system is refused.
+#[test]
+fn a_bump_on_a_skipped_system_is_refused() {
+    let skip = crate::registry::RunnerRow {
+        line: 1,
+        system: "x86_64-linux".into(),
+        tags: Vec::new(),
+    };
+    let runners = RunnerTable::builtin().with_overrides(&[skip]);
+    let tables = Tables {
+        pins: PinTable::builtin(),
+        runners: runners.unwrap_or_else(|_| RunnerTable::builtin()),
+    };
+    let r = row(&UpdatePins, "pins|update-pins|-|-|-");
+    let e = r.and_then(|r| UpdatePins.jobs(&r, &tables).err());
+    let e = e.map(|e| e.to_string()).unwrap_or_default();
+    assert!(e.contains("`x86_64-linux` is skipped"), "{e}");
+}

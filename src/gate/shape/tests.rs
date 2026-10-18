@@ -3,7 +3,7 @@ use crate::core::kind::Purpose;
 use crate::kind::{EXTRAS, Kind, Row, Tables};
 use crate::pin::PinTable;
 use crate::pipeline::{Job, row_document};
-use crate::registry::parse;
+use crate::registry::{RunnerRow, parse};
 use crate::script::Script;
 use crate::system::RunnerTable;
 use crate::yaml::GITLAB;
@@ -17,13 +17,26 @@ fn row(cells: &str) -> Option<Row> {
 }
 
 fn jobs(cells: &str) -> Vec<Job> {
+    skipping(cells, &[]).unwrap_or_default()
+}
+
+/// The row's jobs with `skip` systems marked `-` in `## runners`.
+fn skipping(cells: &str, skip: &[&str]) -> Result<Vec<Job>, String> {
+    let rows: Vec<RunnerRow> = skip
+        .iter()
+        .map(|&s| RunnerRow {
+            line: 1,
+            system: s.into(),
+            tags: Vec::new(),
+        })
+        .collect();
+    let runners = RunnerTable::builtin().with_overrides(&rows);
     let tables = Tables {
         pins: PinTable::builtin(),
-        runners: RunnerTable::builtin(),
+        runners: runners.map_err(|e| e.to_string())?,
     };
-    row(cells)
-        .and_then(|r| Gate.jobs(&r, &tables).ok())
-        .unwrap_or_default()
+    let row = row(cells).ok_or("row refused")?;
+    Gate.jobs(&row, &tables).map_err(|e| e.to_string())
 }
 
 fn scripts(jobs: &[Job]) -> Vec<String> {
@@ -88,4 +101,23 @@ fn the_row_file_matches_its_golden_bytes() {
         let _ = std::fs::write("tests/fixtures/gate/ci.yml", &out);
     }
     assert_eq!(out, GOLDEN);
+}
+
+/// `src/system:V72`: a skipped system gets no gate job.
+#[test]
+fn a_skipped_system_gets_no_gate_job() {
+    let names: Vec<String> = skipping("ci|gate|-|-|-", &["aarch64-linux"])
+        .unwrap_or_default()
+        .into_iter()
+        .map(|j| j.name)
+        .collect();
+    assert_eq!(names, ["ci:gate:x86_64-linux", "ci:gate:aarch64-darwin"]);
+}
+
+/// `src/system:V72`: a row with every system skipped is refused.
+#[test]
+fn a_row_with_every_system_skipped_is_refused() {
+    let e = skipping("ci|gate|aarch64-linux|-|-", &["aarch64-linux"]);
+    let e = e.err().unwrap_or_default();
+    assert!(e.contains("every system of row `ci` is skipped"), "{e}");
 }

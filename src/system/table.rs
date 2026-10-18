@@ -34,6 +34,8 @@ pub(crate) enum SystemError {
     },
     /// No row of the table covers the system.
     NoTags(System),
+    /// `## runners` skips the system, but a job must run there (`V72`).
+    Skipped(System),
 }
 
 /// Runner tags per system: built-in, then `## runners` overrides.
@@ -66,6 +68,11 @@ impl RunnerTable {
         Ok(self)
     }
 
+    /// Whether `## runners` skips `system` on this forge (`V72`).
+    pub(crate) fn skips(&self, system: System) -> bool {
+        self.0.get(system.name()).is_some_and(Vec::is_empty)
+    }
+
     /// The tags a job on `system` carries, or an error naming the fix.
     pub(crate) fn tags(
         &self,
@@ -91,6 +98,7 @@ impl fmt::Display for SystemError {
                 write!(f, "system `{s}` has no GitLab runner tags")?;
                 write!(f, "\n  fix: add a `## runners` row `{s}|<tags>`")
             }
+            Self::Skipped(system) => write!(f, "{}", system.name()),
         }
     }
 }

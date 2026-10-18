@@ -49,3 +49,19 @@ fn rows_that_open_no_merge_request_carry_no_token_note() {
         .collect();
     assert_eq!(secrets, ["CACHIX_AUTH_TOKEN"]);
 }
+
+/// `src/system:V72`: the report marks a skipped system.
+#[test]
+fn a_skipped_system_is_marked_in_the_report() {
+    let text = "format 1\n## workflows\nid|kind|systems|cache|args\n\
+                ci|gate|x86_64-linux, aarch64-linux|-|-\n## runners\n\
+                system|tags\naarch64-linux|-\n";
+    let r = collect(&parse(text).unwrap_or_default()).unwrap_or_default();
+    let got: Vec<(&str, bool)> = r
+        .rows
+        .iter()
+        .flat_map(|r| &r.systems)
+        .map(|t| (t.system, t.skipped))
+        .collect();
+    assert_eq!(got, [("x86_64-linux", false), ("aarch64-linux", true)]);
+}

@@ -129,3 +129,39 @@ fn a_row_without_package_or_cache_is_refused_naming_it() {
         "{e}"
     );
 }
+
+fn skip(system: &str) -> RunnerRow {
+    RunnerRow {
+        line: 1,
+        system: system.into(),
+        tags: Vec::new(),
+    }
+}
+
+/// `src/system:V72`: a skipped system is evaluated, not built, and the
+/// cache is not asked for it.
+#[test]
+fn a_skipped_system_is_evaluated_and_not_verified() {
+    let all = jobs(ROW, &[skip("aarch64-linux")]);
+    let names: Vec<&str> = all.iter().map(|j| j.name.as_str()).collect();
+    assert_eq!(
+        names,
+        ["pkg:build:x86_64-linux", "pkg:check", "pkg:verify-cache"]
+    );
+    let check = script(all.get(1));
+    let eval = "nix eval --raw .#packages.aarch64-linux.hk.drvPath";
+    assert!(check.iter().any(|l| l == eval), "{check:?}");
+    let verify = script(all.get(2)).concat();
+    assert!(!verify.contains("aarch64-linux"), "{verify}");
+}
+
+/// `src/system:V72`: system-free jobs run on `x86_64-linux`, so skipping
+/// it refuses the row rather than rendering a job no runner takes.
+#[test]
+fn skipping_the_system_free_runner_refuses_the_row() {
+    let t = tables(&[skip("x86_64-linux")]);
+    let r = row("pkg|build|aarch64-linux|pr0d1r2|package=hk");
+    let e = r.map(|r| Build.jobs(&r, &t).err().map(|e| e.to_string()));
+    let e = e.flatten().unwrap_or_default();
+    assert!(e.contains("`x86_64-linux` is skipped"), "{e}");
+}
