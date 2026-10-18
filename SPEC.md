@@ -95,3 +95,4 @@ T46|x|pipelith issues: `token` default wording per forge → pr0d1r2/pipelith#9 
 
 id|date|cause|fix
 B2|2026-10-18|`src/registry:V55` demanded id charset `[a-z0-9][a-z0-9-]*`, stricter than pipelith's `[A-Za-z0-9._-]` ∴ a row valid in `.actlith` refused here, breaking V4; written w/o reading `RawRow::from_cells`|`src/registry:V55` rewritten: pipelith's charset, ⊥ narrowed; test per rendered form
+B4|2026-10-18|seeded `update-pins.sh` read rev of lock node literally named `nixpkgs`; another input w/ own nixpkgs-lock → nix renames root's chain `nixpkgs-lock_2` → `nixpkgs_2`, `nixpkgs` = other input's node, ⊥ moves ∴ job always "nothing to do" (actlith#22)|rev resolved from root: `inputs."nixpkgs-lock"` → its `inputs.nixpkgs`, node name or follows path; one `nix eval`, ⊥ jq; test on lock w/ decoy `nixpkgs`

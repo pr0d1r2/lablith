@@ -22,9 +22,22 @@ build="${1:-.#default}"
 lablith="${LABLITH:-lablith}"
 here="$(dirname "${BASH_SOURCE[0]}")"
 
+# The nixpkgs the root follows through nixpkgs-lock, not the node named
+# `nixpkgs`: once another input brings its own nixpkgs-lock, nix renames
+# ours (`nixpkgs-lock_2` -> `nixpkgs_2`) and `nixpkgs` is the other's. An
+# input is a node name or a follows path from the root.
 nixpkgs_rev() {
-  nix eval --raw --impure --expr \
-    '(builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.nixpkgs.locked.rev'
+  # shellcheck disable=SC2016 # ${...} is nix interpolation, not bash's
+  nix eval --raw --impure --expr '
+    let
+      lock = builtins.fromJSON (builtins.readFile ./flake.lock);
+      input = name: key: resolve lock.nodes.${name}.inputs.${key};
+      resolve = ref: if builtins.isList ref then follow lock.root ref else ref;
+      follow = name: path:
+        if path == [ ] then name
+        else follow (input name (builtins.head path)) (builtins.tail path);
+    in
+    lock.nodes.${input (input lock.root "nixpkgs-lock") "nixpkgs"}.locked.rev'
 }
 
 before="$(nixpkgs_rev)"
