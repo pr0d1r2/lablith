@@ -29,6 +29,8 @@ sib|dev|`lablith-dev`, `publish = false`: commit rules, README badges, notices, 
 id|topic|finding|src
 R5|actlith gate bugs|`cargo build --workspace --bins` after clippy, ∀ `cargo run` step depends on it, `test` waits ∀ `cargo run` (actlith B9,B10: macOS kills relinked binary). flake guard reads `git+file://<root>`, ⊥ `getFlake (toString ./.)` (B8). push-only: `package`, `package-nix`, `deny-advisories`, `schema-pin`; commit-time: `links` (lychee `--offline`), `no-commit-to-branch main` (pre-commit only). hk 2.7.0: vendor `Config.pkl`, `stage = true` on `fix`; move nix-hk & nixpkgs-lock together|../actlith SPEC-PROMPT learnings
 R15|two forges|GitHub `origin` = source of truth: PR required, `gate (...)` checks, admins included. owner's private GitLab = MIRROR: merged `main` pushed there after each merge (`git push gitlab main`), ⊥ merge request there. GitLab gate result → GitHub commit status under neutral context `gitlab gate (<system>)`, fine-grained GitHub token as masked protected GitLab variable ∴ ⊥ instance host on GitHub; GitLab's GitHub integration rejected (Premium only, status name may carry host)|owner 2026-10-18
+R16|GitLab CLI|`glab` (nixpkgs 1.99.0) drives owner's GitLab via REST API, works on Community Edition: pipelines, jobs, variables, runners. dev shell only, manual, ⊥ gate; auth `glab auth login --hostname <host>` per machine, ⊥ committed|nixpkgs, owner 2026-10-18
+R17|tending loop|autonomous loop (`docs/LLM-DISCLAIMER.md`) drives only PRs whose head branch carries its own prefix; PRs on other branches wait for owner merge. ? agent-opened PRs adopt loop prefix, or loop drives any owner-authored PR (Q5)|owner 2026-10-18
 
 ## §V INVARIANTS
 
@@ -41,6 +43,7 @@ V45: test spawning git at dir ≠ hooked repo drops `GIT_DIR` `GIT_WORK_TREE` `G
 V46: parallel wave workers share ⊥ git state: pre-commit `stash = "none"`; `core.worktree` ⊥ in `.git/config` (gate step refuses); `test` ⊥ in pre-commit
 V47: change to `hk.pkl` | `hk.pklith.pkl` ! show hk itself runs expected step set; `pkl eval` | `hk validate` passing ⊥ proof
 V48: tests run at pre-push only ∴ ∀ merge, dogfood | generated-file commit ! pass `hk check --all` before committing
+V73: GitHub `main` merges ⊥ squash (folds RED & GREEN into 1 commit, `tdd-order` loses order); merge commit | rebase only; merged branch deleted on merge; auto-merge on; GitLab mirror pushed after each merge (R15)
 
 ## §T TASKS
 
@@ -61,6 +64,9 @@ T41|x|AFTER T7: guards `tdd-order.exempt` format, `core.worktree` refusal, pre-c
 T54|x|planted violation for `xnl-lint`: found — 9 `inputs.<name>.follows` lines in one flake input → statix (via `xnl lint`) "The key `inputs` is first assigned here" (writeShellScript `cd $1`, runCommand `ls *.txt` gave 0)|V41
 T55|.|planted violation for `hk-parity`: find a Pkl construct pklr evaluates differently from `pkl eval`. tried 2026-10-18 under hk 2.7.0, all agree: `List(...).join(" ")`, `.replaceAll`, pklith B12's `for (…) { when (…) { … } }` filter (pklr fixed it); `toMap().remove()` fails in `pkl eval` too ∴ ⊥ parity case|V41,V47
 T56|.|AFTER runner live: GitLab gate posts neutral GitHub commit status per system; then required on GitHub `main`. decide: lablith feature (seeded script, arg) vs this repo only|R15
+T60|x|GitHub repo settings: squash off, delete branch on merge, auto-merge on; topics on lablith, pipelith, actlith|V73,R15
+T61|x|`glab` in dev shell|R16,V42
+T62|.|sherd advisories → 0: per dir sherd flags w/o §F row (`src/report/text`, `src/script/embed`, `src/system/table`, `src/yaml/dialect`, `tests/schema`, `tests/fixtures`) §F row or judged ⊥ node; split `src/script/embed/tests.rs` (4819 tok > 4000, sherd code ceiling)|-
 
 ## §B BUGS
 
