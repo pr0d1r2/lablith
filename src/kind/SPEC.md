@@ -53,7 +53,7 @@ V32: ∀ kind declares ∀ secret it reads (`KindSpec.secrets`); `report` lists 
 V50: ∀ job carries own `rules:`: `gate` & `build` jobs ⊥ run in schedule pipelines; bump jobs run only when `$CI_PIPELINE_SOURCE` ∈ {`schedule`, `web`} & `$LABLITH_ROW == "<id>"` ∴ ⊥ schedule starts gate, ⊥ push starts bump
 V53: `GIT_DEPTH` per kind: `gate` `0` (semver step needs tags), `build` `1`, bump kinds `0` (branch push)
 V54: `token` arg default (`ArgDefault::Forge`) = `LABLITH_TOKEN`, ⊥ `CI_JOB_TOKEN` ∵ job token cannot open MR. deviates from pipelith "forge built-in job token" wording ∴ note in `docs/KINDS-GITLAB.md`; pr0d1r2/pipelith#9
-V57: nix in job: image-based executor → pinned nix image w/ `NIX_CONFIG` enabling `nix-command flakes`; cachix binary from consumer flake lock (`nix run` on locked input), ⊥ unpinned `nixpkgs#` registry lookup ? exact form pending Q1, Q2
+V57: nix in job: image-based executor → pinned nix image w/ `NIX_CONFIG` enabling `nix-command flakes`; cachix binary from consumer flake lock (`nix run` on locked input), ⊥ unpinned `nixpkgs#` registry lookup; shell executor ignores `image:` & uses host nix (`src/system:R8`)
 
 ## §T TASKS
 

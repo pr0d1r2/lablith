@@ -12,8 +12,9 @@ Each step leaves the project working.
   `nix develop --command hk check --all --check`. A different command goes
   in the row's `command` arg. [pklith](https://github.com/pr0d1r2/pklith)
   builds such a gate from your files.
-- GitLab runners that can run the `nixos/nix` image and carry the tags
-  your jobs ask for. The built-in tags are `nix` plus the nix system name
+- GitLab runners with nix, and carrying the tags your jobs ask for: a
+  Docker executor runs the pinned `nixos/nix` image, a shell executor on
+  a NixOS host uses the host's nix and ignores `image:`. The built-in tags are `nix` plus the nix system name
   (`nix`, `x86_64-linux`); if your runners are tagged differently, say so
   in `## runners` ([REGISTRY.md](REGISTRY.md)).
 - Optional: a [cachix](https://www.cachix.org) cache, and its auth token

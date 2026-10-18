@@ -30,12 +30,12 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §I INTERFACES
 
-- runners: default tags = nix system name + `nix` (e.g. `x86_64-linux`, `nix`) ? pending R-row on instance fleet (Q1)
+- runners: default tags = nix system name + `nix` (e.g. `x86_64-linux`, `nix`); fit the owner's fleet as registered (R8)
 
 ## §R RESEARCH
 
 id|topic|finding|src
-R8|runner fleet|? executor (Docker + pinned `nixos/nix` \| shell on NixOS), arches (`aarch64-linux`? `aarch64-darwin`?), default tags (Q1). fill before T15, `src/build:T24`|-
+R8|runner fleet|decided (Q1): self-hosted `x86_64-linux` NixOS hosts, `shell` executor on host nix daemon, modelled on a runner already on the instance. registered w/ tags `nix` + system ∴ built-in tags fit, ⊥ `## runners` row. `image:` ignored under shell, honoured under Docker ∴ 1 render serves both. a host w/o tag `nix` (e.g. a production box) ⊥ takes lablith jobs|owner 2026-10-18
 
 ## §V INVARIANTS
 
