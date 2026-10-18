@@ -19,7 +19,7 @@ SOURCES: `SPEC-PROMPT.md` (decisions D1–D14, learnings 2026-10-17), pipelith `
 dir|owns|⊥owns|tokens
 src|the tool: facade, registry, runners, pins, YAML dialect, pipeline model, kinds, render, verbs, CLI|repo gate, dev tooling, integration harness|-
 tests|integration tests driving `lablith` binary, GitLab CI schema harness, golden pipelines, fixtures|unit tests (beside their module)|-
-dev|`lablith-dev`, `publish = false`: commit rules, README badges, notices, AGENTS step table & their drift checks|anything a consumer runs|-
+dev|`lablith-dev`, `publish = false`: commit rules, README badges, notices, AGENTS step table, setup doc & their drift checks|anything a consumer runs|-
 nix|repo gate: dev shell, guardrails, hk steps, CI, release, dogfood|the tool|-
 
 ## §N NAV

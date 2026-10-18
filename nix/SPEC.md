@@ -11,7 +11,7 @@ up|.|-
 self|nix|repo gate: dev shell, guardrails, hk steps, CI, release, dogfood
 sib|src|the tool: facade, registry, runners, pins, YAML dialect, pipeline model, kinds, render, verbs, CLI
 sib|tests|integration tests driving `lablith` binary, GitLab CI schema harness, golden pipelines, fixtures
-sib|dev|`lablith-dev`, `publish = false`: commit rules, README badges, notices, AGENTS step table & their drift checks
+sib|dev|`lablith-dev`, `publish = false`: commit rules, README badges, notices, AGENTS step table, setup doc & their drift checks
 
 ## §C CONSTRAINTS
 
