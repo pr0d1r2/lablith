@@ -48,10 +48,12 @@ fn details(r: &RowReport) -> String {
 
 fn systems(r: &RowReport) -> Vec<String> {
     let one = |t: &super::model::Tagged| {
-        line(
-            "system",
-            &format!("{} tags {}", t.system, t.tags.join(", ")),
-        )
+        let what = if t.skipped {
+            format!("{} skipped: no runner on this forge", t.system)
+        } else {
+            format!("{} tags {}", t.system, t.tags.join(", "))
+        };
+        line("system", &what)
     };
     r.systems.iter().map(one).collect()
 }

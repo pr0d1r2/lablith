@@ -8,7 +8,7 @@ use crate::core::kind::Cache;
 use crate::core::yaml::Text;
 use crate::kind::{
     BUILD, Kind, KindError, KindSpec, NixJob, Row, Secret, Tables,
-    default_branch_rules, nix_job, quote,
+    default_branch_rules, nix_job, quote, runnable,
 };
 use crate::pipeline::{Job, Stage};
 use crate::script::Script;
@@ -50,8 +50,8 @@ impl Kind for Build {
     }
 
     fn jobs(&self, row: &Row, tables: &Tables) -> Result<Vec<Job>, KindError> {
-        let plan = Plan::new(row)?;
-        let mut jobs = row
+        let plan = Plan::new(row, tables)?;
+        let mut jobs = plan
             .systems
             .iter()
             .map(|&s| nix_job(row, tables, build(&plan, s)))
@@ -65,17 +65,18 @@ impl Kind for Build {
     }
 }
 
-/// What every job of a row needs: its package and cache.
+/// What every job of a row needs: its package, cache and the systems
+/// this forge builds it on.
 struct Plan<'a> {
-    row: &'a Row,
     package: &'a str,
     cache: &'a Cache,
+    systems: Vec<System>,
 }
 
 impl<'a> Plan<'a> {
     /// The row's package and cache; pipelith already refused a row
     /// missing either, so this only names the row if one is gone.
-    fn new(row: &'a Row) -> Result<Self, KindError> {
+    fn new(row: &'a Row, tables: &Tables) -> Result<Self, KindError> {
         let missing = || {
             KindError::row(
                 row.line,
@@ -86,9 +87,9 @@ impl<'a> Plan<'a> {
         let package = row.args.get("package").ok_or_else(missing)?;
         let cache = row.cache.as_ref().ok_or_else(missing)?;
         Ok(Self {
-            row,
             package,
             cache,
+            systems: runnable(row, tables)?,
         })
     }
 }
@@ -127,8 +128,7 @@ fn check(plan: &Plan<'_>, tables: &Tables) -> NixJob<'static> {
 /// `<id>:verify-cache`: the seeded script asks the cache for every
 /// built system's path, on the default branch only.
 fn verify(plan: &Plan<'_>) -> NixJob<'static> {
-    let systems: Vec<&str> =
-        plan.row.systems.iter().map(|s| s.name()).collect();
+    let systems: Vec<&str> = plan.systems.iter().map(|s| s.name()).collect();
     let script = Script::VerifyCache.path();
     let (cache, package) = (plan.cache.name(), plan.package);
     let line = format!("bash {script} {cache} {package} {}", systems.join(" "));

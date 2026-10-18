@@ -31,7 +31,7 @@ src/registry/SPEC.md         1000
 src/render/SPEC.md           720
 src/report/SPEC.md           1035
 src/script/SPEC.md           800
-src/system/SPEC.md           890
+src/system/SPEC.md           1210
 src/yaml/SPEC.md             720
 tests/SPEC.md                990
 

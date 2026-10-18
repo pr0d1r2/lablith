@@ -7,3 +7,10 @@ format 1
 ## workflows
 id|kind|systems|cache|args
 ci|gate|-|pr0d1r2|-
+
+# The private mirror's runners are x86_64-linux only (src/system:R8); the
+# arm systems stay gated on GitHub and are skipped here (src/system:V72).
+## runners
+system|tags
+aarch64-linux|-
+aarch64-darwin|-

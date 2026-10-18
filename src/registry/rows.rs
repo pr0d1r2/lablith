@@ -22,12 +22,8 @@ pub(super) fn image(row: &Row) -> Result<ImagePin, ConfigError> {
 /// A `system|tags` row; at least one tag.
 pub(super) fn runner(row: &Row) -> Result<RunnerRow, ConfigError> {
     let system = required(FILE, row, 0, "system")?;
+    // `-` (no tags) skips the system on this forge (`src/system:V72`).
     let tags = list(FILE, row, 1, "tags")?;
-    if tags.is_empty() {
-        let what = format!("runner `{system}` has no tags");
-        let fix = "list the tags a job on this system carries, e.g. `nix`";
-        return Err(ConfigError::new(row.line, what, fix));
-    }
     Ok(RunnerRow {
         line: row.line,
         system,

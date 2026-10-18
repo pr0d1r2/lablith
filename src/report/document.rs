@@ -44,7 +44,11 @@ fn row(r: &RowReport) -> Json {
 
 fn tagged(t: &Tagged) -> Json {
     let tags = t.tags.iter().map(|t| s(t)).collect();
-    Json::Object(vec![("system", s(t.system)), ("tags", Json::Array(tags))])
+    Json::Object(vec![
+        ("system", s(t.system)),
+        ("tags", Json::Array(tags)),
+        ("skipped", Json::Bool(t.skipped)),
+    ])
 }
 
 fn need(n: &Need) -> Json {

@@ -38,6 +38,8 @@ pub(crate) struct RowReport {
 pub(crate) struct Tagged {
     pub(crate) system: &'static str,
     pub(crate) tags: Vec<String>,
+    /// `## runners` skips it on this forge (`src/system:V72`).
+    pub(crate) skipped: bool,
 }
 
 /// A secret and what the row reads it for.

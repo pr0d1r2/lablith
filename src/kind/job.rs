@@ -62,6 +62,26 @@ impl NixJob<'_> {
     }
 }
 
+/// The row's systems this forge runs: those `## runners` skips are left
+/// out, and a row left with none is refused (`src/system:V72`).
+pub(crate) fn runnable(
+    row: &Row,
+    tables: &Tables,
+) -> Result<Vec<System>, KindError> {
+    let systems: Vec<System> = row
+        .systems
+        .iter()
+        .copied()
+        .filter(|&s| !tables.runners.skips(s))
+        .collect();
+    if systems.is_empty() {
+        let what = format!("every system of row `{}` is skipped", row.id);
+        let fix = "give one of its systems runner tags in `## runners`";
+        return Err(KindError::row(row.line, what, fix));
+    }
+    Ok(systems)
+}
+
 /// The job: `<id>:<name>`, interruptible unless it is a bump
 /// (`src/kind:V12`), which instead takes the row's resource group.
 pub(crate) fn nix_job(

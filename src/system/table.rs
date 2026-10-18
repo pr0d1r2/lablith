@@ -34,6 +34,8 @@ pub(crate) enum SystemError {
     },
     /// No row of the table covers the system.
     NoTags(System),
+    /// `## runners` skips the system, but a job must run there (`V72`).
+    Skipped(System),
 }
 
 /// Runner tags per system: built-in, then `## runners` overrides.
@@ -66,33 +68,55 @@ impl RunnerTable {
         Ok(self)
     }
 
+    /// Whether `## runners` skips `system` on this forge (`V72`).
+    pub(crate) fn skips(&self, system: System) -> bool {
+        self.0.get(system.name()).is_some_and(Vec::is_empty)
+    }
+
     /// The tags a job on `system` carries, or an error naming the fix.
     pub(crate) fn tags(
         &self,
         system: System,
     ) -> Result<&[String], SystemError> {
-        self.0
-            .get(system.name())
-            .map(Vec::as_slice)
-            .ok_or(SystemError::NoTags(system))
+        match self.0.get(system.name()) {
+            None => Err(SystemError::NoTags(system)),
+            Some(tags) if tags.is_empty() => Err(SystemError::Skipped(system)),
+            Some(tags) => Ok(tags),
+        }
     }
 }
 
 impl fmt::Display for SystemError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Unknown { line, name } => {
-                let (k, l) = (known(), ".lablith");
-                write!(f, "{l}:{line}: unknown system `{name}`")?;
-                write!(f, "\n  fix: use one of {k}")
-            }
-            Self::NoTags(system) => {
-                let s = system.name();
-                write!(f, "system `{s}` has no GitLab runner tags")?;
-                write!(f, "\n  fix: add a `## runners` row `{s}|<tags>`")
-            }
-        }
+        let (what, fix) = match self {
+            Self::Unknown { line, name } => (
+                format!(".lablith:{line}: unknown system `{name}`"),
+                format!("use one of {}", known()),
+            ),
+            Self::NoTags(system) => no_tags(system.name()),
+            Self::Skipped(system) => skipped(system.name()),
+        };
+        write!(f, "{what}\n  fix: {fix}")
     }
+}
+
+/// A system no row of the table covers.
+fn no_tags(s: &str) -> (String, String) {
+    (
+        format!("system `{s}` has no GitLab runner tags"),
+        format!("add a `## runners` row `{s}|<tags>`"),
+    )
+}
+
+/// A system `## runners` skips, asked for by a job (`V72`).
+fn skipped(s: &str) -> (String, String) {
+    (
+        format!(
+            "system `{s}` is skipped in `## runners`, but a job must run there"
+        ),
+        "give it runner tags, or move that row to a system this forge runs"
+            .to_owned(),
+    )
 }
 
 /// Every nix system name, comma-separated.
