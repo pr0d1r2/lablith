@@ -60,11 +60,16 @@ struct Ran {
 }
 
 fn bash() -> io::Result<PathBuf> {
+    on_path("bash")
+}
+
+/// The first `tool` on this process's PATH (the stubs are not on it).
+fn on_path(tool: &str) -> io::Result<PathBuf> {
     let path = std::env::var_os("PATH").unwrap_or_default();
     std::env::split_paths(&path)
-        .map(|dir| dir.join("bash"))
+        .map(|dir| dir.join(tool))
         .find(|file| file.is_file())
-        .ok_or_else(|| io::Error::other("no bash on PATH"))
+        .ok_or_else(|| io::Error::other(format!("no {tool} on PATH")))
 }
 
 /// A fresh directory holding every seeded script at its published path.
@@ -410,6 +415,70 @@ fn update_pins_proposes_nothing_that_does_not_build() {
     assert!(ran.log.contains("nix build"), "{}", ran.log);
     assert!(!ran.log.contains(" push "), "{}", ran.log);
     assert!(!ran.log.contains("curl"), "{}", ran.log);
+}
+
+/// A flake.lock as nix writes it once another input brings its own
+/// nixpkgs-lock: root's `nixpkgs-lock` (`@ROOT_LOCK@`, a node name or a
+/// follows path) leads to `nixpkgs_2` at `@REV@`, while the node named
+/// `nixpkgs` belongs to the other input and never moves.
+const LOCK: &str = r#"{"nodes": {
+  "nixpkgs": {"locked": {"rev": "@BEFORE@"}},
+  "nixpkgs-lock": {"inputs": {"nixpkgs": "nixpkgs"}},
+  "nixpkgs-lock_2": {"inputs": {"nixpkgs": "nixpkgs_2"}},
+  "nixpkgs_2": {"locked": {"rev": "@REV@"}},
+  "other": {"inputs": {"nixpkgs-lock": "nixpkgs-lock"}},
+  "mid": {"inputs": {"lock": ["inner", "lock"]}},
+  "inner": {"inputs": {"lock": "nixpkgs-lock_2"}},
+  "root": {"inputs": {
+    "nixpkgs": ["nixpkgs-lock", "nixpkgs"],
+    "nixpkgs-lock": @ROOT_LOCK@,
+    "other": "other",
+    "mid": "mid",
+    "inner": "inner"
+  }}
+}, "root": "root", "version": 7}
+"#;
+
+/// `LOCK` with root's `nixpkgs-lock` at `root_lock`, nixpkgs at `rev`.
+fn lock(root_lock: &str, rev: &str) -> String {
+    LOCK.replace("@ROOT_LOCK@", root_lock)
+        .replace("@REV@", rev)
+        .replace("@BEFORE@", BEFORE)
+}
+
+/// update-pins.sh with the real nix evaluating `lock(root_lock, _)`,
+/// moved from `BEFORE` to `AFTER` by `nix flake update`.
+fn update_pins_on_lock(name: &str, root_lock: &str) -> io::Result<Ran> {
+    let dir = scratch(name)?;
+    fs::write(dir.join("flake.lock"), lock(root_lock, BEFORE))?;
+    let after = dir.join("flake.lock.after");
+    fs::write(&after, lock(root_lock, AFTER))?;
+    let nix = on_path("nix")?.display().to_string();
+    let after = after.display().to_string();
+    let real = [("STUB_NIX", nix.as_str()), ("STUB_LOCK_AFTER", &after)];
+    let env: Vec<_> = CI.iter().chain(&real).copied().collect();
+    run_in(&dir, "update-pins.sh", &[], &env)
+}
+
+fn assert_bumped(ran: &Ran) {
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    let moved = format!("nixpkgs-lock moved `{BEFORE}` -> `{AFTER}`.");
+    assert!(ran.log.contains(&moved), "{}\n{}", ran.log, ran.stderr);
+    assert!(ran.log.contains(PINS_CALLS[0]), "{}", ran.log);
+}
+
+#[test]
+fn update_pins_follows_the_root_past_a_decoy_nixpkgs() -> io::Result<()> {
+    let ran = update_pins_on_lock("up-decoy", r#""nixpkgs-lock_2""#)?;
+    assert_bumped(&ran);
+    Ok(())
+}
+
+#[test]
+fn update_pins_resolves_follows_paths_from_the_root() -> io::Result<()> {
+    let ran = update_pins_on_lock("up-follows", r#"["mid", "lock"]"#)?;
+    assert_bumped(&ran);
+    Ok(())
 }
 
 /// upstream.sh run with a bump script printing `out`.

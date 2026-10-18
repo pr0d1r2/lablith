@@ -21,9 +21,14 @@ case "$tool $*" in
   ;;
 "nix flake update"*)
   : >"$STUB_LOG.updated"
+  # STUB_LOCK_AFTER: the flake.lock the update leaves behind.
+  if [ -n "${STUB_LOCK_AFTER:-}" ]; then cp "$STUB_LOCK_AFTER" flake.lock; fi
   ;;
 "nix eval --raw --impure"*)
-  # The nixpkgs rev: STUB_REV_BEFORE until `flake update`, then AFTER.
+  # STUB_NIX: the real nix, evaluating the expression on ./flake.lock.
+  if [ -n "${STUB_NIX:-}" ]; then exec "$STUB_NIX" "$@"; fi
+  # Otherwise the nixpkgs rev: STUB_REV_BEFORE until `flake update`,
+  # then AFTER.
   if [ -e "$STUB_LOG.updated" ]; then
     echo "${STUB_REV_AFTER:-}"
   else
