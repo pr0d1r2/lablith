@@ -27,6 +27,7 @@ V39: golden files change only w/ CHANGELOG entry (`.:V25`); `UPDATE_GOLDEN=1` re
 V61: vendored schema = `tests/schema/ci.json` + `tests/schema/VENDORED.md` (GitLab tag, upstream path, sha256); `schema-pin` step checks hash; bump = 1 reviewed commit
 V62: ∀ hardening rule `src/pipeline:V10`–`src/script:V16`, `src/kind:V50`, `src/pipeline:V7` & `src/pipeline:V8` ! own test asserting on the job model (`Job`, `Rule`) of ∀ kind × fixture render (`src/render/tests.rs`), ⊥ string grep
 V63: migration-ready: ∀ `.lablith` fixture w/o `## images` & `## runners` parses under actlith's section set (`kind::WORKFLOWS` + `## hand-written`) w/ same rows; tested via pipelith, ⊥ actlith crate dep
+V74: ∀ vendored upstream file (byte-exact, hash-pinned) granted `any` in `.ctrm` in same commit it lands; hygiene fixers ⊥ rewrite it
 
 ## §T TASKS
 
@@ -38,4 +39,4 @@ T51|x|AFTER `.:T23`: hardening tests on parsed YAML, 1 per rule; migration-ready
 ## §B BUGS
 
 id|date|cause|fix
-B3|2026-10-18|pre-commit `ctrm fix` rewrote 2 typographic apostrophes in vendored `tests/schema/ci.json` while it was committed (`.ctrm` floor: ascii), so the committed copy no longer hashed to `VENDORED.md`; `ci-schema-pin` (V61) caught it on the next `hk check --all`|`.ctrm` grants `any` to `tests/schema/ci.json`, as to `pkl/Config.pkl`; upstream bytes restored
+B3|2026-10-18|pre-commit `ctrm fix` rewrote 2 typographic apostrophes in vendored `tests/schema/ci.json` while it was committed (`.ctrm` floor: ascii), so the committed copy no longer hashed to `VENDORED.md`; `ci-schema-pin` (V61) caught it on the next `hk check --all`|`.ctrm` grants `any` to `tests/schema/ci.json`, as to `pkl/Config.pkl`; upstream bytes restored (V74)
