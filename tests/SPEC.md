@@ -16,7 +16,7 @@ sib|nix|repo gate: dev shell, guardrails, hk steps, CI, release, dogfood
 ## §R RESEARCH
 
 id|topic|finding|src
-R7|GitLab CI schema|? instance GitLab version still unknown (Q4); vendored newest release v19.5.0-ee meanwhile (`tests/schema/VENDORED.md`); `workflow: auto_cancel` ⊥ used (interruptible + project auto-cancel default suffice)|-
+R7|GitLab CI schema|instance = GitLab CE 18.11.6 (API `/version`, 2026-10-18; Q4 answered); vendored v19.5.0-ee newer than instance ∴ schema may accept keys instance rejects (T63); `workflow: auto_cancel` ⊥ used (interruptible + project auto-cancel default suffice)|-
 R11|schema harness|decided 2026-10-18: ⊥ Rust YAML or JSON-schema crate. `check-jsonschema` 0.37.2 (nixpkgs) validates rendered YAML text vs vendored schema as gate step `gitlab-schema`; hardening asserted on the job model in Rust ∴ ⊥ test-only Rust dep|nixpkgs, `nix/guard/gitlab-schema.sh`
 R12|GitLab CI schema source|schema file `app/assets/javascripts/editor/schema/ci.json` in GitLab repo, per release tag; vendor at instance version (Q4) w/ tag + sha256 in `tests/schema/VENDORED.md`|gitlab.com/gitlab-org/gitlab
 
@@ -35,6 +35,7 @@ id|status|task|cites
 T18|x|test harness: vendored GitLab CI JSON schema + YAML reader (test-only, §R rows); render ∀ kind × fixture args → 0 findings|V19,R7,R11
 T50|x|AFTER T18: vendor schema + `VENDORED.md`, `schema-pin` hk step (push-only) w/ planted hash mismatch|V61,R12
 T51|x|AFTER `.:T23`: hardening tests on parsed YAML, 1 per rule; migration-ready test on fixtures|V62,V63
+T63|.|re-vendor `tests/schema/ci.json` at instance tag v18.11.6-ee per V61 (1 commit, `VENDORED.md` tag + sha256, Q4 note dropped); ∀ fixture & own pipeline still validate, else key ⊥ in 18.11 → `src/` fix + §B row|V19,V61,R7,R12
 
 ## §B BUGS
 
