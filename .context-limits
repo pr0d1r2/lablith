@@ -13,7 +13,7 @@
 # Files
 SPEC.md                      3420
 dev/SPEC.md                  555
-nix/SPEC.md                  2440
+nix/SPEC.md                  3150
 src/SPEC.md                  1060
 src/build/SPEC.md            810
 src/bump/SPEC.md             840
@@ -33,7 +33,7 @@ src/report/SPEC.md           1035
 src/script/SPEC.md           800
 src/system/SPEC.md           1210
 src/yaml/SPEC.md             720
-tests/SPEC.md                990
+tests/SPEC.md                1110
 
 # Chains
 dev                          3050
