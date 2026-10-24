@@ -8,6 +8,7 @@ const SCHEMA: &str = include_str!("../../../pkl/Config.pkl");
 const HK: &str = "amends \"pkl/Config.pkl\"\nlocal fast = new Mapping<String, Step> { [\"a\"] { glob = List(\"*.rs\"); check = \"true\"; fix = \"true\" } }\nhooks {\n  [\"pre-commit\"] { steps = fast }\n  [\"pre-push\"] { steps = (fast) { [\"b\"] { check = \"true\" } } }\n}\n";
 const AGENTS: &str =
     "# Agents\n\nhand text\n\n<!-- BEGIN steps -->\n<!-- END steps -->\n";
+const PKLITH: &str = include_str!("../../../.pklith");
 
 #[test]
 fn rows_become_the_table() {
@@ -18,6 +19,15 @@ fn rows_become_the_table() {
         "{got}"
     );
     assert!(got.contains("| `a` | commit | `**/*.rs` `Cargo.toml` | yes |\n| `b` | push | whole tree | - |\n<!-- END steps -->\n"), "{got}");
+}
+
+#[test]
+fn doctest_covers_workspace_members() {
+    let row = PKLITH
+        .lines()
+        .find(|line| line.starts_with("doctest|"))
+        .unwrap_or_default();
+    assert!(row.contains("cargo test --workspace --doc -q"), "{row}");
 }
 
 fn fixture(name: &str, agents: &str) -> PathBuf {
