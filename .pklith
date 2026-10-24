@@ -61,7 +61,7 @@ notices|spec|-|Cargo.toml, Cargo.lock, docs/THIRD-PARTY-NOTICES.md, dev/**|cargo
 # Offline, as actlith: advisories need a fetched database, so they are a
 # push-time step (hk.pkl), not a commit-time one.
 deny|supply|cargo-deny|Cargo.toml, Cargo.lock, deny.toml|cargo deny check --disable-fetch licenses bans sources|-|-|a license, ban or source rule failed
-doctest|test|cargo|**/*.rs, Cargo.toml|cargo test --doc -q|-|-|a doc example failed
+doctest|test|cargo|**/*.rs, Cargo.toml|cargo test --workspace --doc -q|-|-|a doc example failed
 rustdoc|lint|cargo|**/*.rs, Cargo.toml|cargo doc --workspace --no-deps --document-private-items -q|-|RUSTDOCFLAGS=-D warnings|docs do not build cleanly
 
 ## types
