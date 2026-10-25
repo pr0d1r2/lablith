@@ -31,6 +31,7 @@ R5|actlith gate bugs|`cargo build --workspace --bins` after clippy, ∀ `cargo r
 R15|two forges|GitHub `origin` = source of truth: PR required, `gate (...)` checks, admins included. owner's private GitLab = MIRROR: merged `main` pushed there after each merge (`git push gitlab main`), ⊥ merge request there. GitLab gate result → GitHub commit status under neutral context `gitlab gate (<system>)`, fine-grained GitHub token as masked protected GitLab variable ∴ ⊥ instance host on GitHub; GitLab's GitHub integration rejected (Premium only, status name may carry host)|owner 2026-10-18
 R16|GitLab CLI|`glab` (nixpkgs 1.99.0) drives owner's GitLab via REST API, works on Community Edition: pipelines, jobs, variables, runners. dev shell only, manual, ⊥ gate; auth `glab auth login --hostname <host>` per machine, ⊥ committed|nixpkgs, owner 2026-10-18
 R17|tending loop|autonomous loop (`docs/LLM-DISCLAIMER.md`) drives only PRs whose head branch carries its own prefix; PRs on other branches wait for owner merge. ? agent-opened PRs adopt loop prefix, or loop drives any owner-authored PR (Q5)|owner 2026-10-18
+R18|hk parity probe|Under hk 2.7.0 (2026-10-18), `List(...).join(" ")`, `.replaceAll`, and pklith B12's `for (…) { when (…) { … } }` filter agree between pklr and `pkl eval` (the filter was already fixed in pklr); `toMap().remove()` fails in both. No planted parity violation exists to adopt.|nix:T55
 
 ## §V INVARIANTS
 
@@ -62,7 +63,7 @@ T33|x|nix package `packages.<system>.default` built & run on fixture; `release.t
 T36|x|branch protection on first push: PR required, 0 approvals, admins included, `gate (...)` checks required & strict, ⊥ force push, ⊥ deletion|R5
 T41|x|AFTER T7: guards `tdd-order.exempt` format, `core.worktree` refusal, pre-commit `stash = "none"`, hk parity step (pklr)|V44,V46,V47
 T54|x|planted violation for `xnl-lint`: found — 9 `inputs.<name>.follows` lines in one flake input → statix (via `xnl lint`) "The key `inputs` is first assigned here" (writeShellScript `cd $1`, runCommand `ls *.txt` gave 0)|V41
-T55|.|planted violation for `hk-parity`: find a Pkl construct pklr evaluates differently from `pkl eval`. tried 2026-10-18 under hk 2.7.0, all agree: `List(...).join(" ")`, `.replaceAll`, pklith B12's `for (…) { when (…) { … } }` filter (pklr fixed it); `toMap().remove()` fails in `pkl eval` too ∴ ⊥ parity case|V41,V47
+T55|x|planted violation for `hk-parity`: none found. Under hk 2.7.0, pklr and `pkl eval` agree on `List(...).join(" ")`, `.replaceAll`, and pklith B12's `for (…) { when (…) { … } }` filter (pklr fixed it); `toMap().remove()` fails in both ∴ ⊥ parity case|V41,V47
 T56|.|AFTER runner live: GitLab gate posts neutral GitHub commit status per system; then required on GitHub `main`. decide: lablith feature (seeded script, arg) vs this repo only|R15
 T60|x|GitHub repo settings: squash off, delete branch on merge, auto-merge on; topics on lablith, pipelith, actlith|V73,R15
 T61|x|`glab` in dev shell|R16,V42
