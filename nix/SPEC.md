@@ -63,7 +63,7 @@ T33|x|nix package `packages.<system>.default` built & run on fixture; `release.t
 T36|x|branch protection on first push: PR required, 0 approvals, admins included, `gate (...)` checks required & strict, ⊥ force push, ⊥ deletion|R5
 T41|x|AFTER T7: guards `tdd-order.exempt` format, `core.worktree` refusal, pre-commit `stash = "none"`, hk parity step (pklr)|V44,V46,V47
 T54|x|planted violation for `xnl-lint`: found — 9 `inputs.<name>.follows` lines in one flake input → statix (via `xnl lint`) "The key `inputs` is first assigned here" (writeShellScript `cd $1`, runCommand `ls *.txt` gave 0)|V41
-T55|.|planted violation for `hk-parity`: unresolved. Under hk 2.7.0, pklr and `pkl eval` agree on `List(...).join(" ")`, `.replaceAll`, and pklith B12's `for (…) { when (…) { … } }` filter (pklr fixed it); `toMap().remove()` fails in `pkl eval`; the pklr result is unrecorded|V41,V47
+T55|x|planted violation for `hk-parity`: resolved. Under hk 2.7.0, pklr and `pkl eval` agree on `List(...).join(" ")`, `.replaceAll`, and pklith B12's `for (…) { when (…) { … } }` filter (pklr fixed it); `toMap().remove()` fails in `pkl eval`; pklr also rejects `toMap().remove()`; the result is recorded in B2|V41,V47
 T56|.|AFTER runner live: GitLab gate posts neutral GitHub commit status per system; then required on GitHub `main`. decide: lablith feature (seeded script, arg) vs this repo only|R15
 T60|x|GitHub repo settings: squash off, delete branch on merge, auto-merge on; topics on lablith, pipelith, actlith|V73,R15
 T61|x|`glab` in dev shell|R16,V42
@@ -73,3 +73,4 @@ T62|.|sherd advisories → 0: per dir sherd flags w/o §F row (`src/report/text`
 
 id|date|cause|fix
 B1|2026-10-17|crate seed (`nix:T4`, e74ae81) added stub `src/lib.rs` & `src/main.rs` before `tdd-order` existed; ⊥ behaviour for RED test to pin ∴ ⊥ `test:` commit before it|exempt in `nix/guard/tdd-order.exempt` (V44)
+B2|2026-10-18|the hk 2.7.0 parity probe had recorded the `pkl eval` failure for `toMap().remove()` but not pklr's result|pklr also rejects `toMap().remove()`; the probe result is now recorded in `nix:T55` and the `hk-parity` gate remains unchanged

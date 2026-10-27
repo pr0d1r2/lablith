@@ -46,7 +46,7 @@ from one place and checked against it, so the standard here is the same:
 [`SPEC.md`](../SPEC.md) and one `SPEC.md` per node below it are the law,
 not a description written afterwards. Together they carry
 **74 invariants** (the `V` rows: what must stay true), `T` tasks (what is
-decided and what is not), **4 bugs** in their `B` tables (each paired
+decided and what is not), **5 bugs** in their `B` tables (each paired
 with the rule that now catches it), and `R` research (the measurements
 the constraints rest on). A rule and its checker land in the same commit.
 
