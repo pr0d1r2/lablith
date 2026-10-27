@@ -32,6 +32,7 @@ R15|two forges|GitHub `origin` = source of truth: PR required, `gate (...)` chec
 R16|GitLab CLI|`glab` (nixpkgs 1.99.0) drives owner's GitLab via REST API, works on Community Edition: pipelines, jobs, variables, runners. dev shell only, manual, ⊥ gate; auth `glab auth login --hostname <host>` per machine, ⊥ committed|nixpkgs, owner 2026-10-18
 R17|tending loop|autonomous loop (`docs/LLM-DISCLAIMER.md`) drives only PRs whose head branch carries its own prefix; PRs on other branches wait for owner merge. ? agent-opened PRs adopt loop prefix, or loop drives any owner-authored PR (Q5)|owner 2026-10-18
 R18|hk parity probe|Under hk 2.7.0 (2026-10-18), `List(...).join(" ")`, `.replaceAll`, and pklith B12's `for (…) { when (…) { … } }` filter agree between pklr and `pkl eval` (the filter was already fixed in pklr); `toMap().remove()` fails in `pkl eval`; the pklr result is unrecorded.|nix:T55
+R19|cross-forge status|T56 is repo-only: after the mirror runner is live, its gate jobs post one GitHub commit status per system using context `gitlab gate (<system>)`; the GitHub token is a protected masked GitLab variable. GitHub `main` requires those contexts. No lablith row, argument or seeded script is added: status publication depends on this repository's private mirror and is outside lablith's deterministic, forge-neutral materializer contract.|nix:T56, R15
 
 ## §V INVARIANTS
 
@@ -64,7 +65,7 @@ T36|x|branch protection on first push: PR required, 0 approvals, admins included
 T41|x|AFTER T7: guards `tdd-order.exempt` format, `core.worktree` refusal, pre-commit `stash = "none"`, hk parity step (pklr)|V44,V46,V47
 T54|x|planted violation for `xnl-lint`: found — 9 `inputs.<name>.follows` lines in one flake input → statix (via `xnl lint`) "The key `inputs` is first assigned here" (writeShellScript `cd $1`, runCommand `ls *.txt` gave 0)|V41
 T55|x|planted violation for `hk-parity`: resolved. Under hk 2.7.0, pklr and `pkl eval` agree on `List(...).join(" ")`, `.replaceAll`, and pklith B12's `for (…) { when (…) { … } }` filter (pklr fixed it); `toMap().remove()` fails in `pkl eval`; pklr also rejects `toMap().remove()`; the result is recorded in B2|V41,V47
-T56|.|AFTER runner live: GitLab gate posts neutral GitHub commit status per system; then required on GitHub `main`. decide: lablith feature (seeded script, arg) vs this repo only|R15
+T56|x|AFTER runner live: repo-only mirror wiring posts one neutral GitHub commit status per GitLab gate system (`gitlab gate (<system>)`), then those contexts are required on GitHub `main`; no lablith feature, seeded script or arg|R15,R19
 T60|x|GitHub repo settings: squash off, delete branch on merge, auto-merge on; topics on lablith, pipelith, actlith|V73,R15
 T61|x|`glab` in dev shell|R16,V42
 T62|.|sherd advisories → 0: per dir sherd flags w/o §F row (`src/report/text`, `src/script/embed`, `src/system/table`, `src/yaml/dialect`, `tests/schema`, `tests/fixtures`) §F row or judged ⊥ node; split `src/script/embed/tests.rs` (4819 tok > 4000, sherd code ceiling)|-
