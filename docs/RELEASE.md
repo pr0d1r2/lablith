@@ -13,8 +13,12 @@ Perform the file changes below together in one reviewed commit:
 1. Rename `.lablith` to `.actlith`. Q3 must confirm that this is the
    config-file name selected by pipelith for `actlith` before this step is
    carried out.
-2. Keep the `## workflows` section unchanged. Remove the GitLab-only
-   `## images` and `## runners` sections.
+2. Keep the `## workflows` section unchanged. Review every `## runners` row
+   against the GitHub runner mapping and workflow matrix, and record explicit
+   approval of equivalence (or of an intentional change) before removing the
+   section. A runner row such as `system|-` may skip a system; do not remove
+   it without this review. Then remove the GitLab-only `## images` and
+   `## runners` sections.
 3. Change every path in `## hand-written` to its corresponding
    `.github/workflows/` path. Keep the reason for each file.
 4. Run `actlith gen` and review the generated workflow diff.
