@@ -35,7 +35,7 @@ id|status|task|cites
 T18|x|test harness: vendored GitLab CI JSON schema + YAML reader (test-only, §R rows); render ∀ kind × fixture args → 0 findings|V19,R7,R11
 T50|x|AFTER T18: vendor schema + `VENDORED.md`, `schema-pin` hk step (push-only) w/ planted hash mismatch|V61,R12
 T51|x|AFTER `.:T23`: hardening tests on parsed YAML, 1 per rule; migration-ready test on fixtures|V62,V63
-T63|.|re-vendor `tests/schema/ci.json` at instance tag v18.11.6-ee per V61 (1 commit, `VENDORED.md` tag + sha256, Q4 note dropped); ∀ fixture & own pipeline still validate, else key ⊥ in 18.11 → `src/` fix + §B row|V19,V61,R7,R12
+T63|x|re-vendor `tests/schema/ci.json` at instance tag v18.11.6-ee per V61 (1 commit, `VENDORED.md` tag + sha256, Q4 note dropped); ∀ fixture & own pipeline still validate, else key ⊥ in 18.11 → `src/` fix + §B row|V19,V61,R7,R12
 
 ## §B BUGS
 
