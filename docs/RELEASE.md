@@ -43,6 +43,8 @@ any GitLab-generated file remains.
 
 After the reviewed commit is merged:
 
+- before deleting them, compare every schedule from `lablith report` with the
+  corresponding generated GitHub workflow's `on.schedule` trigger;
 - delete the project's GitLab pipeline schedules;
 - revoke the project's GitLab project access token used by `LABLITH_TOKEN`;
 - delete the `LABLITH_TOKEN` CI/CD variable;
@@ -50,5 +52,6 @@ After the reviewed commit is merged:
 
 These provider settings are intentionally not represented in the
 repository. `lablith report` lists the schedules and secrets assumed by
-the GitLab configuration before the move; use the corresponding
-`actlith report` output for the GitHub setup.
+the GitLab configuration before the move. Compare its schedule list with
+the generated GitHub workflows, and use the corresponding `actlith report`
+output for the GitHub setup.
