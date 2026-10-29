@@ -19,10 +19,13 @@ Perform the file changes below together in one reviewed commit:
    section. A runner row such as `system|-` may skip a system; do not remove
    it without this review. Then remove the GitLab-only `## images` and
    `## runners` sections.
-3. Change every path in `## hand-written` to its corresponding
-   `.github/workflows/` path. Keep the reason for each file.
+3. Move every hand-written file to its corresponding
+   `.github/workflows/` path, translating GitLab CI syntax to GitHub
+   Actions when required. Update each `## hand-written` path and keep
+   its reason.
 4. Run `actlith gen` and review the generated workflow diff.
-5. Delete `.gitlab-ci.yml`, `.gitlab/ci/`, and `scripts/lablith/`.
+5. Run the complete gate, including `actlith check`.
+6. Delete `.gitlab-ci.yml`, `.gitlab/ci/`, and `scripts/lablith/`.
 
 The resulting workflow files must be generated or listed as hand-written
 by the `actlith` configuration. Do not rewrite workflow rows to make the
