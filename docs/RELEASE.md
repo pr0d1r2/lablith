@@ -44,6 +44,7 @@ any GitLab-generated file remains.
 After the reviewed commit is merged:
 
 - delete the project's GitLab pipeline schedules;
+- revoke the project's GitLab project access token used by `LABLITH_TOKEN`;
 - delete the `LABLITH_TOKEN` CI/CD variable;
 - create the GitHub secrets required by `actlith report`.
 
