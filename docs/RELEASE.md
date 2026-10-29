@@ -22,10 +22,13 @@ Perform the file changes below together in one reviewed commit:
 3. Move or translate every hand-written file to one or more corresponding
    `.github/workflows/` paths, translating GitLab CI syntax to GitHub
    Actions when required. Add one `## hand-written` row for each resulting
-   file and keep its reason.
+   file and keep its reason. Check each resulting workflow for references to
+   `scripts/lablith/`; replace or move every referenced script before deleting
+   that directory.
 4. Run `actlith gen` and review the generated workflow diff.
 5. Run the complete gate, including `actlith check`.
-6. Delete `.gitlab-ci.yml`, `.gitlab/ci/`, and `scripts/lablith/`.
+6. After confirming no resulting workflow references `scripts/lablith/`,
+   delete `.gitlab-ci.yml`, `.gitlab/ci/`, and `scripts/lablith/`.
 
 The resulting workflow files must be generated or listed as hand-written
 by the `actlith` configuration. Do not rewrite workflow rows to make the
