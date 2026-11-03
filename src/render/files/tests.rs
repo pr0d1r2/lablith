@@ -103,3 +103,56 @@ fn overrides_reach_the_tables_and_the_plan() {
         .map(|j| j.tags.clone());
     assert_eq!(tags, Some(vec!["big".to_owned()]));
 }
+
+/// Each `<job>|<tags>` of `.lablith` text's first row, or why it failed.
+fn gate_jobs(rows: &str, runners: &str) -> Result<Vec<String>, String> {
+    let text = format!(
+        "format 1\n## workflows\nid|kind|systems|cache|args\n{rows}\n\
+         ## runners\nsystem|tags\n{runners}"
+    );
+    let reg = parse(&text).map_err(|e| e.to_string())?;
+    let plans = plan(&reg).map_err(|e| e.to_string())?;
+    let jobs = plans.into_iter().flat_map(|p| p.jobs);
+    Ok(jobs
+        .map(|j| format!("{}|{}", j.name, j.tags.join(", ")))
+        .collect())
+}
+
+const DARWIN_RUNNER: &str = "x86_64-darwin|nix, x86_64-darwin\n";
+
+#[test]
+fn x86_64_darwin_with_a_runner_row_renders_on_that_runner() {
+    let got = gate_jobs("ci|gate|x86_64-darwin|-|-", DARWIN_RUNNER);
+    let want = "ci:gate:x86_64-darwin|nix, x86_64-darwin".to_owned();
+    assert_eq!(got, Ok(vec![want]));
+}
+
+#[test]
+fn x86_64_darwin_without_a_runner_row_is_refused_naming_the_fix() {
+    let got = gate_jobs("ci|gate|x86_64-darwin|-|-", "").err();
+    let got = got.unwrap_or_default();
+    assert!(got.contains("`x86_64-darwin`"), "{got}");
+    assert!(
+        got.contains("fix: add a `## runners` row `x86_64-darwin|<tags>`"),
+        "{got}"
+    );
+}
+
+#[test]
+fn a_default_row_without_a_darwin_runner_row_keeps_three_systems() {
+    let got = gate_jobs("ci|gate|-|-|-", "").unwrap_or_default();
+    let want = [
+        "ci:gate:x86_64-linux|nix, x86_64-linux",
+        "ci:gate:aarch64-linux|nix, aarch64-linux",
+        "ci:gate:aarch64-darwin|nix, aarch64-darwin",
+    ];
+    assert_eq!(got, want.map(str::to_owned).to_vec());
+}
+
+#[test]
+fn a_default_row_with_a_darwin_runner_row_gates_it_too() {
+    let got = gate_jobs("ci|gate|-|-|-", DARWIN_RUNNER).unwrap_or_default();
+    let last = got.last().cloned().unwrap_or_default();
+    assert_eq!(got.len(), 4, "{got:?}");
+    assert_eq!(last, "ci:gate:x86_64-darwin|nix, x86_64-darwin");
+}
