@@ -44,6 +44,14 @@ page, the code and those specs in step.
   A shell executor runs the host's nix, so a shell runner's host needs
   nix 2.20 or later; an older one stops every job with `the runner's
   nix is <version>; this check needs nix 2.20 or later`.
+- With the Docker executor the check reads the nix configuration inside
+  the pinned `nixos/nix` image, not the host's. The `NIX_CONFIG` lablith
+  sets adds no `extra-platforms`, so a host's binfmt setup
+  (`boot.binfmt.emulatedSystems`) does not reach the container, and an
+  emulated system is refused there. To run one under Docker, set
+  `system` or `extra-platforms` in the image or in the container's
+  environment, for example `NIX_CONFIG` in the runner's `environment`
+  setting.
 - A cache push goes through `scripts/lablith/cachix.sh`, which pushes
   only when `CACHIX_AUTH_TOKEN` (masked, protected) is set and the
   pipeline is not a merge request from a fork.
