@@ -41,6 +41,7 @@ R8|runner fleet|decided (Q1): self-hosted `x86_64-linux` NixOS hosts, `shell` ex
 
 V56: system w/ ⊥ entry in runner table (built-in + `## runners`) → exit 2 naming system & `## runners` fix; ⊥ untagged job (would land on any shared runner)
 V72: `## runners` row `<system>|-` = SKIP: ⊥ runner for system on this forge ∴ its per-system jobs (`gate:<system>`, `build:<system>`) ⊥ rendered, build `check` evaluates it like an untagged system, `verify-cache` omits it; a job that must run on it (bump row's system, system-free jobs on `x86_64-linux`) → exit 2 naming the skip; row w/ every system skipped → exit 2; `report` marks it skipped. rows stay = `.actlith` (`.:V4`); SKIP ⊥ portability finding (GitLab-only section)
+V75: `-` systems = pipelith `DEFAULT_SYSTEMS` ∩ table (built-in + `## runners`, SKIP rows incl.) ∴ `x86_64-darwin` (⊥ built-in tags) in `-` only w/ row; output for a `.lablith` w/o such row = pipelith 0.1
 
 ## §T TASKS
 
@@ -48,3 +49,4 @@ id|status|task|cites
 T15|x|runner table: system → tags, built-in neutral + `## runners`; own `SystemError` message for unsupported system|`.:V20`,R8
 T47|x|AFTER T15: unmapped system → exit 2 w/ `## runners` fix|V56
 T59|x|`## runners` SKIP (`<system>\|-`): table, gate, build (check eval, verify-cache), bump & system-free refusal, all-skipped row refusal, report text/json; test per case; dogfood `.lablith` skips `aarch64-linux` & `aarch64-darwin`|V72,V56,`.:V4`
+T65|.|`-` resolves per V75; test `-` w/ & w/o `x86_64-darwin` row|V75,`src/registry:T64`
