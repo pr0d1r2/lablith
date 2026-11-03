@@ -63,9 +63,16 @@ page, the code and those specs in step.
   fork, whether that pipeline runs in the fork or in the parent project,
   and there is no switch to allow it. The root `workflow:` still admits
   merge request pipelines, so a job in a `## hand-written` file runs for
-  a fork's merge request unless it carries the same rule itself. On a self-hosted GitLab every runner a
-  job's tags reach is the owner's, built-in tags included. Also keep
-  those runners registered to the one project.
+  a fork's merge request unless it carries the same rule itself. On a
+  self-hosted GitLab every runner a job's tags reach is the owner's,
+  built-in tags included. Also keep those runners registered to the one
+  project.
+- A fork's merge request therefore gets no pipeline, and with
+  **Pipelines must succeed** on, GitLab blocks its merge: a merge request
+  with no pipeline cannot merge. Running its pipeline in the parent
+  project does not help, since the guard excludes those jobs too. To
+  merge it, a maintainer pushes the fork's branch to this project and
+  merges that branch's merge request, whose pipeline runs as usual.
 
 ## `gate`
 
