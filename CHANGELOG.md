@@ -31,6 +31,8 @@ the bytes lablith emits for the same inputs is at least a minor version
   `scripts/lablith/runner-system.sh` in every repository with a row, and
   every job in `.gitlab/ci/<id>.yml` gains that first line, so a
   one-line `script: [..]` becomes a block list.
+- `runner-system.sh` reads the version from the first line of
+  `nix --version`, so a Lix runner, which prints more lines, passes.
 
 - `## runners` skips a system with `<system>|-`: no gate or build job is
   rendered for it, the build `check` evaluates it, and `lablith report`
