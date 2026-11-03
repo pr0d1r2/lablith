@@ -21,6 +21,7 @@ fn every_row_the_root_and_each_needed_script_once_sorted() {
         ".gitlab/ci/up.yml",
         "scripts/lablith/cachix.sh",
         "scripts/lablith/open-mr.sh",
+        "scripts/lablith/runner-system.sh",
         "scripts/lablith/update-pins.sh",
         "scripts/lablith/upstream.sh",
     ];

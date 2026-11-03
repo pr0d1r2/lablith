@@ -273,3 +273,17 @@ fn v63_every_fixture_moves_to_actlith_with_the_same_rows() {
 fn panic_free(_: &str) -> registry::Document {
     registry::Document::default()
 }
+
+/// `src/kind:V77`: every job's first line checks the runner's system
+/// through the seeded script, naming a nix system.
+#[test]
+fn v77_every_job_first_checks_its_runner_system() {
+    let check = "bash scripts/lablith/runner-system.sh ";
+    for (_, job) in jobs() {
+        let first = job.script.first().map(|t| t.render(&GITLAB));
+        let first = first.unwrap_or_default();
+        let system = first.strip_prefix(check).unwrap_or_default();
+        let known = crate::core::system::ALL.iter().any(|s| s.name() == system);
+        assert!(known, "{}: {first}", job.name);
+    }
+}
