@@ -36,8 +36,10 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 V16: ∀ `script:` line = 1 command; longer logic → seeded script
 V26: `open-mr.sh` talks GitLab API via `curl`; ⊥ extra CLI in dev shell
+V79: `runner-system.sh` (`src/kind:V77`) needs runner nix ≥ 2.20 (`nix config show`); older → exit 1 naming found & minimum, before ∀ config query
 
 ## §T TASKS
 
 id|status|task|cites
 T20|x|seeded scripts `update-pins.sh` & `open-mr.sh` (GitLab API via `curl`, `LABLITH_TOKEN`) + bats; written by `gen` w/ header|`src/gen:V5`,V16,V26
+T70|.|V79 version check; test below, at, above 2.20|V79,`src/kind:V77`
