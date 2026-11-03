@@ -81,6 +81,11 @@ unless a row here gives that system its own tags. A self-hosted fleet
 chooses its own tags; this repository ships none of anyone's. GitLab
 only.
 
+`x86_64-darwin` has no built-in tags: a row may list it, and a `-` row
+covers it, only when a row here names the repository's own Intel Mac
+runner, for example `x86_64-darwin|nix, x86_64-darwin`. Without that row
+a row listing it is refused, naming the fix, and `-` leaves it out.
+
 A row whose tags are `-` skips that system on this forge, for a fleet
 with no runner for it: its gate and build jobs are not rendered, the
 build kind's `check` still evaluates it, and `lablith report` marks it

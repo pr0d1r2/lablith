@@ -56,7 +56,7 @@ pub(crate) fn plan(registry: &Registry) -> Result<Vec<RowPlan>, RenderError> {
     let tables = tables(registry)?;
     let one = |raw: &WorkflowRow| -> Result<RowPlan, RenderError> {
         let kind = kind(raw)?;
-        let row = check(kind, raw)?;
+        let row = check(kind, raw, &tables.runners)?;
         let jobs = kind.jobs(&row, &tables)?;
         Ok(RowPlan { kind, row, jobs })
     };

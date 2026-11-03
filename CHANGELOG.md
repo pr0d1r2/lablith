@@ -8,6 +8,16 @@ the bytes lablith emits for the same inputs is at least a minor version
 
 ## [Unreleased]
 
+### Changed
+
+- pipelith 0.2.0: `x86_64-darwin` is a CI system. A row may list it when
+  a `## runners` row gives it tags, for example
+  `x86_64-darwin|nix, x86_64-darwin`, and its jobs run on that runner;
+  without the row it is refused naming that fix. A `-` row runs on the
+  systems the runner table covers, so `.gitlab/ci/<id>.yml` of a `-` row
+  gains `x86_64-darwin` jobs only in a repository with such a row, and a
+  `.lablith` without one renders the same bytes as before.
+
 ### Added
 
 - `## runners` skips a system with `<system>|-`: no gate or build job is

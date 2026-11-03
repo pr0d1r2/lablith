@@ -1,6 +1,6 @@
 use super::Gate;
 use crate::core::kind::Purpose;
-use crate::kind::{EXTRAS, Kind, Row, Tables};
+use crate::kind::{Kind, Row, Tables, check};
 use crate::pin::PinTable;
 use crate::pipeline::{Job, row_document};
 use crate::registry::{RunnerRow, parse};
@@ -9,11 +9,16 @@ use crate::system::RunnerTable;
 use crate::yaml::GITLAB;
 
 fn row(cells: &str) -> Option<Row> {
+    checked(cells, &RunnerTable::builtin())
+}
+
+/// The row checked as lablith checks it, `-` resolved over `runners`.
+fn checked(cells: &str, runners: &RunnerTable) -> Option<Row> {
     let text = format!(
         "format 1\n## workflows\nid|kind|systems|cache|args\n{cells}\n"
     );
     let raw = parse(&text).ok()?.workflows.first().cloned()?;
-    Row::check(Gate.spec(), &raw, &EXTRAS).ok()
+    check(&Gate, &raw, runners).ok()
 }
 
 fn jobs(cells: &str) -> Vec<Job> {
@@ -35,7 +40,7 @@ fn skipping(cells: &str, skip: &[&str]) -> Result<Vec<Job>, String> {
         pins: PinTable::builtin(),
         runners: runners.map_err(|e| e.to_string())?,
     };
-    let row = row(cells).ok_or("row refused")?;
+    let row = checked(cells, &tables.runners).ok_or("row refused")?;
     Gate.jobs(&row, &tables).map_err(|e| e.to_string())
 }
 

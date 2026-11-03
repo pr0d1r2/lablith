@@ -15,7 +15,8 @@ mod tests;
 
 /// The built-in table: the nix system name plus `nix`, so no private
 /// runner tag ships with lablith (`.:V20`). `x86_64-darwin` has no row:
-/// pipelith refuses it in every row.
+/// no fleet is assumed to have an Intel Mac, so it runs only on a
+/// repository's own `## runners` row (`src/registry:V28`, `V75`).
 const BUILTIN: [(System, [&str; 2]); 3] = [
     (System::X86_64Linux, ["nix", "x86_64-linux"]),
     (System::Aarch64Linux, ["nix", "aarch64-linux"]),
@@ -66,6 +67,11 @@ impl RunnerTable {
             self.0.insert(system.name(), row.tags.clone());
         }
         Ok(self)
+    }
+
+    /// Whether the table has a row for `system`, tags or a skip (`V75`).
+    pub(crate) fn covers(&self, system: System) -> bool {
+        self.0.contains_key(system.name())
     }
 
     /// Whether `## runners` skips `system` on this forge (`V72`).
