@@ -24,9 +24,11 @@ if [ "$#" -ne 1 ]; then
 fi
 want="$1"
 
-# `nix --version` prints e.g. `nix (Nix) 2.34.9+1`; the last word is the
+# `nix --version` prints e.g. `nix (Nix) 2.34.9+1`; Lix adds lines after
+# `nix (Lix, like Nix) 2.94.3`. The last word of the first line is the
 # version, read as major and minor.
 version="$(nix --version)"
+version="${version%%$'\n'*}"
 version="${version##* }"
 major="${version%%.*}"
 minor="${version#*.}"
