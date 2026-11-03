@@ -7,11 +7,12 @@
 # rendered for (src/kind:V77). It runs first in every nix job, so a
 # runner registered with the wrong tags fails before it builds, gates
 # or pushes anything for the wrong system. SYSTEM passes when it is the
-# host's native `builtins.currentSystem`, or when the host's nix lists
-# it in `extra-platforms`: that is how binfmt runs aarch64-linux on an
-# x86_64-linux host, and how Rosetta runs x86_64-darwin on an
-# aarch64-darwin Mac. Listing a system there is the owner's explicit
-# nix config, so it is trusted as given.
+# host's nix `system` setting, the one builds run for (not
+# `builtins.currentSystem`, which follows `eval-system` when that is
+# set), or when the host's nix lists it in `extra-platforms`: that is
+# how binfmt runs aarch64-linux on an x86_64-linux host, and how Rosetta
+# runs x86_64-darwin on an aarch64-darwin Mac. Listing a system there is
+# the owner's explicit nix config, so it is trusted as given.
 set -euo pipefail
 
 if [ "$#" -ne 1 ]; then
@@ -20,7 +21,7 @@ if [ "$#" -ne 1 ]; then
 fi
 want="$1"
 
-native="$(nix eval --raw --impure --expr builtins.currentSystem)"
+native="$(nix config show system)"
 if [ "$native" = "$want" ]; then
   exit 0
 fi

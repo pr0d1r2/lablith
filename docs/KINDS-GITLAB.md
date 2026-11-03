@@ -30,9 +30,10 @@ page, the code and those specs in step.
 - Every job's first command is `bash scripts/lablith/runner-system.sh
   <system>`, so a runner registered with the wrong tags fails before it
   builds, gates or pushes anything. The job's system passes when it is
-  the runner's native `builtins.currentSystem`, or when the runner's
-  nix lists it in `extra-platforms` (`nix config show
-  extra-platforms`). An x86_64-linux NixOS host with binfmt therefore
+  the runner's nix `system` setting (`nix config show system`, what
+  builds run for; `builtins.currentSystem` would follow `eval-system`),
+  or when the runner's nix lists it in `extra-platforms` (`nix config
+  show extra-platforms`, asked only when `system` does not match). An x86_64-linux NixOS host with binfmt therefore
   runs `aarch64-linux` jobs once `boot.binfmt.emulatedSystems` puts that
   system there, and a Mac whose nix lists `x86_64-darwin` runs Intel
   jobs under Rosetta. That list is the owner's own nix config, so it is
