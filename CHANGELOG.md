@@ -23,10 +23,11 @@ the bytes lablith emits for the same inputs is at least a minor version
 - Every nix job's `script:` starts with `bash
   scripts/lablith/runner-system.sh <system>`. It passes when the
   runner's nix `system` setting is `<system>` or its nix lists it in
-  `extra-platforms`
-  (binfmt or Rosetta emulation), and otherwise stops with `runner nix
-  system is <native> (extra-platforms: <list or none>), this job needs
-  <system>`. `lablith gen` seeds the new
+  `extra-platforms` (binfmt or Rosetta emulation), and otherwise stops
+  with `runner nix system is <native> (extra-platforms: <list or
+  none>), this job needs <system>`. It needs nix 2.20 or later on the
+  runner (a shell runner's host) and stops naming the version found on
+  an older one. `lablith gen` seeds the new
   `scripts/lablith/runner-system.sh` in every repository with a row, and
   every job in `.gitlab/ci/<id>.yml` gains that first line, so a
   one-line `script: [..]` becomes a block list.

@@ -13,6 +13,10 @@
 # how binfmt runs aarch64-linux on an x86_64-linux host, and how Rosetta
 # runs x86_64-darwin on an aarch64-darwin Mac. Listing a system there is
 # the owner's explicit nix config, so it is trusted as given.
+#
+# Both settings are read with `nix config show`, which nix 2.20 brought
+# (src/script:V79). A shell executor runs the host's nix, so an older
+# host stops here first, naming its version and that minimum.
 set -euo pipefail
 
 if [ "$#" -ne 1 ]; then
@@ -20,6 +24,20 @@ if [ "$#" -ne 1 ]; then
   exit 2
 fi
 want="$1"
+
+# `nix --version` prints e.g. `nix (Nix) 2.34.9+1`; the last word is the
+# version, read as major and minor.
+version="$(nix --version)"
+version="${version##* }"
+major="${version%%.*}"
+minor="${version#*.}"
+minor="${minor%%[!0-9]*}"
+if ! [ "${major:-0}" -gt 2 ] 2>/dev/null &&
+  ! { [ "$major" = 2 ] && [ "${minor:-0}" -ge 20 ] 2>/dev/null; }; then
+  echo "runner-system: the runner's nix is $version; this check needs" \
+    "nix 2.20 or later" >&2
+  exit 1
+fi
 
 native="$(nix config show system)"
 if [ "$native" = "$want" ]; then
