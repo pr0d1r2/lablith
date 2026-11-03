@@ -54,11 +54,11 @@ V50: ∀ job carries own `rules:`: `gate` & `build` jobs ⊥ run in schedule pip
 V53: `GIT_DEPTH` per kind: `gate` `0` (semver step needs tags), `build` `1`, bump kinds `0` (branch push)
 V54: `token` arg default (`ArgDefault::Forge`) = `LABLITH_TOKEN`, ⊥ `CI_JOB_TOKEN` ∵ job token cannot open MR. deviates from pipelith "forge built-in job token" wording ∴ note in `docs/KINDS-GITLAB.md`; pr0d1r2/pipelith#9
 V57: nix in job: image-based executor → pinned nix image w/ `NIX_CONFIG` enabling `nix-command flakes`; cachix binary from consumer flake lock (`nix run` on locked input), ⊥ unpinned `nixpkgs#` registry lookup; shell executor ignores `image:` & uses host nix (`src/system:R8`)
-V77: ∀ nix job script[0] = seeded `runner-system.sh <system>`: pass iff system = `builtins.currentSystem` ∨ ∈ nix `extra-platforms`; else exit 1 naming all three
+V77: ∀ nix job script[0] = seeded `runner-system.sh <system>`: pass iff = nix `system` (⊥ `eval-system`) ∨ ∈ `extra-platforms`; else exit 1 naming all 3
 
 ## §T TASKS
 
 id|status|task|cites
 T17|x|common job parts: `timeout`, `interruptible`/`resource_group`, `GIT_DEPTH`, nix install via image, cachix w/ fork-MR skip, secret gating|V11,V12,V13,V14,V15
 T67|x|V77 check; tests, goldens, CHANGELOG|V77,`.:V25`
-T69|x|V77 `extra-platforms`: test emulated, neither, empty|V77
+T69|.|V77: test emulated, neither, empty, `eval-system`|V77
