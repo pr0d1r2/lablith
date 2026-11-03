@@ -61,9 +61,9 @@ self|.|-
 ## §R RESEARCH
 
 id|topic|finding|src
-R1|fleet survey|52 checkouts w/ self-hosted GitLab remote, 46 w/o GitHub remote. 2 w/ `.gitlab-ci.yml`, neither runs hk: 1 = lint tools in `nix develop` on `nixos/nix:latest` (unpinned); 1 = Rails + Postgres service + `include: template:`. 0 render CI from config. runner fleet ⊥ visible from checkouts|local checkouts 2026-10-16
-R2|name|`lablith` free 2026-10-16: crates.io 404, ⊥ `pr0d1r2/lablith`. rejected `glablith` (echoes `glab` CLI), `gitlith` (says git, ⊥ GitLab)|crates.io API, `gh repo view`
-R3|siblings|pipelith 0.2.0 on crates.io, std only; 0.2 makes `x86_64-darwin` a CI system, a forge w/o default runner refuses it unless repo names own runner (pipelith 4a7b414). actlith 0.1.0 on crates.io; actlith `main` takes `registry` `kind` `system` `yaml` `files` `detect` from pipelith, goldens byte-identical (actlith PRs #7–#14)|../pipelith, ../actlith 2026-10-17
+R1|fleet survey|52 checkouts w/ self-hosted GitLab remote, 46 w/o GitHub remote. 2 w/ `.gitlab-ci.yml`, neither runs hk; 0 render CI from config; runner fleet ⊥ visible|local checkouts 2026-10-16
+R2|name|`lablith` free 2026-10-16: crates.io 404, ⊥ `pr0d1r2/lablith`; rejected `glablith` and `gitlith`|crates.io API, `gh repo view`
+R3|siblings|pipelith 0.2.0 crates.io/std-only; 0.2 makes `x86_64-darwin` a CI system, so a forge w/o default runner needs a repo runner (4a7b414). actlith 0.1.0 shares pipelith's `main` inputs and byte-identical goldens|../pipelith, ../actlith 2026-10-17
 R10|config file name|? pipelith open question 1; blocks `docs/RELEASE.md` only (Q3)|../pipelith
 
 ## §V INVARIANTS
@@ -96,3 +96,4 @@ T46|x|pipelith issues: `token` default wording per forge → pr0d1r2/pipelith#9 
 id|date|cause|fix
 B2|2026-10-18|`src/registry:V55` demanded id charset `[a-z0-9][a-z0-9-]*`, stricter than pipelith's `[A-Za-z0-9._-]` ∴ a row valid in `.actlith` refused here, breaking V4; written w/o reading `RawRow::from_cells`|`src/registry:V55` rewritten: pipelith's charset, ⊥ narrowed; test per rendered form
 B4|2026-10-18|seeded `update-pins.sh` read rev of lock node literally named `nixpkgs`; another input w/ own nixpkgs-lock → nix renames root's chain `nixpkgs-lock_2` → `nixpkgs_2`, `nixpkgs` = other input's node, ⊥ moves ∴ job always "nothing to do" (actlith#22)|rev resolved from root: `inputs."nixpkgs-lock"` → its `inputs.nixpkgs`, node name or follows path; one `nix eval`, ⊥ jq; test on lock w/ decoy `nixpkgs`
+B5|2026-11-03|root `SPEC.md` exceeded its `itok` entry ceiling after the release-doc update|condensed non-contract research rows; recorded the budget failure here
