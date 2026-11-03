@@ -225,6 +225,7 @@ fn runner(
     run(name, "runner-system.sh", args, &env)
 }
 
+const VERSION: &str = "nix --version";
 const NATIVE: &str = "nix config show system";
 const EXTRA: &str = "nix config show extra-platforms";
 
@@ -233,7 +234,7 @@ const EXTRA: &str = "nix config show extra-platforms";
 fn runner_system_passes_on_the_jobs_system() -> io::Result<()> {
     let ran = runner("rs-same", &["x86_64-linux"], "x86_64-linux", "")?;
     assert_eq!(ran.code, Some(0), "{}", ran.stderr);
-    assert_eq!(calls(&ran), [NATIVE]);
+    assert_eq!(calls(&ran), [VERSION, NATIVE]);
     Ok(())
 }
 
@@ -244,7 +245,7 @@ fn runner_system_passes_on_an_extra_platform() -> io::Result<()> {
     let extra = "i686-linux aarch64-linux";
     let ran = runner("rs-emul", &["aarch64-linux"], "x86_64-linux", extra)?;
     assert_eq!(ran.code, Some(0), "{}", ran.stderr);
-    assert_eq!(calls(&ran), [NATIVE, EXTRA]);
+    assert_eq!(calls(&ran), [VERSION, NATIVE, EXTRA]);
     Ok(())
 }
 
@@ -284,11 +285,50 @@ fn runner_system_reads_system_not_eval_system() -> io::Result<()> {
     ];
     let ran = run("rs-eval-ok", "runner-system.sh", &["x86_64-linux"], &env)?;
     assert_eq!(ran.code, Some(0), "{}", ran.stderr);
-    assert_eq!(calls(&ran), [NATIVE]);
+    assert_eq!(calls(&ran), [VERSION, NATIVE]);
     let ran = run("rs-eval-no", "runner-system.sh", &["aarch64-linux"], &env)?;
     assert_eq!(ran.code, Some(1));
     let want = "runner nix system is x86_64-linux (extra-platforms: none)";
     assert!(ran.stderr.contains(want), "{}", ran.stderr);
+    Ok(())
+}
+
+/// `runner-system.sh` for an x86_64-linux job on an x86_64-linux runner
+/// whose `nix --version` prints `version`.
+fn on_nix(name: &str, version: &str) -> io::Result<Ran> {
+    let env = [
+        ("STUB_NIX_VERSION", version),
+        ("STUB_SYSTEM", "x86_64-linux"),
+        ("STUB_EXTRA_PLATFORMS", ""),
+    ];
+    run(name, "runner-system.sh", &["x86_64-linux"], &env)
+}
+
+/// `src/script:V79`: below 2.20 there is no `nix config show`, so the
+/// script stops first, naming the version found and the minimum.
+#[test]
+fn runner_system_refuses_nix_older_than_2_20() -> io::Result<()> {
+    let ran = on_nix("rs-old", "nix (Nix) 2.19.3")?;
+    assert_eq!(ran.code, Some(1));
+    let want = "runner-system: the runner's nix is 2.19.3; this check needs \
+                nix 2.20 or later";
+    assert!(ran.stderr.contains(want), "{}", ran.stderr);
+    assert_eq!(calls(&ran), [VERSION]);
+    Ok(())
+}
+
+/// `src/script:V79`: 2.20 itself and later versions run the check.
+#[test]
+fn runner_system_runs_on_nix_2_20_and_later() -> io::Result<()> {
+    for (name, version) in [
+        ("rs-2-20", "nix (Nix) 2.20.0"),
+        ("rs-later", "nix (Nix) 2.34.9+1"),
+        ("rs-three", "nix (Nix) 3.0.1"),
+    ] {
+        let ran = on_nix(name, version)?;
+        assert_eq!(ran.code, Some(0), "{version}: {}", ran.stderr);
+        assert_eq!(calls(&ran), [VERSION, NATIVE], "{version}");
+    }
     Ok(())
 }
 

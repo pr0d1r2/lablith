@@ -35,6 +35,10 @@ case "$tool $*" in
     echo "${STUB_REV_BEFORE:-}"
   fi
   ;;
+"nix --version")
+  # STUB_NIX_VERSION: what `nix --version` prints.
+  echo "${STUB_NIX_VERSION:-nix (Nix) 2.34.9}"
+  ;;
 "nix config show system")
   # STUB_SYSTEM: the host's nix `system` setting.
   echo "${STUB_SYSTEM:-}"
