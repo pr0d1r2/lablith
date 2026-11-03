@@ -8,6 +8,9 @@ pub(crate) enum Script {
     Cachix,
     /// `open-mr.sh`: commit, push a branch, open a merge request.
     OpenMr,
+    /// `runner-system.sh`: stop unless the runner is the job's system
+    /// (`src/kind:V77`); first in every nix job.
+    RunnerSystem,
     /// `update-pins.sh`: kind `update-pins`.
     UpdatePins,
     /// `upstream.sh`: kind `upstream`.
@@ -27,6 +30,7 @@ impl Script {
         match self {
             Self::Cachix => seeded!("cachix.sh"),
             Self::OpenMr => seeded!("open-mr.sh"),
+            Self::RunnerSystem => seeded!("runner-system.sh"),
             Self::UpdatePins => seeded!("update-pins.sh"),
             Self::Upstream => seeded!("upstream.sh"),
             Self::VerifyCache => seeded!("verify-cache.sh"),
@@ -57,10 +61,11 @@ macro_rules! seeded {
 use seeded;
 
 /// Every seeded script, sorted by path.
-pub(crate) fn scripts() -> [(&'static str, &'static str); 5] {
+pub(crate) fn scripts() -> [(&'static str, &'static str); 6] {
     [
         Script::Cachix,
         Script::OpenMr,
+        Script::RunnerSystem,
         Script::UpdatePins,
         Script::Upstream,
         Script::VerifyCache,

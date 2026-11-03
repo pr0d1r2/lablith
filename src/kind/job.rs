@@ -1,13 +1,15 @@
 //! The hardened nix job every kind builds on (`src/kind:V11` to
 //! `src/kind:V14`, `src/kind:V57`): the pinned nix image with flakes on,
 //! the row's cache as a substituter, the system's runner tags, the row's
-//! timeout and a per-kind clone depth.
+//! timeout and a per-kind clone depth. Its first command checks that
+//! the runner's nix system is the job's (`src/kind:V77`).
 
 use super::contract::Tables;
 use super::error::KindError;
 use crate::core::kind::{Cache, Row};
 use crate::core::yaml::{Comment, Text};
 use crate::pipeline::{Job, Rule, Stage};
+use crate::script::Script;
 use crate::system::System;
 
 /// The image every job runs in.
@@ -102,8 +104,15 @@ pub(crate) fn nix_job(
         needs: Vec::new(),
         rules: spec.rules,
         variables: variables(spec.depth, row.cache.as_ref()),
-        script: spec.script,
+        script: checked(spec.system, spec.script),
     })
+}
+
+/// `script` after `runner-system.sh <system>` (`src/kind:V77`).
+fn checked(system: System, script: Vec<Text>) -> Vec<Text> {
+    let path = Script::RunnerSystem.path();
+    let check = Text::lit(&format!("bash {path} {}", system.name()));
+    std::iter::once(check).chain(script).collect()
 }
 
 /// `GIT_DEPTH` and `NIX_CONFIG`.

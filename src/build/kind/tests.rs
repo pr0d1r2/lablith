@@ -32,8 +32,10 @@ fn jobs(cells: &str, extra: &[RunnerRow]) -> Vec<Job> {
 
 const ROW: &str = "pkg|build|x86_64-linux, aarch64-linux|pr0d1r2|package=hk";
 
+/// The kind's own script lines, past the runner system check
+/// (`src/kind:V77`, pinned in `src/kind/job`).
 fn script(job: Option<&Job>) -> Vec<String> {
-    job.map(|j| j.script.iter().map(|t| t.render(&GITLAB)).collect())
+    job.map(|j| j.script.iter().skip(1).map(|t| t.render(&GITLAB)).collect())
         .unwrap_or_default()
 }
 
