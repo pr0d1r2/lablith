@@ -19,4 +19,6 @@
       experimental-features = nix-command flakes
       extra-substituters = https://pr0d1r2.cachix.org
       extra-trusted-public-keys = pr0d1r2.cachix.org-1:NfWjbhgAj41byXhCKiaE+av3Vnphm1fTezHXEGsiQIM=
-  script: ['bash scripts/lablith/cachix.sh pr0d1r2 ''nix develop --command hk check --all --check''']
+  script:
+    - bash scripts/lablith/runner-system.sh x86_64-linux
+    - 'bash scripts/lablith/cachix.sh pr0d1r2 ''nix develop --command hk check --all --check'''

@@ -19,7 +19,9 @@
       experimental-features = nix-command flakes
       extra-substituters = https://pr0d1r2.cachix.org
       extra-trusted-public-keys = pr0d1r2.cachix.org-1:NfWjbhgAj41byXhCKiaE+av3Vnphm1fTezHXEGsiQIM=
-  script: ['bash scripts/lablith/cachix.sh pr0d1r2 ''nix build --print-build-logs .#packages.x86_64-linux.hk''']
+  script:
+    - bash scripts/lablith/runner-system.sh x86_64-linux
+    - 'bash scripts/lablith/cachix.sh pr0d1r2 ''nix build --print-build-logs .#packages.x86_64-linux.hk'''
 
 # One native runner per system: a cross-built path is a different store
 # path, never the one consumers substitute.
@@ -40,7 +42,9 @@
       experimental-features = nix-command flakes
       extra-substituters = https://pr0d1r2.cachix.org
       extra-trusted-public-keys = pr0d1r2.cachix.org-1:NfWjbhgAj41byXhCKiaE+av3Vnphm1fTezHXEGsiQIM=
-  script: ['bash scripts/lablith/cachix.sh pr0d1r2 ''nix build --print-build-logs .#packages.aarch64-linux.hk''']
+  script:
+    - bash scripts/lablith/runner-system.sh aarch64-linux
+    - 'bash scripts/lablith/cachix.sh pr0d1r2 ''nix build --print-build-logs .#packages.aarch64-linux.hk'''
 
 # --all-systems is the point: a bare `nix flake check` skips every system
 # the runner cannot build. Systems without runner tags are evaluated, so
@@ -62,7 +66,10 @@
       experimental-features = nix-command flakes
       extra-substituters = https://pr0d1r2.cachix.org
       extra-trusted-public-keys = pr0d1r2.cachix.org-1:NfWjbhgAj41byXhCKiaE+av3Vnphm1fTezHXEGsiQIM=
-  script: [nix flake check --all-systems --print-build-logs, 'nix eval --raw .#packages.x86_64-darwin.hk.drvPath']
+  script:
+    - bash scripts/lablith/runner-system.sh x86_64-linux
+    - nix flake check --all-systems --print-build-logs
+    - 'nix eval --raw .#packages.x86_64-darwin.hk.drvPath'
 
 # A failed cachix push does not fail its job, so this asks the cache
 # itself for every built path, after the builds.
@@ -84,4 +91,6 @@
       experimental-features = nix-command flakes
       extra-substituters = https://pr0d1r2.cachix.org
       extra-trusted-public-keys = pr0d1r2.cachix.org-1:NfWjbhgAj41byXhCKiaE+av3Vnphm1fTezHXEGsiQIM=
-  script: [bash scripts/lablith/verify-cache.sh pr0d1r2 hk x86_64-linux aarch64-linux]
+  script:
+    - bash scripts/lablith/runner-system.sh x86_64-linux
+    - bash scripts/lablith/verify-cache.sh pr0d1r2 hk x86_64-linux aarch64-linux

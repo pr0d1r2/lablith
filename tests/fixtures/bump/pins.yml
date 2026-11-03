@@ -20,4 +20,6 @@
       extra-substituters = https://pr0d1r2.cachix.org
       extra-trusted-public-keys = pr0d1r2.cachix.org-1:NfWjbhgAj41byXhCKiaE+av3Vnphm1fTezHXEGsiQIM=
     LABLITH_TOKEN_NAME: LABLITH_TOKEN
-  script: ['nix develop --command bash scripts/lablith/update-pins.sh ''.#default''']
+  script:
+    - bash scripts/lablith/runner-system.sh x86_64-linux
+    - 'nix develop --command bash scripts/lablith/update-pins.sh ''.#default'''

@@ -25,8 +25,10 @@ fn job(kind: &dyn Kind, cells: &str) -> Option<Job> {
     jobs.into_iter().next()
 }
 
+/// The kind's own script lines, past the runner system check
+/// (`src/kind:V77`, pinned in `src/kind/job`).
 fn script(job: Option<&Job>) -> Vec<String> {
-    job.map(|j| j.script.iter().map(|t| t.render(&GITLAB)).collect())
+    job.map(|j| j.script.iter().skip(1).map(|t| t.render(&GITLAB)).collect())
         .unwrap_or_default()
 }
 

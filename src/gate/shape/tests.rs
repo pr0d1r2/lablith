@@ -44,9 +44,10 @@ fn skipping(cells: &str, skip: &[&str]) -> Result<Vec<Job>, String> {
     Gate.jobs(&row, &tables).map_err(|e| e.to_string())
 }
 
+/// Each job's own lines, past the runner system check (`src/kind:V77`).
 fn scripts(jobs: &[Job]) -> Vec<String> {
     jobs.iter()
-        .flat_map(|j| j.script.iter().map(|t| t.render(&GITLAB)))
+        .flat_map(|j| j.script.iter().skip(1).map(|t| t.render(&GITLAB)))
         .collect()
 }
 

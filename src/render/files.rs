@@ -105,13 +105,20 @@ fn root(registry: &Registry, plans: &[RowPlan]) -> File {
     }
 }
 
+/// The scripts the rows' kinds name, those they call, and
+/// `runner-system.sh`, which every nix job runs first (`src/kind:V77`).
+fn needed(plans: &[RowPlan]) -> BTreeSet<Script> {
+    let check = (!plans.is_empty()).then_some(Script::RunnerSystem);
+    let direct = plans.iter().flat_map(|p| p.kind.scripts(&p.row));
+    direct
+        .chain(check)
+        .flat_map(|s| std::iter::once(s).chain(s.calls().iter().copied()))
+        .collect()
+}
+
 /// Every seeded script a rendered kind needs, and those it calls.
 fn seeded(plans: &[RowPlan]) -> Vec<File> {
-    let direct = plans.iter().flat_map(|p| p.kind.scripts(&p.row));
-    let needed: BTreeSet<Script> = direct
-        .flat_map(|s| std::iter::once(s).chain(s.calls().iter().copied()))
-        .collect();
-    needed
+    needed(plans)
         .into_iter()
         .map(|s| {
             let (path, bytes) = s.file();
