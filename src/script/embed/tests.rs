@@ -209,19 +209,23 @@ fn bump_scripts_call_open_mr_and_the_rest_call_none() {
     }
 }
 
-/// `runner-system.sh` with `args` on a runner whose nix says `system`
-/// natively and lists `extra` in `extra-platforms`.
+/// `runner-system.sh` with `args` on a runner whose nix `system` and
+/// `eval-system` are both `system`, listing `extra` in `extra-platforms`.
 fn runner(
     name: &str,
     args: &[&str],
     system: &str,
     extra: &str,
 ) -> io::Result<Ran> {
-    let env = [("STUB_REV_BEFORE", system), ("STUB_EXTRA_PLATFORMS", extra)];
+    let env = [
+        ("STUB_SYSTEM", system),
+        ("STUB_REV_BEFORE", system),
+        ("STUB_EXTRA_PLATFORMS", extra),
+    ];
     run(name, "runner-system.sh", args, &env)
 }
 
-const NATIVE: &str = "nix eval --raw --impure --expr builtins.currentSystem";
+const NATIVE: &str = "nix config show system";
 const EXTRA: &str = "nix config show extra-platforms";
 
 /// `src/kind:V77`: the native system passes without asking for more.
@@ -264,6 +268,26 @@ fn runner_system_with_no_extra_platforms_stops_as_before() -> io::Result<()> {
     assert_eq!(ran.code, Some(1));
     let want = "runner-system: runner nix system is x86_64-linux \
                 (extra-platforms: none), this job needs aarch64-linux";
+    assert!(ran.stderr.contains(want), "{}", ran.stderr);
+    Ok(())
+}
+
+/// `src/kind:V77`: with `eval-system` apart from `system`,
+/// `builtins.currentSystem` says `eval-system`, but builds run for
+/// `system`, so the check reads `system`.
+#[test]
+fn runner_system_reads_system_not_eval_system() -> io::Result<()> {
+    let env = [
+        ("STUB_SYSTEM", "x86_64-linux"),
+        ("STUB_REV_BEFORE", "aarch64-linux"),
+        ("STUB_EXTRA_PLATFORMS", ""),
+    ];
+    let ran = run("rs-eval-ok", "runner-system.sh", &["x86_64-linux"], &env)?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    assert_eq!(calls(&ran), [NATIVE]);
+    let ran = run("rs-eval-no", "runner-system.sh", &["aarch64-linux"], &env)?;
+    assert_eq!(ran.code, Some(1));
+    let want = "runner nix system is x86_64-linux (extra-platforms: none)";
     assert!(ran.stderr.contains(want), "{}", ran.stderr);
     Ok(())
 }
