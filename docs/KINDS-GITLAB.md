@@ -45,13 +45,15 @@ page, the code and those specs in step.
   nix 2.20 or later; an older one stops every job with `the runner's
   nix is <version>; this check needs nix 2.20 or later`.
 - With the Docker executor the check reads the nix configuration inside
-  the pinned `nixos/nix` image, not the host's. The `NIX_CONFIG` lablith
-  sets adds no `extra-platforms`, so a host's binfmt setup
-  (`boot.binfmt.emulatedSystems`) does not reach the container, and an
-  emulated system is refused there. To run one under Docker, set
-  `system` or `extra-platforms` in the image or in the container's
-  environment, for example `NIX_CONFIG` in the runner's `environment`
-  setting.
+  the pinned `nixos/nix` image, not the host's, so a host's binfmt setup
+  (`boot.binfmt.emulatedSystems`) does not reach it and an emulated
+  system is refused there. Each job sets its own `NIX_CONFIG`, which
+  replaces one from the runner's `environment`, so that is no way in.
+  Set `system` or `extra-platforms` in the container's nix configuration
+  instead: every job runs the pinned `nixos/nix` image, so mount a
+  `nix.conf` that lists them over `/etc/nix/nix.conf` through the
+  runner's Docker `volumes`. The job's `NIX_CONFIG` names neither
+  setting, so the file's values stand.
 - A cache push goes through `scripts/lablith/cachix.sh`, which pushes
   only when `CACHIX_AUTH_TOKEN` (masked, protected) is set and the
   pipeline is not a merge request from a fork.
