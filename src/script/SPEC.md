@@ -42,4 +42,4 @@ V79: `runner-system.sh` (`src/kind:V77`) needs runner nix ≥ 2.20 (`nix config 
 
 id|status|task|cites
 T20|x|seeded scripts `update-pins.sh` & `open-mr.sh` (GitLab API via `curl`, `LABLITH_TOKEN`) + bats; written by `gen` w/ header|`src/gen:V5`,V16,V26
-T70|.|V79 version check; test below, at, above 2.20|V79,`src/kind:V77`
+T70|x|V79 version check; test below, at, above 2.20|V79,`src/kind:V77`
