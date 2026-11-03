@@ -3,6 +3,7 @@ use crate::kind::{GATE, Kind, KindError, KindSpec, Row, Secret, Tables};
 use crate::pipeline::Job;
 use crate::registry::parse;
 use crate::script::Script;
+use crate::system::RunnerTable;
 
 /// A kind for the check alone: pipelith's `gate`, no jobs.
 struct Probe;
@@ -28,7 +29,7 @@ fn row(cells: &str) -> Result<Row, KindError> {
     );
     let reg = parse(&text).unwrap_or_default();
     let raw = reg.workflows.first().cloned().unwrap_or_default();
-    check(&Probe, &raw)
+    check(&Probe, &raw, &RunnerTable::builtin())
 }
 
 #[test]

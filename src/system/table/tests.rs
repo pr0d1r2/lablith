@@ -78,3 +78,14 @@ fn a_skip_row_leaves_its_system_without_a_runner() {
          this forge runs"
     );
 }
+
+/// `V75`: the built-in table covers all but `x86_64-darwin`; a row, tags
+/// or a skip, covers its system.
+#[test]
+fn covers_names_the_systems_a_row_or_the_builtin_maps() {
+    let t = RunnerTable::builtin();
+    assert!(t.covers(System::X86_64Linux) && t.covers(System::Aarch64Darwin));
+    assert!(!t.covers(System::X86_64Darwin));
+    let t = t.with_overrides(&[row("x86_64-darwin", &[])]);
+    assert!(t.is_ok_and(|t| t.covers(System::X86_64Darwin)));
+}
