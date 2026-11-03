@@ -209,40 +209,68 @@ fn bump_scripts_call_open_mr_and_the_rest_call_none() {
     }
 }
 
-/// `runner-system.sh` with `args` on a runner whose nix says `system`.
-fn runner(name: &str, args: &[&str], system: &str) -> io::Result<Ran> {
-    run(
-        name,
-        "runner-system.sh",
-        args,
-        &[("STUB_REV_BEFORE", system)],
-    )
+/// `runner-system.sh` with `args` on a runner whose nix says `system`
+/// natively and lists `extra` in `extra-platforms`.
+fn runner(
+    name: &str,
+    args: &[&str],
+    system: &str,
+    extra: &str,
+) -> io::Result<Ran> {
+    let env = [("STUB_REV_BEFORE", system), ("STUB_EXTRA_PLATFORMS", extra)];
+    run(name, "runner-system.sh", args, &env)
 }
 
-/// `src/kind:V77`.
+const NATIVE: &str = "nix eval --raw --impure --expr builtins.currentSystem";
+const EXTRA: &str = "nix config show extra-platforms";
+
+/// `src/kind:V77`: the native system passes without asking for more.
 #[test]
 fn runner_system_passes_on_the_jobs_system() -> io::Result<()> {
-    let ran = runner("rs-same", &["x86_64-linux"], "x86_64-linux")?;
+    let ran = runner("rs-same", &["x86_64-linux"], "x86_64-linux", "")?;
     assert_eq!(ran.code, Some(0), "{}", ran.stderr);
-    let want = "nix eval --raw --impure --expr builtins.currentSystem";
-    assert_eq!(calls(&ran), [want]);
+    assert_eq!(calls(&ran), [NATIVE]);
     Ok(())
 }
 
-/// `src/kind:V77`: an emulating host reports its own system and stops.
+/// `src/kind:V77`: a system the host emulates through nix's
+/// `extra-platforms` (binfmt `aarch64-linux` on `x86_64-linux`) passes.
 #[test]
-fn runner_system_stops_naming_both_systems() -> io::Result<()> {
-    let ran = runner("rs-other", &["aarch64-linux"], "x86_64-linux")?;
+fn runner_system_passes_on_an_extra_platform() -> io::Result<()> {
+    let extra = "i686-linux aarch64-linux";
+    let ran = runner("rs-emul", &["aarch64-linux"], "x86_64-linux", extra)?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    assert_eq!(calls(&ran), [NATIVE, EXTRA]);
+    Ok(())
+}
+
+/// `src/kind:V77`: a system in neither stops, naming all three.
+#[test]
+fn runner_system_stops_naming_native_extra_and_job_systems() -> io::Result<()> {
+    let ran =
+        runner("rs-other", &["aarch64-linux"], "x86_64-linux", "i686-linux")?;
     assert_eq!(ran.code, Some(1));
-    let want = "runner-system: runner nix system is x86_64-linux, this job \
-                needs aarch64-linux";
+    let want = "runner-system: runner nix system is x86_64-linux \
+                (extra-platforms: i686-linux), this job needs aarch64-linux";
+    assert!(ran.stderr.contains(want), "{}", ran.stderr);
+    Ok(())
+}
+
+/// `src/kind:V77`: an empty `extra-platforms` behaves as the native
+/// check alone.
+#[test]
+fn runner_system_with_no_extra_platforms_stops_as_before() -> io::Result<()> {
+    let ran = runner("rs-none", &["aarch64-linux"], "x86_64-linux", "")?;
+    assert_eq!(ran.code, Some(1));
+    let want = "runner-system: runner nix system is x86_64-linux \
+                (extra-platforms: none), this job needs aarch64-linux";
     assert!(ran.stderr.contains(want), "{}", ran.stderr);
     Ok(())
 }
 
 #[test]
 fn runner_system_without_its_argument_is_a_usage_error() -> io::Result<()> {
-    let ran = runner("rs-usage", &[], "x86_64-linux")?;
+    let ran = runner("rs-usage", &[], "x86_64-linux", "")?;
     assert_eq!(ran.code, Some(2));
     assert!(
         ran.stderr.contains("usage: runner-system.sh"),

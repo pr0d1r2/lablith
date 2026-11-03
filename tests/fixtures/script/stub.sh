@@ -35,6 +35,10 @@ case "$tool $*" in
     echo "${STUB_REV_BEFORE:-}"
   fi
   ;;
+"nix config show extra-platforms")
+  # STUB_EXTRA_PLATFORMS: the host's nix `extra-platforms`, maybe empty.
+  echo "${STUB_EXTRA_PLATFORMS:-}"
+  ;;
 "nix eval --raw .#packages."*)
   attr="${3#.#packages.}"
   sys="${attr%%.*}"
