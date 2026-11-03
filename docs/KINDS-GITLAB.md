@@ -33,12 +33,17 @@ page, the code and those specs in step.
   the runner's nix `system` setting (`nix config show system`, what
   builds run for; `builtins.currentSystem` would follow `eval-system`),
   or when the runner's nix lists it in `extra-platforms` (`nix config
-  show extra-platforms`, asked only when `system` does not match). An x86_64-linux NixOS host with binfmt therefore
-  runs `aarch64-linux` jobs once `boot.binfmt.emulatedSystems` puts that
-  system there, and a Mac whose nix lists `x86_64-darwin` runs Intel
-  jobs under Rosetta. That list is the owner's own nix config, so it is
-  trusted as given. Otherwise the job stops with `runner nix system is
-  <native> (extra-platforms: <list or none>), this job needs <system>`.
+  show extra-platforms`, asked only when `system` does not match). An
+  x86_64-linux NixOS host with binfmt therefore runs `aarch64-linux`
+  jobs once `boot.binfmt.emulatedSystems` puts that system there, and a
+  Mac whose nix lists `x86_64-darwin` runs Intel jobs under Rosetta.
+  That list is the owner's own nix config, so it is trusted as given.
+  Otherwise the job stops with `runner nix system is <native>
+  (extra-platforms: <list or none>), this job needs <system>`.
+- The check needs nix 2.20 or later, which brought `nix config show`.
+  A shell executor runs the host's nix, so a shell runner's host needs
+  nix 2.20 or later; an older one stops every job with `the runner's
+  nix is <version>; this check needs nix 2.20 or later`.
 - A cache push goes through `scripts/lablith/cachix.sh`, which pushes
   only when `CACHIX_AUTH_TOKEN` (masked, protected) is set and the
   pipeline is not a merge request from a fork.
