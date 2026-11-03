@@ -152,7 +152,11 @@ fn a_default_row_without_a_darwin_runner_row_keeps_three_systems() {
 #[test]
 fn a_default_row_with_a_darwin_runner_row_gates_it_too() {
     let got = gate_jobs("ci|gate|-|-|-", DARWIN_RUNNER).unwrap_or_default();
-    let last = got.last().cloned().unwrap_or_default();
-    assert_eq!(got.len(), 4, "{got:?}");
-    assert_eq!(last, "ci:gate:x86_64-darwin|nix, x86_64-darwin");
+    let want = [
+        "ci:gate:x86_64-linux|nix, x86_64-linux",
+        "ci:gate:aarch64-linux|nix, aarch64-linux",
+        "ci:gate:aarch64-darwin|nix, aarch64-darwin",
+        "ci:gate:x86_64-darwin|nix, x86_64-darwin",
+    ];
+    assert_eq!(got, want.map(str::to_owned).to_vec());
 }
