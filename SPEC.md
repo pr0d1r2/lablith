@@ -35,7 +35,7 @@ self|.|-
 - deterministic core: same `.lablith` + same lablith version → byte-identical output. ⊥ LLM, ⊥ heuristic guess, ⊥ clock | rng | hostname in output, ⊥ network except `pin` (V1).
 - lang: Rust edition 2024, stable, MSRV 1.95 = fleet pin (`nixpkgs-lock` → nixos-26.05). MIT. `unsafe_code = "forbid"`.
 - layout: ONE published crate `lablith` (lib + bin `lablith` ∴ `cargo install lablith` gives cmd); `dev/` = `lablith-dev`, `publish = false`. module = dir + `mod.rs` = node.
-- built on `pipelith = "0.1"` from crates.io (≥ 0.1.1), ⊥ git dep (blocks publish, needs `deny.toml` allow-git & nix `outputHashes`). pipelith owns registry grammar, YAML writer, generated-file set, neutral kinds, nix systems, detect. lablith owns only GitLab: pipeline model, runner tags, image pins, hardening, layout, scripts, CLI.
+- built on `pipelith = "0.2"` from crates.io (≥ 0.2.0), ⊥ git dep (blocks publish, needs `deny.toml` allow-git & nix `outputHashes`). pipelith owns registry grammar, YAML writer, generated-file set, neutral kinds, nix systems, detect. lablith owns only GitLab: pipeline model, runner tags, image pins, hardening, layout, scripts, CLI.
 - deps minimal; ∀ dep ! justified in §R & owned by ONE facade node. `clap` (derive) → `src/cli`. JSON-schema validation & YAML reading = test-only deps, each w/ §R row.
 - runtime deps: `git`; `curl` for `pin` & seeded `open-mr.sh` (⊥ HTTP crate). bump kinds run `nix develop --command bash scripts/lablith/....sh` ∴ consumer dev shell ! provide `lablith` (pklith catalog row, pklith issue #70 shape).
 - ⊥ push | PR to another repo w/o explicit approval. agent ⊥ publishes.
@@ -63,7 +63,7 @@ self|.|-
 id|topic|finding|src
 R1|fleet survey|52 checkouts w/ self-hosted GitLab remote, 46 w/o GitHub remote. 2 w/ `.gitlab-ci.yml`, neither runs hk: 1 = lint tools in `nix develop` on `nixos/nix:latest` (unpinned); 1 = Rails + Postgres service + `include: template:`. 0 render CI from config. runner fleet ⊥ visible from checkouts|local checkouts 2026-10-16
 R2|name|`lablith` free 2026-10-16: crates.io 404, ⊥ `pr0d1r2/lablith`. rejected `glablith` (echoes `glab` CLI), `gitlith` (says git, ⊥ GitLab)|crates.io API, `gh repo view`
-R3|siblings|pipelith 0.1.1 on crates.io, std only. actlith 0.1.0 on crates.io; actlith `main` takes `registry` `kind` `system` `yaml` `files` `detect` from pipelith, goldens byte-identical (actlith PRs #7–#14)|../pipelith, ../actlith 2026-10-17
+R3|siblings|pipelith 0.2.0 on crates.io, std only; 0.2 makes `x86_64-darwin` a CI system, a forge w/o default runner refuses it unless repo names own runner (pipelith 4a7b414). actlith 0.1.0 on crates.io; actlith `main` takes `registry` `kind` `system` `yaml` `files` `detect` from pipelith, goldens byte-identical (actlith PRs #7–#14)|../pipelith, ../actlith 2026-10-17
 R10|config file name|? pipelith open question 1; blocks `docs/RELEASE.md` only (Q3)|../pipelith
 
 ## §V INVARIANTS
