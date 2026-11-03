@@ -28,14 +28,16 @@ page, the code and those specs in step.
 - Every `script:` entry is one line; longer logic is a seeded script
   under `scripts/lablith/`.
 - Every job's first command is `bash scripts/lablith/runner-system.sh
-  <system>`. It stops with `runner nix system is <found>, this job needs
-  <system>` unless nix's `builtins.currentSystem` on the runner is the
-  job's system, so a runner registered with the wrong tags fails before
-  it builds, gates or pushes anything. A host that only emulates the
-  system (`extra-platforms`, binfmt or Rosetta) reports its native
-  system and is refused on purpose, since a system's tags promise a
-  native runner. To run that system emulated anyway, set nix's `system`
-  to it on that host.
+  <system>`, so a runner registered with the wrong tags fails before it
+  builds, gates or pushes anything. The job's system passes when it is
+  the runner's native `builtins.currentSystem`, or when the runner's
+  nix lists it in `extra-platforms` (`nix config show
+  extra-platforms`). An x86_64-linux NixOS host with binfmt therefore
+  runs `aarch64-linux` jobs once `boot.binfmt.emulatedSystems` puts that
+  system there, and a Mac whose nix lists `x86_64-darwin` runs Intel
+  jobs under Rosetta. That list is the owner's own nix config, so it is
+  trusted as given. Otherwise the job stops with `runner nix system is
+  <native> (extra-platforms: <list or none>), this job needs <system>`.
 - A cache push goes through `scripts/lablith/cachix.sh`, which pushes
   only when `CACHIX_AUTH_TOKEN` (masked, protected) is set and the
   pipeline is not a merge request from a fork.
