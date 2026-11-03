@@ -60,4 +60,4 @@ V77: ∀ nix job script[0] = seeded `runner-system.sh <system>`: `builtins.curre
 
 id|status|task|cites
 T17|x|common job parts: `timeout`, `interruptible`/`resource_group`, `GIT_DEPTH`, nix install via image, cachix w/ fork-MR skip, secret gating|V11,V12,V13,V14,V15
-T67|.|V77 check; tests, goldens, CHANGELOG|V77,`.:V25`
+T67|x|V77 check; tests, goldens, CHANGELOG|V77,`.:V25`
