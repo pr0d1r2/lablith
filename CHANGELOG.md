@@ -22,7 +22,8 @@ the bytes lablith emits for the same inputs is at least a minor version
 
 - Every nix job's `script:` starts with `bash
   scripts/lablith/runner-system.sh <system>`. It passes when the
-  runner's nix system is `<system>` or lists it in `extra-platforms`
+  runner's nix `system` setting is `<system>` or its nix lists it in
+  `extra-platforms`
   (binfmt or Rosetta emulation), and otherwise stops with `runner nix
   system is <native> (extra-platforms: <list or none>), this job needs
   <system>`. `lablith gen` seeds the new
