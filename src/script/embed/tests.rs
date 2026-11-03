@@ -181,6 +181,7 @@ fn scripts_are_published_under_scripts_lablith_sorted() {
     let want = [
         "scripts/lablith/cachix.sh",
         "scripts/lablith/open-mr.sh",
+        "scripts/lablith/runner-system.sh",
         "scripts/lablith/update-pins.sh",
         "scripts/lablith/upstream.sh",
         "scripts/lablith/verify-cache.sh",
@@ -206,6 +207,49 @@ fn bump_scripts_call_open_mr_and_the_rest_call_none() {
     for s in [Script::Cachix, Script::OpenMr, Script::VerifyCache] {
         assert!(s.calls().is_empty(), "{s:?}");
     }
+}
+
+/// `runner-system.sh` with `args` on a runner whose nix says `system`.
+fn runner(name: &str, args: &[&str], system: &str) -> io::Result<Ran> {
+    run(
+        name,
+        "runner-system.sh",
+        args,
+        &[("STUB_REV_BEFORE", system)],
+    )
+}
+
+/// `src/kind:V77`.
+#[test]
+fn runner_system_passes_on_the_jobs_system() -> io::Result<()> {
+    let ran = runner("rs-same", &["x86_64-linux"], "x86_64-linux")?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    let want = "nix eval --raw --impure --expr builtins.currentSystem";
+    assert_eq!(calls(&ran), [want]);
+    Ok(())
+}
+
+/// `src/kind:V77`: an emulating host reports its own system and stops.
+#[test]
+fn runner_system_stops_naming_both_systems() -> io::Result<()> {
+    let ran = runner("rs-other", &["aarch64-linux"], "x86_64-linux")?;
+    assert_eq!(ran.code, Some(1));
+    let want = "runner-system: runner nix system is x86_64-linux, this job \
+                needs aarch64-linux";
+    assert!(ran.stderr.contains(want), "{}", ran.stderr);
+    Ok(())
+}
+
+#[test]
+fn runner_system_without_its_argument_is_a_usage_error() -> io::Result<()> {
+    let ran = runner("rs-usage", &[], "x86_64-linux")?;
+    assert_eq!(ran.code, Some(2));
+    assert!(
+        ran.stderr.contains("usage: runner-system.sh"),
+        "{}",
+        ran.stderr
+    );
+    Ok(())
 }
 
 #[test]

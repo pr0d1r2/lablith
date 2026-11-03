@@ -112,3 +112,13 @@ fn a_system_with_no_tags_is_refused_naming_the_fix() {
         Err(KindError::System(SystemError::NoTags(System::X86_64Darwin)))
     );
 }
+
+/// `src/kind:V77`: the runner's nix system is checked before the kind's
+/// script, naming both systems.
+#[test]
+fn a_job_first_checks_that_its_runner_is_its_system() {
+    let j = job("ci|gate|-|-|-", Stage::Gate, System::Aarch64Linux);
+    let got = j.map(|j| j.script.iter().map(|t| t.render(&GITLAB)).collect());
+    let check = "bash scripts/lablith/runner-system.sh aarch64-linux";
+    assert_eq!(got, Ok(vec![check.to_owned(), "true".to_owned()]));
+}
