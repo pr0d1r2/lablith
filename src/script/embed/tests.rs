@@ -332,6 +332,27 @@ fn runner_system_runs_on_nix_2_20_and_later() -> io::Result<()> {
     Ok(())
 }
 
+/// What Lix 2.94.3 prints for `nix --version`, as seen on aarch64-darwin:
+/// the version on the first line, then a path as the last word.
+const LIX: &str = "nix (Lix, like Nix) 2.94.3\nSystem type: x86_64-linux\n\
+    Additional system types: \nFeatures: gc, signed-caches\n\
+    Data directory: /nix/store/0000-lix-2.94.3/share";
+
+/// `src/script:V79`: only the first line of `nix --version` holds the
+/// version, so Lix's longer output passes and an old Lix is refused.
+#[test]
+fn runner_system_reads_the_version_from_the_first_line() -> io::Result<()> {
+    let ran = on_nix("rs-lix", LIX)?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    assert_eq!(calls(&ran), [VERSION, NATIVE]);
+    let old = LIX.replace("2.94.3", "2.19.0");
+    let ran = on_nix("rs-old-lix", &old)?;
+    assert_eq!(ran.code, Some(1));
+    let want = "the runner's nix is 2.19.0; this check needs nix 2.20";
+    assert!(ran.stderr.contains(want), "{}", ran.stderr);
+    Ok(())
+}
+
 #[test]
 fn runner_system_without_its_argument_is_a_usage_error() -> io::Result<()> {
     let ran = runner("rs-usage", &[], "x86_64-linux", "")?;
