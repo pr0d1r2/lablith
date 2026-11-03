@@ -35,6 +35,10 @@ case "$tool $*" in
     echo "${STUB_REV_BEFORE:-}"
   fi
   ;;
+"nix config show system")
+  # STUB_SYSTEM: the host's nix `system` setting.
+  echo "${STUB_SYSTEM:-}"
+  ;;
 "nix config show extra-platforms")
   # STUB_EXTRA_PLATFORMS: the host's nix `extra-platforms`, maybe empty.
   echo "${STUB_EXTRA_PLATFORMS:-}"
