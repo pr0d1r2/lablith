@@ -20,7 +20,11 @@
 # COMMAND under `cachix watch-exec`. An https push first checks that the
 # flake has every INSTALLABLE, then copies them with `nix copy` before
 # COMMAND, so a gate's inputs are pushed even when the gate fails; the
-# netrc is copied to a 0600 file that is removed on exit. The url is
+# netrc is copied to a 0600 file that is removed on exit. A url that is
+# not `https://` is refused before the netrc is touched. The push is
+# best-effort: a failed copy is a warning and COMMAND still runs, its
+# status the script's, as a failed cachix push never fails its job (a
+# `build`'s verify-cache job is what catches a missing path). The url is
 # never printed.
 set -euo pipefail
 
@@ -44,6 +48,13 @@ esac
 credential="${!secret:-}"
 
 if [ "$kind" = https ]; then
+  case "$cache" in
+  "" | https://*) ;;
+  *)
+    echo "cache-push: the cache url is not https; refusing to send the netrc" >&2
+    exit 1
+    ;;
+  esac
   if [ "$#" -eq 0 ]; then
     echo "usage: cache-push.sh https needs an INSTALLABLE to copy" >&2
     exit 2
@@ -84,7 +95,9 @@ https)
   trap 'rm -rf "$dir"' EXIT
   cp "$credential" "$dir/netrc"
   chmod 600 "$dir/netrc"
-  nix copy --option netrc-file "$dir/netrc" --to "$cache" "$@"
+  if ! nix copy --option netrc-file "$dir/netrc" --to "$cache" "$@"; then
+    echo "cache-push: warning: the copy to the cache failed; running the command without it" >&2
+  fi
   bash -c "$command"
   ;;
 *)
