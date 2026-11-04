@@ -61,6 +61,16 @@ the bytes lablith emits for the same inputs is at least a minor version
   `netrc-file = <that file>` after both settings. Without the secret
   (a fork's merge request) it prints nothing and the job runs without
   the cache.
+- A row naming such a cache (`read=secret:R` in the `push` cell)
+  renders its `.gitlab/ci/<id>.yml` jobs with the read netrc: the line
+  after the runner check passes `R` and the cache name to
+  `cache-read.sh`, a build's `https-verify.sh` asks with `R`, and the
+  push still uses its own `push=secret:P`. `lablith report` lists `R` as
+  `https cache read (netrc file)`. Every `cache-read.sh` line now
+  assigns `NIX_CONFIG="$NIX_CONFIG$(...)"` instead of exporting it, so
+  a refused url stops the job rather than passing unseen; a job reading
+  a secret url or key changes by that one word. `R` is a protected File
+  variable, apart from the push one.
 
 - Every nix job's `script:` starts with `bash
   scripts/lablith/runner-system.sh <system>`. It passes when the
