@@ -54,4 +54,4 @@ V85: `report` secrets per row: push secret (`Forge` → `CACHIX_AUTH_TOKEN`) & �
 ## §T TASKS
 
 id|status|task|cites
-T72|.|`## caches` in schema, `check_with`, read/push/verify rendering, 3 seeded scripts, report secrets; test per V; `.lablith` w/o section byte-identical|V80,V81,V82,V83,V84,V85,`.:V25`
+T72|x|`## caches` in schema, `check_with`, read/push/verify rendering, 3 seeded scripts, report secrets; test per V; `.lablith` w/o section byte-identical|V80,V81,V82,V83,V84,V85,`.:V25`
