@@ -30,4 +30,4 @@ id|status|task|cites
 T74|x|split from `src/cache` at its ceiling: spec, then code after T75; ⊥ behaviour change|V81
 T75|x|pipelith 0.2.2 read netrc: script arg, https check, assignment, verify & `report`; fork guard 1st|V86,V87,`src/kind/rules:V76`
 T76|x|#37 (T76–T78): in-place netrc, curl-like scan, NAR/redirect/daemon doc|V86,V87
-T79|.|#37: state-free `default` scan|V87
+T79|x|#37: state-free `default` scan|V87
