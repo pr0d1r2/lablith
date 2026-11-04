@@ -934,6 +934,19 @@ fn cache_read_ends_a_line_at_a_comment() -> io::Result<()> {
     Ok(())
 }
 
+/// `src/cache/read:V87`: curl has no `account` keyword, so the token
+/// after it is read as a keyword, and `account default` is a `default`
+/// entry.
+#[test]
+fn cache_read_reads_the_token_after_account_as_a_keyword() -> io::Result<()> {
+    let text =
+        "machine cache.example.org account default login r password secret-r\n";
+    let (ran, _) = read_text("cr-account", CACHE_URL, Some(text), &[])?;
+    assert_eq!(ran.code, Some(1), "{}", ran.stdout);
+    assert!(ran.stderr.contains("default entry"), "{}", ran.stderr);
+    Ok(())
+}
+
 /// `src/cache/read:V87`: a quoted token is one value, as curl reads it.
 #[test]
 fn cache_read_takes_a_quoted_password_whole() -> io::Result<()> {
