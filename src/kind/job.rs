@@ -2,8 +2,8 @@
 //! `src/kind:V14`, `src/kind:V57`): the pinned nix image with flakes on,
 //! the row's cache as a substituter, the system's runner tags, the row's
 //! timeout and a per-kind clone depth. Its first command checks that
-//! the runner's nix system is the job's (`src/kind:V77`), and no job runs
-//! for a fork's merge request (`src/kind/rules:V76`).
+//! the runner's nix system is the job's (`src/kind:V77`), and generated
+//! jobs are guarded against a fork's merge request (`src/kind/rules:V76`).
 
 use super::contract::Tables;
 use super::error::KindError;
@@ -116,9 +116,10 @@ fn checked(system: System, script: Vec<Text>) -> Vec<Text> {
     std::iter::once(check).chain(script).collect()
 }
 
-/// `rules` behind the fork guard (`src/kind/rules:V76`): on a self-hosted
-/// GitLab every runner a job's tags reach is the owner's, built-in tags
-/// included, so no job runs a fork's code.
+/// `rules` behind the fork guard (`src/kind/rules:V76`). The guard is part of the
+/// fork's CI configuration, which a parent-project pipeline for a fork merge
+/// request loads from the fork's branch. A fork can remove it, so the guard
+/// does not prevent fork code from running on parent runners.
 fn guarded(rules: Vec<Rule>) -> Vec<Rule> {
     std::iter::once(super::rules::never_from_fork())
         .chain(rules)
