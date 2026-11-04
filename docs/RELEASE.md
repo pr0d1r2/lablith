@@ -76,8 +76,8 @@ releasing; the migration is not a kind conversion.
 Perform these operations outside the repository:
 
 - Delete the GitLab schedules for the migrated rows.
-- Delete the GitLab CI/CD variable `LABLITH_TOKEN` if no remaining GitLab
-  pipeline uses it.
+- Delete each configured GitLab CI/CD token variable if no remaining GitLab
+  pipeline uses it. Use `LABLITH_TOKEN` when no custom `token` name is set.
 - Run `actlith report` and create the GitHub secrets it lists, using the
   repository's normal protected-secret process.
 - Inspect every converted hand-written workflow for `secrets.*` references and
