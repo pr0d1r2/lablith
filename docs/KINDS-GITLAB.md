@@ -77,9 +77,11 @@ page, the code and those specs in step.
     is `https://` and that the netrc has no `default` entry, which
     would reach every host nix talks to; otherwise it stops the job
     naming the cache and `R`, never the url or the credential, before
-    it changes the netrc or hands it to nix; it reads the netrc as curl
-    does (keywords in any case, quoted tokens whole) and refuses one it
-    cannot read. Use `machine <cache host>` entries only. Then
+    it changes the netrc or hands it to nix. It refuses any token
+    `default`, in any case and wherever it stands, a password or a
+    comment word included, rather than follow curl's grammar; a quoted
+    token is read whole. It also refuses a netrc it cannot read. Use
+    `machine <cache host>` entries only. Then
     it makes the file
     `R` points at, which the runner writes in the job's temporary
     directory and removes when the job ends, 0600, and prints
