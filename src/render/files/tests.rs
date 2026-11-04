@@ -196,3 +196,161 @@ fn a_job_on_built_in_tags_never_runs_for_a_fork_merge_request() {
                  $CI_MERGE_REQUEST_PROJECT_ID|Some(Never)";
     assert_eq!(first_rules(ONE_GATE), [guard.to_owned()]);
 }
+
+/// A valid ed25519 public key for an example cache.
+const KEY: &str =
+    "example-cache-1:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+
+/// `.lablith` text with `caches` as its `## caches` rows and `row` as
+/// its one workflow.
+fn with_caches(caches: &str, row: &str) -> String {
+    format!(
+        "format 1\n## workflows\nid|kind|systems|cache|args\n{row}\n\
+         ## caches\nname|kind|url|key|push\n{caches}"
+    )
+}
+
+/// Each job of `text` as `name`, its `NIX_CONFIG` and its script lines.
+fn cache_jobs(
+    text: &str,
+) -> Result<Vec<(String, String, Vec<String>)>, String> {
+    let reg = parse(text).map_err(|e| e.to_string())?;
+    let plans = plan(&reg).map_err(|e| e.to_string())?;
+    let gitlab = &crate::yaml::GITLAB;
+    let one = |j: crate::pipeline::Job| {
+        let config = j.variables.iter().find(|(k, _)| *k == "NIX_CONFIG");
+        let config = config.map(|(_, v)| v.render(gitlab)).unwrap_or_default();
+        let script = j.script.iter().map(|t| t.render(gitlab)).collect();
+        (j.name, config, script)
+    };
+    Ok(plans.into_iter().flat_map(|p| p.jobs).map(one).collect())
+}
+
+/// The seeded scripts `text` renders.
+fn seeded_scripts(text: &str) -> Vec<String> {
+    let paths = render_text(text).unwrap_or_default();
+    paths
+        .into_iter()
+        .filter(|p| p.starts_with("scripts/"))
+        .collect()
+}
+
+const GATE: &str = "nix develop --command hk check --all --check";
+
+/// The `## caches` row of an https cache with literal url and key,
+/// pushed with a netrc file.
+fn https_row() -> String {
+    let push = "secret:EXAMPLE_NETRC";
+    format!("example-cache|https|https://cache.example.org|{KEY}|{push}\n")
+}
+
+/// `src/cache:V80`: an https cache with literal url and key is trusted
+/// in `NIX_CONFIG`.
+#[test]
+fn an_https_cache_with_literals_is_read_from_nix_config() {
+    let text =
+        with_caches(&https_row(), "ci|gate|x86_64-linux|example-cache|-");
+    let jobs = cache_jobs(&text).unwrap_or_default();
+    let (name, config, _) = jobs.first().cloned().unwrap_or_default();
+    assert_eq!(name, "ci:gate:x86_64-linux");
+    let want = format!(
+        "experimental-features = nix-command flakes\n\
+         extra-substituters = https://cache.example.org\n\
+         extra-trusted-public-keys = {KEY}\n"
+    );
+    assert!(config.contains(&want), "{config}");
+}
+
+/// `src/cache:V82`: its push goes through `cache-push.sh`, seeded in
+/// place of `cachix.sh`.
+#[test]
+fn an_https_cache_is_pushed_by_cache_push() {
+    let text =
+        with_caches(&https_row(), "ci|gate|x86_64-linux|example-cache|-");
+    let jobs = cache_jobs(&text).unwrap_or_default();
+    let script = jobs.first().map(|j| j.2.clone()).unwrap_or_default();
+    let push = format!(
+        "bash scripts/lablith/cache-push.sh https 'https://cache.example.org' \
+         EXAMPLE_NETRC any '{GATE}'"
+    );
+    assert_eq!(script.last(), Some(&push), "{script:?}");
+    let scripts = seeded_scripts(&text);
+    assert!(scripts.contains(&"scripts/lablith/cache-push.sh".to_owned()));
+    assert!(!scripts.contains(&"scripts/lablith/cachix.sh".to_owned()));
+}
+
+/// `src/cache:V81`: secret url and key stay out of `NIX_CONFIG`; the job
+/// reads them at its start, and a read-only cache gets no push step.
+#[test]
+fn a_secret_cache_is_read_at_job_start_and_a_read_only_one_not_pushed() {
+    let row = "hidden-cache|https|secret:HIDDEN_URL|secret:HIDDEN_KEY|-\n";
+    let text = with_caches(row, "ci|gate|x86_64-linux|hidden-cache|-");
+    let jobs = cache_jobs(&text).unwrap_or_default();
+    let (_, config, script) = jobs.first().cloned().unwrap_or_default();
+    assert!(!config.contains("extra-substituters"), "{config}");
+    let read = "export NIX_CONFIG=\"$NIX_CONFIG$(bash scripts/lablith/cache-read.sh \
+                'secret:HIDDEN_URL' 'secret:HIDDEN_KEY')\"";
+    assert_eq!(script.get(1).map(String::as_str), Some(read), "{script:?}");
+    assert_eq!(script.last().map(String::as_str), Some(GATE), "{script:?}");
+    let scripts = seeded_scripts(&text);
+    assert!(scripts.contains(&"scripts/lablith/cache-read.sh".to_owned()));
+    assert!(!scripts.contains(&"scripts/lablith/cache-push.sh".to_owned()));
+}
+
+/// `src/cache:V82`: a cachix row with its own token pushes through
+/// `cache-push.sh` with that variable.
+#[test]
+fn a_cachix_row_with_its_own_token_pushes_with_it() {
+    let row = format!("own-cachix|cachix|-|{KEY}|secret:OWN_CACHIX_TOKEN\n");
+    let text = with_caches(&row, "ci|gate|x86_64-linux|own-cachix|-");
+    let jobs = cache_jobs(&text).unwrap_or_default();
+    let (_, config, script) = jobs.first().cloned().unwrap_or_default();
+    assert!(config.contains("https://own-cachix.cachix.org"), "{config}");
+    let push = format!(
+        "bash scripts/lablith/cache-push.sh cachix own-cachix OWN_CACHIX_TOKEN \
+         any '{GATE}'"
+    );
+    assert_eq!(script.last(), Some(&push));
+}
+
+/// The last script line of job `name` of an https-cached build row.
+fn https_build_line(name: &str) -> String {
+    let row = "pkg|build|x86_64-linux|example-cache|package=hk";
+    let jobs = cache_jobs(&with_caches(&https_row(), row)).unwrap_or_default();
+    let job = jobs.into_iter().find(|(n, _, _)| n == name);
+    job.and_then(|(_, _, s)| s.last().cloned())
+        .unwrap_or_default()
+}
+
+/// `src/cache:V83`: a build row pushes to an https cache from the
+/// default branch only.
+#[test]
+fn a_build_row_pushes_https_on_the_default_branch() {
+    let build = "bash scripts/lablith/cache-push.sh https 'https://cache.example.org' \
+                 EXAMPLE_NETRC default 'nix build --print-build-logs \
+                 .#packages.x86_64-linux.hk'";
+    assert_eq!(https_build_line("pkg:build:x86_64-linux"), build);
+}
+
+/// `src/cache:V84`: and verifies it over https, through a seeded script.
+#[test]
+fn a_build_row_verifies_an_https_cache_over_https() {
+    let verify = "bash scripts/lablith/https-verify.sh 'https://cache.example.org' \
+                  EXAMPLE_NETRC hk x86_64-linux";
+    assert_eq!(https_build_line("pkg:verify-cache"), verify);
+    let row = "pkg|build|x86_64-linux|example-cache|package=hk";
+    let scripts = seeded_scripts(&with_caches(&https_row(), row));
+    assert!(scripts.contains(&"scripts/lablith/https-verify.sh".to_owned()));
+}
+
+/// `src/cache:V80`: a `## caches` row naming the built-in cache replaces
+/// it, while no section leaves the built-in rendering as it was.
+#[test]
+fn a_caches_row_shadows_the_built_in_cache() {
+    let row = "pr0d1r2|cachix|-|-|-\n";
+    let text = with_caches(row, "ci|gate|x86_64-linux|pr0d1r2|-");
+    let jobs = cache_jobs(&text).unwrap_or_default();
+    let (_, config, script) = jobs.first().cloned().unwrap_or_default();
+    assert!(config.contains("https://pr0d1r2.cachix.org"), "{config}");
+    assert_eq!(script.last().map(String::as_str), Some(GATE));
+}

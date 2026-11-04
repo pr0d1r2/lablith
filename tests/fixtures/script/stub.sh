@@ -54,6 +54,24 @@ case "$tool $*" in
   ;;
 "nix build"*)
   if [ "${STUB_BUILD_FAILS:-}" = 1 ]; then exit 1; fi
+  # STUB_NEW_PATH: the store path the build adds to STUB_STORE_BEFORE.
+  if [ -n "${STUB_NEW_PATH:-}" ]; then
+    printf '%s\n' "${STUB_STORE_BEFORE:-}" "$STUB_NEW_PATH" >"$STUB_LOG.store"
+  fi
+  ;;
+"nix path-info --all")
+  # The store: STUB_STORE_BEFORE until a build adds to it.
+  if [ -e "$STUB_LOG.store" ]; then
+    cat "$STUB_LOG.store"
+  else
+    printf '%s\n' "${STUB_STORE_BEFORE:-}"
+  fi
+  ;;
+"nix copy --option netrc-file "*)
+  # The netrc file's mode, read while the push holds it: `ls -l` is the
+  # one form macOS and Linux both print the same.
+  # shellcheck disable=SC2012
+  printf 'netrc-mode %s\n' "$(ls -l "$4" | cut -c1-10)" >>"$STUB_LOG"
   ;;
 "curl "*)
   url="${*: -1}"
