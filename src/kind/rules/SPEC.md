@@ -15,15 +15,15 @@ self|src/kind/rules|`rules:` presets every job takes: change, default branch, bu
 ## §R RESEARCH
 
 id|topic|finding|src
-R20|fork MR|runs in fork (`CI_PROJECT_ID` = source) or parent ∴ compare w/ `CI_MERGE_REQUEST_PROJECT_ID`|GitLab docs
+R20|fork MR|runs in fork (`CI_PROJECT_ID` = source) or parent ∴ compare w/ `CI_MERGE_REQUEST_PROJECT_ID`; self-hosted: ∀ tags reach owner's runners|GitLab docs, owner 2026-11-03
 
 ## §V INVARIANTS
 
 V50: ∀ job carries own `rules:`: `gate` & `build` jobs ⊥ run in schedule pipelines; bump jobs run only when `$CI_PIPELINE_SOURCE` ∈ {`schedule`, `web`} & `$LABLITH_ROW == "<id>"` ∴ ⊥ schedule starts gate, ⊥ push starts bump
-V76: `## runners`-tagged job → 1st rule `$CI_MERGE_REQUEST_SOURCE_PROJECT_ID != $CI_MERGE_REQUEST_PROJECT_ID` never (R20)
+V76: ∀ job → 1st rule `$CI_MERGE_REQUEST_SOURCE_PROJECT_ID != $CI_MERGE_REQUEST_PROJECT_ID` never (R20); ⊥ opt-out
 
 ## §T TASKS
 
 id|status|task|cites
-T66|x|V76 guard; test w/ & w/o row|V76,R20
+T66|.|V76 guard on ∀ job; tests|V76,R20
 T71|x|split from `src/kind` at its token ceiling; ⊥ behaviour change|V50
