@@ -48,9 +48,11 @@ impl From<Checked> for Row {
     }
 }
 
+#[cfg(test)]
 impl Row {
     /// `row` checked against `spec` with the built-in caches only, as a
-    /// `.lablith` without `## caches` is.
+    /// `.lablith` without `## caches` is. Tests build rows with it;
+    /// rendering checks every row with the file's caches (`check`).
     ///
     /// # Errors
     ///
