@@ -7,7 +7,7 @@
 ## §F FEDERATION
 
 dir|owns|⊥owns|tokens
-rules|`rules:` presets every job takes: change, default branch, bump|job body, secrets (`src/kind`)|-
+rules|`rules:` presets every job takes: change, default branch, bump; fork guard|job body, secrets (`src/kind`)|-
 
 ## §N NAV
 
