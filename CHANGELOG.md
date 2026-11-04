@@ -55,8 +55,8 @@ the bytes lablith emits for the same inputs is at least a minor version
   the seeded `scripts/lablith/cache-read.sh` takes the netrc's File
   variable and the cache name after the url and key. It checks that the
   resolved url is `https://`, and that the netrc has no `default`
-  entry (which would reach every host; read as curl does, in any case
-  and with quoted tokens whole) and can be read, before it changes the
+  entry (which would reach every host; read as curl does, in any case,
+  with quoted tokens whole and `#` comments skipped) and can be read, before it changes the
   netrc or hands it to nix, and stops naming the cache and the
   variable, never the url or the credential, when a check fails;
   then it makes the File variable's own file readable only by the job
