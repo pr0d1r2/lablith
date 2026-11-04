@@ -1,7 +1,7 @@
 //! The `rules:` presets every job takes one of (`src/kind/rules:V50`).
 
 use crate::core::yaml::Text;
-use crate::pipeline::{Rule, When, concat, eq, eq_var};
+use crate::pipeline::{Rule, When, concat, eq, eq_var, ne_var};
 
 /// The variable naming why a pipeline runs.
 const SOURCE: &str = "CI_PIPELINE_SOURCE";
@@ -38,6 +38,21 @@ fn selected(source: &str, id: &str) -> Text {
     let and = |t: Text, b: Text| concat(t.then_lit(" && "), &b);
     let row = and(eq(SOURCE, source), eq(ROW, id));
     and(row, eq("CI_COMMIT_REF_PROTECTED", "true"))
+}
+
+/// First rule of a job on the repository's own runner (`src/kind/rules:V76`):
+/// never for a merge request from a fork, whether its pipeline runs in
+/// the fork or in this project (`src/kind/rules:R20`). Outside merge request
+/// pipelines both variables are unset, so the rule never matches.
+pub(crate) fn never_from_fork() -> Rule {
+    let fork = ne_var(
+        "CI_MERGE_REQUEST_SOURCE_PROJECT_ID",
+        "CI_MERGE_REQUEST_PROJECT_ID",
+    );
+    Rule {
+        cond: Some(fork),
+        when: Some(When::Never),
+    }
 }
 
 /// `if: $CI_PIPELINE_SOURCE == "schedule"`, `when: never`.

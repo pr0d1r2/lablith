@@ -38,8 +38,15 @@ fn var(job: &Job, key: &str) -> Option<String> {
         .map(|(_, v)| v.render(&GITLAB))
 }
 
+/// The job's rules without the fork guard (`src/kind/rules:V76`), which
+/// only ever adds a `never`.
+fn admitting(job: &Job) -> Vec<crate::pipeline::Rule> {
+    let guard = crate::kind::never_from_fork();
+    job.rules.iter().filter(|r| **r != guard).cloned().collect()
+}
+
 fn conds(job: &Job) -> Vec<String> {
-    job.rules
+    admitting(job)
         .iter()
         .filter_map(|r| r.cond.as_ref())
         .map(|c| c.render(&GITLAB))
@@ -149,8 +156,7 @@ fn v15_v50_jobs_reading_a_token_run_only_on_their_own_protected_schedule() {
 #[test]
 fn v50_change_jobs_never_run_on_a_schedule() {
     for (_, job) in jobs().into_iter().filter(|(_, j)| j.stage != Stage::Bump) {
-        let first = job
-            .rules
+        let first = admitting(&job)
             .first()
             .and_then(|r| r.cond.as_ref())
             .map(|c| c.render(&GITLAB));

@@ -17,6 +17,11 @@ the bytes lablith emits for the same inputs is at least a minor version
   systems the runner table covers, so `.gitlab/ci/<id>.yml` of a `-` row
   gains `x86_64-darwin` jobs only in a repository with such a row, and a
   `.lablith` without one renders the same bytes as before.
+- A job tagged from a `## runners` row (the repository's own runner)
+  never runs for a merge request from a fork: its first rule is
+  `if: $CI_MERGE_REQUEST_SOURCE_PROJECT_ID != $CI_MERGE_REQUEST_PROJECT_ID`,
+  `when: never`. `.gitlab/ci/<id>.yml` gains that rule on those jobs
+  only; jobs on the built-in tags are unchanged.
 
 ### Added
 
