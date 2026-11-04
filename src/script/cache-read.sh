@@ -21,9 +21,10 @@
 # without the cache. A fork's merge request never gets here: the fork
 # guard (src/kind/rules:V76) skips the job.
 #
-# With NETRC, the resolved url must be `https://` before the netrc is
-# touched (src/cache/read:V87); otherwise the script stops naming the
-# cache and the variable, never the url. Then the File variable's own
+# With NETRC, the resolved url must be `https://` and the netrc free of
+# a `default` entry before the netrc is touched (src/cache/read:V87);
+# otherwise the script stops naming the cache and the variable, never
+# the url or the credential. Then the File variable's own
 # file, which the runner writes in the job's temp dir and removes when
 # the job ends, is made 0600 and `netrc-file` names it. No copy is made:
 # nix reads the file after this script exits, so a trap could not
@@ -72,6 +73,25 @@ https://*) ;;
   ;;
 esac
 
+# A `default` entry matches every host, so nix would send its credential
+# to any substituter; only `machine` entries scope it to the cache. The
+# token after login, password, account, machine and macdef is a value,
+# and a macdef body runs to the next blank line.
+if awk '
+  mac { if ($0 ~ /^[[:space:]]*$/) mac = 0; next }
+  {
+    for (i = 1; i <= NF; i++) {
+      if (skip) { skip = 0; continue }
+      if ($i ~ /^(machine|login|password|account)$/) skip = 1
+      else if ($i == "macdef") { skip = 1; mac = 1 }
+      else if ($i == "default") found = 1
+    }
+  }
+  END { exit !found }
+' "$file"; then
+  echo "cache-read: cache $cache: the netrc in $netrc has a default entry, which would reach every host; use machine entries only" >&2
+  exit 1
+fi
 chmod 600 "$file"
 printf '\nextra-substituters = %s\nextra-trusted-public-keys = %s\nnetrc-file = %s\n' \
   "$url" "$key" "$file"
