@@ -738,7 +738,7 @@ const CACHE_KEY: &str =
     "example-cache-1:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 const CACHE_URL: &str = "https://cache.example.org";
 
-/// `src/cache:V81`: literal url and key give both nix settings.
+/// `src/cache/read:V81`: literal url and key give both nix settings.
 #[test]
 fn cache_read_prints_both_settings_for_literals() -> io::Result<()> {
     let ran = run("cr-lit", "cache-read.sh", &[CACHE_URL, CACHE_KEY], &[])?;
@@ -750,7 +750,7 @@ fn cache_read_prints_both_settings_for_literals() -> io::Result<()> {
     Ok(())
 }
 
-/// `src/cache:V81`: secret values are read from their variables.
+/// `src/cache/read:V81`: secret values are read from their variables.
 #[test]
 fn cache_read_reads_secret_values_from_their_variables() -> io::Result<()> {
     let args = ["secret:HIDDEN_URL", "secret:HIDDEN_KEY"];
@@ -764,7 +764,7 @@ fn cache_read_reads_secret_values_from_their_variables() -> io::Result<()> {
     Ok(())
 }
 
-/// `src/cache:V81`: a missing secret drops both settings, so the job
+/// `src/cache/read:V81`: a missing secret drops both settings, so the job
 /// runs without the cache rather than with an empty substituter.
 #[test]
 fn cache_read_prints_nothing_when_a_secret_is_missing() -> io::Result<()> {

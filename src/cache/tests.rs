@@ -38,7 +38,7 @@ fn the_built_in_cache_renders_as_before() {
     );
 }
 
-/// `src/cache:V81`: a secret setting leaves `NIX_CONFIG` empty and is
+/// `src/cache/read:V81`: a secret setting leaves `NIX_CONFIG` empty and is
 /// read by `cache-read.sh`.
 #[test]
 fn a_secret_setting_is_read_by_cache_read() {

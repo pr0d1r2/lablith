@@ -8,7 +8,7 @@ pub(crate) enum Script {
     /// with its own push secret (`src/cache:V82`).
     CachePush,
     /// `cache-read.sh`: the nix settings of a cache with a secret url or
-    /// key (`src/cache:V81`).
+    /// key (`src/cache/read:V81`).
     CacheRead,
     /// `cachix.sh`: run a command, pushing to the row's cache when allowed.
     Cachix,

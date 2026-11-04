@@ -118,7 +118,7 @@ fn checked(system: System, script: Vec<Text>) -> Vec<Text> {
 }
 
 /// `script` after the line that reads a secret cache setting, if the
-/// row's cache has one (`src/cache:V81`).
+/// row's cache has one (`src/cache/read:V81`).
 fn read(cache: Option<&BinaryCache>, script: Vec<Text>) -> Vec<Text> {
     let line = crate::cache::read_line(cache).map(|l| Text::lit(&l));
     line.into_iter().chain(script).collect()
