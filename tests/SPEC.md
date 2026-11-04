@@ -25,7 +25,7 @@ R12|GitLab CI schema source|schema file `app/assets/javascripts/editor/schema/ci
 V19: ∀ generated file validates vs vendored GitLab CI JSON schema (`tests/`, recorded GitLab version) w/ 0 findings; offline. `glab ci lint` manual only, ⊥ gate
 V39: golden files change only w/ CHANGELOG entry (`.:V25`); `UPDATE_GOLDEN=1` rewrites them, ⊥ default
 V61: vendored schema = `tests/schema/ci.json` + `tests/schema/VENDORED.md` (GitLab tag, upstream path, sha256); `schema-pin` step checks hash; bump = 1 reviewed commit
-V62: ∀ hardening rule `src/pipeline:V10`–`src/script:V16`, `src/kind:V50`, `src/pipeline:V7` & `src/pipeline:V8` ! own test asserting on the job model (`Job`, `Rule`) of ∀ kind × fixture render (`src/render/tests.rs`), ⊥ string grep
+V62: ∀ hardening rule `src/pipeline:V10`–`src/script:V16`, `src/kind/rules:V50`, `src/pipeline:V7` & `src/pipeline:V8` ! own test asserting on the job model (`Job`, `Rule`) of ∀ kind × fixture render (`src/render/tests.rs`), ⊥ string grep
 V63: migration-ready: ∀ `.lablith` fixture w/o `## images` & `## runners` parses under actlith's section set (`kind::WORKFLOWS` + `## hand-written`) w/ same rows; tested via pipelith, ⊥ actlith crate dep
 V74: ∀ vendored upstream file (byte-exact, hash-pinned) granted `any` in `.ctrm` in same commit it lands; hygiene fixers ⊥ rewrite it
 

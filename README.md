@@ -20,7 +20,7 @@
 [![coverage floor 99.02%](https://img.shields.io/badge/coverage_floor-%E2%89%A599.02%25-brightgreen)](.coverage)
 [![invariants 77](https://img.shields.io/badge/invariants-77-6E4AFF)](SPEC.md)
 [![bugs logged 5](https://img.shields.io/badge/bugs_logged-5-6E4AFF)](SPEC.md)
-[![federated nodes 23](https://img.shields.io/badge/federated_nodes-23-6E4AFF)](SPEC.md)
+[![federated nodes 24](https://img.shields.io/badge/federated_nodes-24-6E4AFF)](SPEC.md)
 
 [![nix flake](https://img.shields.io/badge/nix-flake-5277C3?logo=nixos&logoColor=white)](flake.nix)
 [![nixpkgs 26.05 (2026-11-02 - 7dcdd87)](https://img.shields.io/badge/nixpkgs-26.05_(2026--11--02_--_7dcdd87)-5277C3?logo=nixos&logoColor=white)](flake.lock)

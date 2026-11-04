@@ -1,4 +1,4 @@
-//! The `rules:` presets every job takes one of (`src/kind:V50`).
+//! The `rules:` presets every job takes one of (`src/kind/rules:V50`).
 
 use crate::core::yaml::Text;
 use crate::pipeline::{Rule, When, concat, eq, eq_var};
