@@ -54,13 +54,15 @@ the bytes lablith emits for the same inputs is at least a minor version
 - A private `https` cache (pipelith 0.2.2), read with its own netrc:
   the seeded `scripts/lablith/cache-read.sh` takes the netrc's File
   variable and the cache name after the url and key. It checks that the
-  resolved url is `https://` before it writes anything, and stops
+  resolved url is `https://` before it touches the netrc, and stops
   naming the cache and the variable, never the url, when it is not;
-  then it copies the netrc to a file only the job can read, in a new
-  directory under `$RUNNER_TEMP_PROJECT_DIR`, and prints
-  `netrc-file = <that file>` after both settings. Without the secret
-  (a fork's merge request) it prints nothing and the job runs without
-  the cache.
+  then it makes the File variable's own file readable only by the job
+  and prints `netrc-file = <that file>` after both settings. It makes
+  no copy, so no credential outlives the job: the runner removes the
+  File variable's file when the job ends. Without the secret (an
+  unprotected ref) it prints nothing and the job runs without the
+  cache; a fork's merge request never gets that far, since the fork
+  guard skips the job.
 - A row naming such a cache (`read=secret:R` in the `push` cell)
   renders its `.gitlab/ci/<id>.yml` jobs with the read netrc: the line
   after the runner check passes `R` and the cache name to

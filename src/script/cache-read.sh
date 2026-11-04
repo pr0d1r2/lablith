@@ -16,17 +16,19 @@
 # variable NAME. NETRC is the File variable holding the read netrc's
 # path and CACHE the cache's name, both given only for a cache read with
 # a netrc. The settings are printed only when every value is there: a
-# pipeline that cannot see protected variables (an unprotected ref, a
-# fork merge request) gets no cache line at all, never an empty
-# substituter, and runs without the cache.
+# pipeline that cannot see protected variables (an unprotected ref)
+# gets no cache line at all, never an empty substituter, and runs
+# without the cache. A fork's merge request never gets here: the fork
+# guard (src/kind/rules:V76) skips the job.
 #
-# With NETRC, the resolved url must be `https://` before anything is
-# written (src/cache/read:V87); otherwise the script stops naming the
-# cache and the variable, never the url. The netrc is copied to a 0600
-# file in a fresh directory under the job's temp dir
-# ($RUNNER_TEMP_PROJECT_DIR, where GitLab keeps File variables, else
-# $TMPDIR), and `netrc-file` names that file. The values go to stdout
-# for the job's NIX_CONFIG only; nothing is logged.
+# With NETRC, the resolved url must be `https://` before the netrc is
+# touched (src/cache/read:V87); otherwise the script stops naming the
+# cache and the variable, never the url. Then the File variable's own
+# file, which the runner writes in the job's temp dir and removes when
+# the job ends, is made 0600 and `netrc-file` names it. No copy is made:
+# nix reads the file after this script exits, so a trap could not
+# remove one, and a copy would outlive the job on a shared runner. The
+# values go to stdout for the job's NIX_CONFIG only; nothing is logged.
 set -euo pipefail
 
 if [ "$#" -ne 2 ] && [ "$#" -ne 4 ]; then
@@ -65,14 +67,11 @@ fi
 case "$url" in
 https://*) ;;
 *)
-  echo "cache-read: cache $cache: its url is not https; refusing to write the netrc from $netrc" >&2
+  echo "cache-read: cache $cache: its url is not https; refusing to use the netrc from $netrc" >&2
   exit 1
   ;;
 esac
 
-umask 077
-dir="$(mktemp -d "${RUNNER_TEMP_PROJECT_DIR:-${TMPDIR:-/tmp}}/lablith-netrc.XXXXXX")"
-cp "$file" "$dir/netrc"
-chmod 600 "$dir/netrc"
+chmod 600 "$file"
 printf '\nextra-substituters = %s\nextra-trusted-public-keys = %s\nnetrc-file = %s\n' \
-  "$url" "$key" "$dir/netrc"
+  "$url" "$key" "$file"
