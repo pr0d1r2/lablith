@@ -75,13 +75,14 @@ page, the code and those specs in step.
     the cache's name after the url and key, whether those are literals
     or secrets. When `R` is set, the script checks that the resolved url
     is `https://`, and otherwise stops the job naming the cache and `R`,
-    never the url, before it writes anything. Then, with `umask 077`, it
-    copies the netrc file `R` points at to a 0600 file in a new
-    directory under `$RUNNER_TEMP_PROJECT_DIR`, where GitLab keeps the
-    File variable itself, and prints `netrc-file = <file>` after both
-    settings; nix reads the cache with it. Without `R` (a fork's merge
-    request, an unprotected ref) it prints nothing and the job runs
-    without the cache. The push below keeps its own netrc.
+    never the url, before it touches the netrc. Then it makes the file
+    `R` points at, which the runner writes in the job's temporary
+    directory and removes when the job ends, 0600, and prints
+    `netrc-file = <file>` after both settings; nix reads the cache with
+    it. It makes no copy, so no credential is left on a shared runner.
+    Without `R` (an unprotected ref) it prints nothing and the job runs
+    without the cache; a fork's merge request never gets that far, as
+    the fork guard skips the job. The push below keeps its own netrc.
   - Pushing, `push` is `-`: no push step. pipelith refuses a `build` row
     on a read-only cache.
   - Pushing, `secret:NAME`: the command runs through
