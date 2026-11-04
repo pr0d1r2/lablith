@@ -941,10 +941,10 @@ fn cache_read_refuses_a_default_entry_in_any_case() -> io::Result<()> {
     Ok(())
 }
 
-/// `src/cache/read:V87`: curl ends a line at a `#` token, so a keyword
-/// in a comment does not hide the `default` entry after it.
+/// `src/cache/read:V87`: a keyword in a comment does not hide the
+/// `default` entry after it.
 #[test]
-fn cache_read_ends_a_line_at_a_comment() -> io::Result<()> {
+fn cache_read_refuses_default_after_a_comment() -> io::Result<()> {
     let text = "machine cache.example.org login r password secret-r\n\
                 # password\ndefault login d password secret-d\n";
     let (ran, _) = read_text("cr-comment", CACHE_URL, Some(text), &[])?;
@@ -953,11 +953,10 @@ fn cache_read_ends_a_line_at_a_comment() -> io::Result<()> {
     Ok(())
 }
 
-/// `src/cache/read:V87`: curl has no `account` keyword, so the token
-/// after it is read as a keyword, and `account default` is a `default`
-/// entry.
+/// `src/cache/read:V87`: `account default` is refused, as libcurl reads
+/// the token after `account` as a keyword.
 #[test]
-fn cache_read_reads_the_token_after_account_as_a_keyword() -> io::Result<()> {
+fn cache_read_refuses_default_after_account() -> io::Result<()> {
     let text =
         "machine cache.example.org account default login r password secret-r\n";
     let (ran, _) = read_text("cr-account", CACHE_URL, Some(text), &[])?;
