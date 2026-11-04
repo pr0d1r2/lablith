@@ -971,3 +971,43 @@ fn https_verify_fails_on_a_missing_path() -> io::Result<()> {
     assert!(!ran.log.contains("--netrc-file"), "{}", ran.log);
     Ok(())
 }
+
+/// `src/cache:V82`: a failed copy warns without the url, and the
+/// command still runs and decides the exit status.
+#[test]
+fn cache_push_runs_the_command_when_the_copy_fails() -> io::Result<()> {
+    let ran =
+        https_push("cp-copyfail", CACHE_URL, &[("STUB_COPY_FAILS", "1")])?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    assert!(ran.log.contains("nix build .#hk"), "{}", ran.log);
+    assert!(ran.stderr.contains("cache-push: warning"), "{}", ran.stderr);
+    assert!(!ran.stdout.contains(CACHE_URL) && !ran.stderr.contains(CACHE_URL));
+    Ok(())
+}
+
+/// `src/cache:V82`: a url that is not https is refused before the netrc
+/// is used, without printing it.
+#[test]
+fn cache_push_refuses_a_url_that_is_not_https() -> io::Result<()> {
+    let plain = "http://cache.example.org";
+    let ran =
+        https_push("cp-http", "secret:HIDDEN_URL", &[("HIDDEN_URL", plain)])?;
+    assert_eq!(ran.code, Some(1));
+    assert!(!ran.log.contains("nix copy") && !ran.log.contains("netrc-mode"));
+    assert!(!ran.stderr.contains(plain) && !ran.stdout.contains(plain));
+    Ok(())
+}
+
+/// `src/cache:V84`: verify refuses a url that is not https before
+/// sending the netrc, without printing it.
+#[test]
+fn https_verify_refuses_a_url_that_is_not_https() -> io::Result<()> {
+    let plain = "http://cache.example.org";
+    let args = ["secret:HIDDEN_URL", "EXAMPLE_NETRC", "hk", "x86_64-linux"];
+    let env = [("HIDDEN_URL", plain), ("EXAMPLE_NETRC", "/run/netrc")];
+    let ran = run("hv-http", "https-verify.sh", &args, &env)?;
+    assert_eq!(ran.code, Some(1));
+    assert!(!ran.log.contains("curl"), "{}", ran.log);
+    assert!(!ran.stderr.contains(plain) && !ran.stdout.contains(plain));
+    Ok(())
+}
