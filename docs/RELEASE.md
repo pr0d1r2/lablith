@@ -9,7 +9,8 @@ rendered by `lablith` on GitLab and `actlith` on GitHub.
 This page is blocked on pipelith Q3, the config-file-name open question. Do
 not perform the move until that question is resolved and the corresponding
 `actlith` release is available. Once it is resolved, use the config names
-specified by that release; the steps below are the V67 procedure.
+specified by that release; the steps below are the repository's migration
+procedure.
 
 ## One reviewed repository commit
 
