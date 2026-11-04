@@ -28,4 +28,4 @@ V87: before writing netrc, `cache-read.sh` checks RESOLVED url starts `https://`
 
 id|status|task|cites
 T74|x|split from `src/cache` at its token ceiling: spec, then `nix_config` & `read_line` → `read/` after T75; ⊥ behaviour change|V81
-T75|.|pipelith 0.2.2 read netrc: `cache-read.sh` netrc arg, run-time https check, assignment line, verify & `report` w/ read netrc; test per V; fork guard stays 1st rule|V86,V87,`src/kind/rules:V76`
+T75|x|pipelith 0.2.2 read netrc: `cache-read.sh` netrc arg, run-time https check, assignment line, verify & `report` w/ read netrc; test per V; fork guard stays 1st rule|V86,V87,`src/kind/rules:V76`
