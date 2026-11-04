@@ -161,3 +161,36 @@ fn a_default_row_with_a_darwin_runner_row_gates_it_too() {
     ];
     assert_eq!(got, want.map(str::to_owned).to_vec());
 }
+
+/// The first rule of each job of `.lablith` text, as `if|when`.
+fn first_rules(text: &str) -> Vec<String> {
+    let reg = parse(text).unwrap_or_default();
+    let jobs = plan(&reg)
+        .unwrap_or_default()
+        .into_iter()
+        .flat_map(|p| p.jobs);
+    let first = |j: crate::pipeline::Job| {
+        let r = j.rules.into_iter().next()?;
+        let cond = r.cond.map(|c| c.render(&crate::yaml::GITLAB));
+        Some(format!("{}|{:?}", cond.unwrap_or_default(), r.when))
+    };
+    jobs.filter_map(first).collect()
+}
+
+const ONE_GATE: &str = "format 1\n## workflows\nid|kind|systems|cache|args\nci|gate|x86_64-linux|-|-\n";
+
+/// `src/kind:V76`.
+#[test]
+fn a_job_on_an_own_runner_never_runs_for_a_fork_merge_request() {
+    let text = format!("{ONE_GATE}## runners\nsystem|tags\nx86_64-linux|big\n");
+    let guard = "$CI_MERGE_REQUEST_SOURCE_PROJECT_ID != \
+                 $CI_MERGE_REQUEST_PROJECT_ID|Some(Never)";
+    assert_eq!(first_rules(&text), [guard.to_owned()]);
+}
+
+/// `src/kind:V76`: built-in tags carry no guard.
+#[test]
+fn a_job_on_built_in_tags_keeps_its_rules() {
+    let want = "$CI_PIPELINE_SOURCE == \"schedule\"|Some(Never)".to_owned();
+    assert_eq!(first_rules(ONE_GATE), [want]);
+}
