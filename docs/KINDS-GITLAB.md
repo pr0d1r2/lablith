@@ -57,11 +57,13 @@ page, the code and those specs in step.
 - A cache push goes through `scripts/lablith/cachix.sh`, which pushes
   only when `CACHIX_AUTH_TOKEN` (masked, protected) is set and the
   pipeline is not a merge request from a fork.
-- Every job's first rule is
+- Every generated job's first rule is
   `if: $CI_MERGE_REQUEST_SOURCE_PROJECT_ID != $CI_MERGE_REQUEST_PROJECT_ID`
-  with `when: never`. No job runs for a merge request from a fork,
-  whether that pipeline runs in the fork or in the parent project, and
-  there is no switch to allow it. On a self-hosted GitLab every runner a
+  with `when: never`. No generated job runs for a merge request from a
+  fork, whether that pipeline runs in the fork or in the parent project,
+  and there is no switch to allow it. The root `workflow:` still admits
+  merge request pipelines, so a job in a `## hand-written` file runs for
+  a fork's merge request unless it carries the same rule itself. On a self-hosted GitLab every runner a
   job's tags reach is the owner's, built-in tags included. Also keep
   those runners registered to the one project.
 

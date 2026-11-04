@@ -69,8 +69,9 @@ option to turn it off:
   a resource group for scheduled bump jobs, and `GIT_DEPTH` by kind.
 - The cache is pushed only with the masked, protected `CACHIX_AUTH_TOKEN`
   and never from a merge request coming from a fork.
-- No job runs for a merge request from a fork: its code would run on
-  your own runners.
+- No generated job runs for a merge request from a fork, whose code
+  would otherwise run on your own runners. Jobs in `## hand-written`
+  files are not generated and need their own guard.
 - Every `script:` entry is one command; longer logic lives in a seeded
   script under `scripts/lablith/`.
 
