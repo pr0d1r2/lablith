@@ -54,8 +54,10 @@ the bytes lablith emits for the same inputs is at least a minor version
 - A private `https` cache (pipelith 0.2.2), read with its own netrc:
   the seeded `scripts/lablith/cache-read.sh` takes the netrc's File
   variable and the cache name after the url and key. It checks that the
-  resolved url is `https://` before it touches the netrc, and stops
-  naming the cache and the variable, never the url, when it is not;
+  resolved url is `https://`, and that the netrc has no `default`
+  entry (which would reach every host), before it touches the netrc,
+  and stops naming the cache and the variable, never the url or the
+  credential, when either fails;
   then it makes the File variable's own file readable only by the job
   and prints `netrc-file = <that file>` after both settings. It makes
   no copy, so no credential outlives the job: the runner removes the
