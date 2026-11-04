@@ -65,8 +65,13 @@ page, the code and those specs in step.
   merge request pipelines, so a job in a `## hand-written` file runs for
   a fork's merge request unless it carries the same rule itself. On a
   self-hosted GitLab every runner a job's tags reach is the owner's,
-  built-in tags included. Also keep those runners registered to the one
-  project.
+  built-in tags included.
+- Tags are not an ownership boundary: they only choose among the runners
+  the project can already use, and instance or group runners with
+  matching tags run these jobs too. Make sure of one of: the runners are
+  project runners locked to this project; jobs on them run only for
+  protected refs, on runners set to run only protected refs; or every
+  instance and group runner with matching tags is one you trust.
 - A fork's merge request therefore gets no pipeline, and with
   **Pipelines must succeed** on, GitLab blocks its merge: a merge request
   with no pipeline cannot merge. Running its pipeline in the parent

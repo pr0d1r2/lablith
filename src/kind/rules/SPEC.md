@@ -15,7 +15,7 @@ self|src/kind/rules|`rules:` presets every job takes: change, default branch, bu
 ## §R RESEARCH
 
 id|topic|finding|src
-R20|fork MR|runs in fork (`CI_PROJECT_ID` = source) or parent ∴ compare w/ `CI_MERGE_REQUEST_PROJECT_ID`; self-hosted: ∀ tags reach owner's runners|GitLab docs, owner 2026-11-03
+R20|fork MR|runs in fork (`CI_PROJECT_ID` = source) or parent ∴ compare w/ `CI_MERGE_REQUEST_PROJECT_ID`; self-hosted: ∀ tags reach owner's runners. tags ⊥ ownership boundary: instance & group runners w/ matching tags run jobs too ∴ ! project runner locked to project, protected refs on protected runners, or ∀ matching inherited runner trusted|GitLab docs, owner 2026-11-03
 
 ## §V INVARIANTS
 
