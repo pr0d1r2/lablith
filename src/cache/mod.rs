@@ -35,16 +35,27 @@ pub(crate) fn nix_config(cache: Option<&BinaryCache>) -> String {
     cache.and_then(BinaryCache::nix_config).unwrap_or_default()
 }
 
-/// The script line that adds a secret url or key to the job's nix
-/// config at its start, or `None` when both are literals (`src/cache/read:V81`).
+/// The script line that adds a secret url or key, or a read netrc, to
+/// the job's nix config at its start, or `None` when url and key are
+/// literals and no netrc is read (`src/cache/read:V81`, V86). It assigns
+/// rather than exports, so a refusal of `cache-read.sh` stops the job.
 pub(crate) fn read_line(cache: Option<&BinaryCache>) -> Option<String> {
     let cache = cache.filter(|c| !c.read_secrets().is_empty())?;
     let [(_, url), (_, key)] = cache.nix_settings();
     let script = Script::CacheRead.path();
     let (url, key) = (quote(&arg(url)), quote(&arg(key)));
+    let netrc = read_netrc(cache)
+        .map(|netrc| format!(" {netrc} {}", cache.name()))
+        .unwrap_or_default();
     Some(format!(
-        "export NIX_CONFIG=\"$NIX_CONFIG$(bash {script} {url} {key})\""
+        "NIX_CONFIG=\"$NIX_CONFIG$(bash {script} {url} {key}{netrc})\""
     ))
+}
+
+/// The variable holding the netrc `cache` is read with, if any
+/// (`src/cache/read:V86`).
+fn read_netrc(cache: &BinaryCache) -> Option<&str> {
+    cache.read_netrc().and_then(CacheValue::secret)
 }
 
 /// `command`, pushing to `cache` as its `push` says: alone for a read-only
@@ -90,7 +101,8 @@ fn secret_push(
 }
 
 /// The `build` line that asks the cache back for each built system's
-/// package (`src/cache:V84`).
+/// package (`src/cache:V84`), with the read netrc when there is one,
+/// else the push netrc (`src/cache/read:V86`).
 pub(crate) fn verify_line(
     cache: &BinaryCache,
     package: &str,
@@ -99,8 +111,9 @@ pub(crate) fn verify_line(
     let systems = systems.join(" ");
     if cache.kind() == CacheKind::Https {
         let script = Script::HttpsVerify.path();
-        let netrc = match cache.push() {
-            Push::Secret(secret) => secret.as_str(),
+        let netrc = match (read_netrc(cache), cache.push()) {
+            (Some(read), _) => read,
+            (None, Push::Secret(secret)) => secret.as_str(),
             _ => "-",
         };
         let url = quote(&arg(cache.url()));
@@ -134,15 +147,21 @@ pub(crate) fn scripts(
 }
 
 /// The secrets reading and pushing to `cache` need (`src/cache:V85`):
-/// the push secret, then each read secret.
+/// the push secret, then each read secret, the read netrc as one
+/// (`src/cache/read:V86`).
 pub(crate) fn secrets(cache: Option<&BinaryCache>) -> Vec<Secret> {
     let Some(cache) = cache else {
         return Vec::new();
     };
-    let read = cache
-        .read_secrets()
-        .into_iter()
-        .map(|name| Secret::new(name, Purpose::CacheRead));
+    let netrc = read_netrc(cache);
+    let read = cache.read_secrets().into_iter().map(|name| {
+        let purpose = if netrc == Some(name) {
+            Purpose::NetrcRead
+        } else {
+            Purpose::CacheRead
+        };
+        Secret::new(name, purpose)
+    });
     push_secret(cache).into_iter().chain(read).collect()
 }
 
