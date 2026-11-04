@@ -844,39 +844,74 @@ fn cache_push_default_pushes_only_on_the_default_branch() -> io::Result<()> {
     Ok(())
 }
 
+/// The installable a gate's https push copies.
+const SHELL: &str = ".#devShells.x86_64-linux.default.inputDerivation";
+
 /// `cache-push.sh` for an https cache whose url is `url`, with a netrc
-/// file in the scratch dir; the command builds `/nix/store/new`.
+/// file in the scratch dir, copying the dev shell before a build.
 fn https_push(name: &str, url: &str, env: &[(&str, &str)]) -> io::Result<Ran> {
     let dir = scratch(name)?;
     let netrc = dir.join("netrc");
     fs::write(&netrc, "machine cache.example.org login u password p\n")?;
     let netrc = netrc.display().to_string();
-    let store = [
-        ("EXAMPLE_NETRC", netrc.as_str()),
-        ("STUB_STORE_BEFORE", "/nix/store/old"),
-        ("STUB_NEW_PATH", "/nix/store/new"),
+    let mut env: Vec<_> = env.to_vec();
+    env.push(("EXAMPLE_NETRC", netrc.as_str()));
+    let args = [
+        "https",
+        url,
+        "EXAMPLE_NETRC",
+        "any",
+        "nix build .#hk",
+        SHELL,
     ];
-    let env: Vec<_> = store.iter().chain(env).copied().collect();
-    let args = ["https", url, "EXAMPLE_NETRC", "any", "nix build .#hk"];
     run_in(&dir, "cache-push.sh", &args, &env)
 }
 
-/// `src/cache:V82`: an https push copies the paths the command added,
-/// with the netrc in a 0600 file it removes, and never prints the url.
+/// `src/cache:V82`: an https push copies the installable before the
+/// command, with the netrc in a 0600 file it removes, and never prints
+/// the url.
 #[test]
-fn cache_push_copies_new_paths_to_an_https_cache() -> io::Result<()> {
+fn cache_push_copies_the_installable_to_an_https_cache_first() -> io::Result<()>
+{
     let ran = https_push("cp-https", CACHE_URL, &[])?;
     assert_eq!(ran.code, Some(0), "{}", ran.stderr);
-    let copy = calls(&ran).into_iter().find(|c| c.starts_with("nix copy"));
-    let copy = copy.unwrap_or_default();
+    let all = calls(&ran);
+    let copy = all.iter().position(|c| c.starts_with("nix copy"));
+    let build = all.iter().position(|c| c.starts_with("nix build"));
+    assert!(copy < build && copy.is_some(), "{all:?}");
+    let copy = copy.and_then(|i| all.get(i)).copied().unwrap_or_default();
     assert!(
-        copy.ends_with(&format!("--to {CACHE_URL} /nix/store/new")),
+        copy.ends_with(&format!("--to {CACHE_URL} {SHELL}")),
         "{copy}"
     );
-    let file = copy.split(' ').nth(4).unwrap_or_default();
-    assert!(!Path::new(file).exists(), "{file} left behind");
+    Ok(())
+}
+
+/// `src/cache:V82`: the netrc file is 0600 while the push holds it and
+/// gone after, and the url is never printed.
+#[test]
+fn cache_push_keeps_the_netrc_private_and_the_url_unprinted() -> io::Result<()>
+{
+    let ran = https_push("cp-netrc", CACHE_URL, &[])?;
+    let copy = calls(&ran).into_iter().find(|c| c.starts_with("nix copy"));
+    let file = copy.and_then(|c| c.split(' ').nth(4)).unwrap_or_default();
+    assert!(
+        !file.is_empty() && !Path::new(file).exists(),
+        "{file} left behind"
+    );
     assert!(ran.log.contains("netrc-mode -rw-------"), "{}", ran.log);
     assert!(!ran.stdout.contains(CACHE_URL) && !ran.stderr.contains(CACHE_URL));
+    Ok(())
+}
+
+/// `src/cache:V82`: a flake without the installable stops the job,
+/// naming it, before anything runs.
+#[test]
+fn cache_push_stops_when_the_flake_lacks_the_installable() -> io::Result<()> {
+    let ran = https_push("cp-noshell", CACHE_URL, &[("STUB_NO_SHELL", "1")])?;
+    assert_eq!(ran.code, Some(1));
+    assert!(ran.stderr.contains(SHELL), "{}", ran.stderr);
+    assert!(!ran.log.contains("nix build"), "{}", ran.log);
     Ok(())
 }
 
