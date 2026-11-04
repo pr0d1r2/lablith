@@ -33,7 +33,7 @@ clap_mangen = "0.3.3"
 # writer, drift check, kind catalogue, systems, detect (SPEC.md C).
 # From crates.io, never a git pin: crates.io refuses to publish a crate
 # with a git dependency. Only src/core names it (V3).
-pipelith = "0.2.1"
+pipelith = "0.2.2"
 
 [lints.rust]
 # No FFI anywhere, so no module needs to lift it (SPEC.md C).
