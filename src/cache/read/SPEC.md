@@ -29,4 +29,4 @@ V87: before handing netrc to nix (chmod, `netrc-file`), `cache-read.sh` checks R
 id|status|task|cites
 T74|x|split from `src/cache` at its token ceiling: spec, then `nix_config` & `read_line` → `read/` after T75; ⊥ behaviour change|V81
 T75|x|pipelith 0.2.2 read netrc: `cache-read.sh` netrc arg, run-time https check, assignment line, verify & `report` w/ read netrc; test per V; fork guard stays 1st rule|V86,V87,`src/kind/rules:V76`
-T76|.|review #37: netrc in place, ⊥ copy left on runner|V86
+T76|x|review #37: netrc in place, ⊥ copy left on runner|V86
