@@ -4,11 +4,12 @@
 //! `<id>:verify-cache` on the default branch after every build
 //! (`src/build:V14`). pipelith refuses a `build` row without a cache.
 
-use crate::core::kind::Cache;
+use crate::cache::{self, Branches};
+use crate::core::cache::BinaryCache;
 use crate::core::yaml::Text;
 use crate::kind::{
     BUILD, Kind, KindError, KindSpec, NixJob, Row, Secret, Tables,
-    default_branch_rules, nix_job, quote, runnable,
+    default_branch_rules, nix_job, runnable,
 };
 use crate::pipeline::{Job, Stage};
 use crate::script::Script;
@@ -41,12 +42,12 @@ impl Kind for Build {
         &BUILD
     }
 
-    fn secrets(&self, _: &Row) -> Vec<Secret> {
-        vec![Secret::cachix()]
+    fn secrets(&self, row: &Row) -> Vec<Secret> {
+        cache::secrets(row.cache.as_ref())
     }
 
-    fn scripts(&self, _: &Row) -> Vec<Script> {
-        vec![Script::Cachix, Script::VerifyCache]
+    fn scripts(&self, row: &Row) -> Vec<Script> {
+        cache::scripts(row.cache.as_ref(), true)
     }
 
     fn jobs(&self, row: &Row, tables: &Tables) -> Result<Vec<Job>, KindError> {
@@ -69,7 +70,7 @@ impl Kind for Build {
 /// this forge builds it on.
 struct Plan<'a> {
     package: &'a str,
-    cache: &'a Cache,
+    cache: &'a BinaryCache,
     systems: Vec<System>,
 }
 
@@ -98,8 +99,7 @@ impl<'a> Plan<'a> {
 fn build(plan: &Plan<'_>, system: System) -> NixJob<'static> {
     let attr = format!(".#packages.{}.{}", system.name(), plan.package);
     let command = format!("nix build --print-build-logs {attr}");
-    let cachix = (Script::Cachix.path(), plan.cache.name());
-    let line = format!("bash {} {} {}", cachix.0, cachix.1, quote(&command));
+    let line = cache::push_line(plan.cache, Branches::Default, &command, &attr);
     let name = format!("build:{}", system.name());
     NixJob {
         system,
@@ -129,9 +129,7 @@ fn check(plan: &Plan<'_>, tables: &Tables) -> NixJob<'static> {
 /// built system's path, on the default branch only.
 fn verify(plan: &Plan<'_>) -> NixJob<'static> {
     let systems: Vec<&str> = plan.systems.iter().map(|s| s.name()).collect();
-    let script = Script::VerifyCache.path();
-    let (cache, package) = (plan.cache.name(), plan.package);
-    let line = format!("bash {script} {cache} {package} {}", systems.join(" "));
+    let line = cache::verify_line(plan.cache, plan.package, &systems);
     NixJob {
         rules: default_branch_rules(),
         why: Some(VERIFY_WHY),

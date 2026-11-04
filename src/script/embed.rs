@@ -4,8 +4,16 @@
 /// One seeded script a kind may call.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum Script {
+    /// `cache-push.sh`: run a command, pushing to a `## caches` cache
+    /// with its own push secret (`src/cache:V82`).
+    CachePush,
+    /// `cache-read.sh`: the nix settings of a cache with a secret url or
+    /// key (`src/cache:V81`).
+    CacheRead,
     /// `cachix.sh`: run a command, pushing to the row's cache when allowed.
     Cachix,
+    /// `https-verify.sh`: kind `build` on an https cache (`src/cache:V84`).
+    HttpsVerify,
     /// `open-mr.sh`: commit, push a branch, open a merge request.
     OpenMr,
     /// `runner-system.sh`: stop unless the runner is the job's system
@@ -28,7 +36,10 @@ impl Script {
     /// `(published path, header + file)`.
     pub(crate) fn file(self) -> (&'static str, &'static str) {
         match self {
+            Self::CachePush => seeded!("cache-push.sh"),
+            Self::CacheRead => seeded!("cache-read.sh"),
             Self::Cachix => seeded!("cachix.sh"),
+            Self::HttpsVerify => seeded!("https-verify.sh"),
             Self::OpenMr => seeded!("open-mr.sh"),
             Self::RunnerSystem => seeded!("runner-system.sh"),
             Self::UpdatePins => seeded!("update-pins.sh"),
@@ -61,9 +72,12 @@ macro_rules! seeded {
 use seeded;
 
 /// Every seeded script, sorted by path.
-pub(crate) fn scripts() -> [(&'static str, &'static str); 6] {
+pub(crate) fn scripts() -> [(&'static str, &'static str); 9] {
     [
+        Script::CachePush,
+        Script::CacheRead,
         Script::Cachix,
+        Script::HttpsVerify,
         Script::OpenMr,
         Script::RunnerSystem,
         Script::UpdatePins,

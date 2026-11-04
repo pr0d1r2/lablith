@@ -26,6 +26,25 @@ the bytes lablith emits for the same inputs is at least a minor version
 
 ### Added
 
+- `## caches` (pipelith 0.2.1), columns `name|kind|url|key|push`: a row
+  names a `cachix` or `https` nix binary cache whose url, key and push
+  may each be a literal or `secret:NAME`. A `.lablith` without the
+  section renders the same bytes as before. With it:
+  - literal url and key join `NIX_CONFIG`; a secret one is added at the
+    job's start by the new seeded `scripts/lablith/cache-read.sh`, only
+    when both values are there, so a pipeline without protected
+    variables runs without the cache;
+  - a push secret goes through the new seeded
+    `scripts/lablith/cache-push.sh`: cachix with that token, or https
+    with `nix copy` and the netrc file, copying a gate's
+    `.#devShells.<system>.default.inputDerivation` or a build's package
+    before the command; never for a fork's merge request, and for
+    `build` only on the default branch;
+  - a `build` row on an https cache verifies it with the new seeded
+    `scripts/lablith/https-verify.sh`;
+  - `lablith report` lists push and read secrets (`cache read`,
+    `cachix push`, `https cache push (netrc file)`).
+
 - Every nix job's `script:` starts with `bash
   scripts/lablith/runner-system.sh <system>`. It passes when the
   runner's nix `system` setting is `<system>` or its nix lists it in

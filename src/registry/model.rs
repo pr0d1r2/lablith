@@ -14,6 +14,8 @@ pub(crate) struct Registry {
     pub(crate) runners: Vec<RunnerRow>,
     /// `## hand-written` rows: CI files lablith does not generate.
     pub(crate) hand_written: Vec<HandWritten>,
+    /// `## caches`: pipelith's, checked when it is read (`src/cache:V80`).
+    pub(crate) caches: crate::core::cache::Caches,
 }
 
 /// A `key=value` arg: pipelith's (`src/core`).

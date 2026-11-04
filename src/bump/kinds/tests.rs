@@ -1,5 +1,5 @@
 use super::{UpdatePins, Upstream};
-use crate::core::kind::Purpose;
+use crate::kind::Purpose;
 use crate::kind::{EXTRAS, Kind, Row, Tables};
 use crate::pin::PinTable;
 use crate::pipeline::{Job, Stage, row_document};

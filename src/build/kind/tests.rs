@@ -117,14 +117,15 @@ fn the_row_file_matches_its_golden_bytes() {
 
 #[test]
 fn a_row_without_package_or_cache_is_refused_naming_it() {
-    let bare = Row {
+    let base = crate::core::kind::Row {
         line: 6,
         id: "pkg".into(),
         systems: Vec::new(),
         cache: None,
         args: crate::kind::Args::default(),
     };
-    let e = Build.jobs(&bare, &tables(&[])).err().map(|e| e.to_string());
+    let row = Row { base, cache: None };
+    let e = Build.jobs(&row, &tables(&[])).err().map(|e| e.to_string());
     let e = e.unwrap_or_default();
     assert!(
         e.starts_with(".lablith:6: build needs package and cache"),

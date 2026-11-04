@@ -954,7 +954,7 @@ fn https_verify_asks_the_cache_with_its_netrc() -> io::Result<()> {
     let curl = curl.unwrap_or_default();
     assert!(curl.contains("--netrc-file /run/netrc"), "{curl}");
     assert!(
-        curl.ends_with(&format!("{CACHE_URL}/x8664linux.narinfo")),
+        curl.ends_with(&format!("{CACHE_URL}/x86_64linux.narinfo")),
         "{curl}"
     );
     assert!(!ran.stdout.contains(CACHE_URL), "{}", ran.stdout);
@@ -965,7 +965,7 @@ fn https_verify_asks_the_cache_with_its_netrc() -> io::Result<()> {
 #[test]
 fn https_verify_fails_on_a_missing_path() -> io::Result<()> {
     let args = [CACHE_URL, "-", "hk", "x86_64-linux"];
-    let env = [("STUB_CURL_MISSING", "x8664linux")];
+    let env = [("STUB_CURL_MISSING", "x86_64linux")];
     let ran = run("hv-miss", "https-verify.sh", &args, &env)?;
     assert_eq!(ran.code, Some(1));
     assert!(!ran.log.contains("--netrc-file"), "{}", ran.log);

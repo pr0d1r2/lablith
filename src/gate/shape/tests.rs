@@ -1,5 +1,6 @@
 use super::Gate;
-use crate::core::kind::Purpose;
+use crate::core::cache::Caches;
+use crate::kind::Purpose;
 use crate::kind::{Kind, Row, Tables, check};
 use crate::pin::PinTable;
 use crate::pipeline::{Job, row_document};
@@ -18,7 +19,7 @@ fn checked(cells: &str, runners: &RunnerTable) -> Option<Row> {
         "format 1\n## workflows\nid|kind|systems|cache|args\n{cells}\n"
     );
     let raw = parse(&text).ok()?.workflows.first().cloned()?;
-    check(&Gate, &raw, runners).ok()
+    check(&Gate, &raw, runners, &Caches::default()).ok()
 }
 
 fn jobs(cells: &str) -> Vec<Job> {

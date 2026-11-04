@@ -1,6 +1,6 @@
 use super::{Depth, NixJob, nix_job};
-use crate::core::kind::Row;
 use crate::core::yaml::Text;
+use crate::kind::Row;
 use crate::kind::{EXTRAS, GATE, KindError, Tables, change_rules};
 use crate::pin::PinTable;
 use crate::pipeline::{Job, Stage};

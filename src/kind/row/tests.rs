@@ -1,4 +1,5 @@
 use super::{EXTRAS, check};
+use crate::core::cache::Caches;
 use crate::kind::{GATE, Kind, KindError, KindSpec, Row, Secret, Tables};
 use crate::pipeline::Job;
 use crate::registry::parse;
@@ -29,7 +30,7 @@ fn row(cells: &str) -> Result<Row, KindError> {
     );
     let reg = parse(&text).unwrap_or_default();
     let raw = reg.workflows.first().cloned().unwrap_or_default();
-    check(&Probe, &raw, &RunnerTable::builtin())
+    check(&Probe, &raw, &RunnerTable::builtin(), &Caches::default())
 }
 
 #[test]

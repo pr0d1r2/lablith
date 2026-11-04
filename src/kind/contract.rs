@@ -2,8 +2,9 @@
 //! kind builds jobs from.
 
 use super::error::KindError;
+use super::row::Row;
 use super::secret::Secret;
-use crate::core::kind::{KindSpec, Row};
+use crate::core::kind::KindSpec;
 use crate::pin::PinTable;
 use crate::pipeline::Job;
 use crate::script::Script;

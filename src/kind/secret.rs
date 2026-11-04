@@ -2,7 +2,19 @@
 //! so `report` can list them per row. Secrets are masked, protected
 //! CI/CD variables (`src/kind:V15`); a job names one, never its value.
 
-use crate::core::kind::Purpose;
+/// Why a job reads a secret: pipelith's purposes, and the cache read
+/// and https push `## caches` adds (`src/cache:V85`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub(crate) enum Purpose {
+    /// A cachix auth token, to push to a cachix cache.
+    CachePush,
+    /// A `## caches` url or key held by a secret.
+    CacheRead,
+    /// The netrc file of an https `## caches` cache, to push to it.
+    NetrcPush,
+    /// A token that pushes a branch and opens a merge request.
+    OpenChange,
+}
 
 /// A CI/CD variable and what the job reads it for.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -22,6 +34,14 @@ impl Secret {
         }
     }
 
+    /// `name`, read for `purpose`.
+    pub(crate) fn new(name: &str, purpose: Purpose) -> Self {
+        Self {
+            name: name.to_owned(),
+            purpose,
+        }
+    }
+
     /// The token that opens merge requests: the row's `token` arg, else
     /// `LABLITH_TOKEN` (`src/kind:V54`).
     pub(crate) fn open_change(token: Option<&str>) -> Self {
@@ -35,6 +55,8 @@ impl Secret {
     pub(crate) fn why(&self) -> &'static str {
         match self.purpose {
             Purpose::CachePush => "cachix push",
+            Purpose::CacheRead => "cache read",
+            Purpose::NetrcPush => "https cache push (netrc file)",
             Purpose::OpenChange => "push a branch and open a merge request",
         }
     }
