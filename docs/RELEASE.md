@@ -79,5 +79,7 @@ Perform these operations outside the repository:
   pipeline uses it.
 - Run `actlith report` and create the GitHub secrets it lists, using the
   repository's normal protected-secret process.
+- Inspect every converted hand-written workflow for `secrets.*` references and
+  provision those secrets too, or reconcile them with the Q3 secret inventory.
 
 Do not delete a schedule or secret still needed by another GitLab pipeline.
