@@ -46,12 +46,13 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 V80: `.lablith` w/o `## caches` → every rendered byte as before (built-in cachix via `Push::Forge`); `## caches` row shadows built-in name
 V81: read secret → ⊥ in `NIX_CONFIG`; `cache-read.sh` prints both setting lines iff url & key both non-empty, else nothing ∴ pipeline w/o protected vars (unprotected ref, fork MR) runs w/o cache, ⊥ empty substituter
-V82: `cache-push.sh` pushes only when secret non-empty, url non-empty, ⊥ fork MR (`src/kind/rules:V76` condition) & branch rule holds (`default` → `$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`); cachix → command under `cachix watch-exec` w/ token from secret; https → each installable ! evaluate (else exit 1 naming it: flake ! have it), then `umask 077`, netrc → 0600 temp file removed on exit, `nix copy --option netrc-file <file> --to <url> <installable>…` BEFORE command ∴ pushed even when gate fails; ⊥ echo url; else command alone
+V82: `cache-push.sh` pushes only when secret non-empty, url non-empty, ⊥ fork MR (`src/kind/rules:V76` condition) & branch rule holds (`default` → `$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`); cachix → command under `cachix watch-exec` w/ token from secret; https → each installable ! evaluate (else exit 1 naming it: flake ! have it), then `umask 077`, netrc → 0600 temp file removed on exit, `nix copy --option netrc-file <file> --to <url> <installable>…` BEFORE command ∴ pushed even when gate fails; ⊥ echo url; else command alone. url ! `https://` (else exit 1, generic message, before netrc use); `nix copy` failure = warning ⊥ url, command still runs, exit = command's (`build` caught by verify-cache)
 V83: `build` w/ push secret → `default`; `gate` → `any`. `ReadOnly` `build` = pipelith refusal
-V84: `https-verify.sh` asks `<url>/<hash>.narinfo` per system (netrc when given), ⊥ cachix host, ⊥ echo url; exit 1 on ∃ miss
+V84: `https-verify.sh` asks `<url>/<hash>.narinfo` per system (netrc when given), ⊥ cachix host, ⊥ echo url; exit 1 on ∃ miss; url ! `https://` before netrc sent
 V85: `report` secrets per row: push secret (`Forge` → `CACHIX_AUTH_TOKEN`) & ∀ `read_secrets()`, each w/ purpose
 
 ## §T TASKS
 
 id|status|task|cites
 T72|x|`## caches` in schema, `check_with`, read/push/verify rendering, 3 seeded scripts, report secrets; test per V; `.lablith` w/o section byte-identical|V80,V81,V82,V83,V84,V85,`.:V25`
+T73|.|review on #35: best-effort https push, `https://`-only url before any netrc, bash 3.2-safe empty arrays|V82,V84
