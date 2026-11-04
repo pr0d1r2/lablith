@@ -900,13 +900,32 @@ fn cache_read_refuses_a_netrc_default_entry() -> io::Result<()> {
     Ok(())
 }
 
-/// `src/cache/read:V87`: `default` as a password is not an entry.
+/// `src/cache/read:V87`: the scan keeps no grammar state, so a bare
+/// `default` is refused even where it is a value.
 #[test]
-fn cache_read_takes_default_as_a_password() -> io::Result<()> {
+fn cache_read_refuses_default_even_as_a_value() -> io::Result<()> {
     let text = "machine cache.example.org login default password default\n";
     let (ran, _) = read_text("cr-pass", CACHE_URL, Some(text), &[])?;
-    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
-    assert!(ran.stdout.contains("netrc-file = "), "{}", ran.stdout);
+    assert_eq!(ran.code, Some(1), "{}", ran.stdout);
+    assert!(ran.stderr.contains("default"), "{}", ran.stderr);
+    Ok(())
+}
+
+/// `src/cache/read:V87`: a value keyword with no value, after a machine
+/// that may not match, does not hide the `default` entry that follows.
+#[test]
+fn cache_read_refuses_default_after_a_dangling_keyword() -> io::Result<()> {
+    for (name, first) in [
+        (
+            "cr-dangle-acct",
+            "machine cache.example.org account password",
+        ),
+        ("cr-dangle-pass", "machine other.example.org password"),
+    ] {
+        let text = format!("{first}\ndefault login r password secret-r\n");
+        let (ran, _) = read_text(name, CACHE_URL, Some(&text), &[])?;
+        assert_eq!(ran.code, Some(1), "{name}: {}", ran.stdout);
+    }
     Ok(())
 }
 
