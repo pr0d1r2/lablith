@@ -1,4 +1,4 @@
-use super::{bump_rules, change_rules, default_branch_rules};
+use super::{bump_rules, change_rules, default_branch_rules, never_from_fork};
 use crate::pipeline::{Rule, When};
 use crate::yaml::GITLAB;
 
@@ -40,4 +40,15 @@ fn bump_jobs_run_on_their_own_schedule_or_web_run_on_protected_refs() {
     };
     let want = [(one("schedule"), None), (one("web"), None)];
     assert_eq!(shown(&bump_rules("pins")), want);
+}
+
+/// `src/kind/rules:V76`.
+#[test]
+fn the_fork_guard_compares_the_source_with_the_merge_request_project() {
+    let want = [(
+        "$CI_MERGE_REQUEST_SOURCE_PROJECT_ID != $CI_MERGE_REQUEST_PROJECT_ID"
+            .to_owned(),
+        Some(When::Never),
+    )];
+    assert_eq!(shown(&[never_from_fork()]), want);
 }

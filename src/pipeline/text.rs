@@ -1,5 +1,5 @@
 //! Conditions built from CI/CD variables and constants only
-//! (`src/yaml:V18`): `$NAME`, and `$NAME == "value"`.
+//! (`src/yaml:V18`): `$NAME`, `$NAME == "value"`, `$A == $B`, `$A != $B`.
 
 use crate::core::yaml::{Expr, Part, Text};
 use crate::yaml::GITLAB;
@@ -20,7 +20,17 @@ pub(crate) fn eq(name: &str, value: &str) -> Text {
 
 /// `$a == $b`.
 pub(crate) fn eq_var(a: &str, b: &str) -> Text {
-    let t = var(a).then_lit(" == ");
+    compare(a, " == ", b)
+}
+
+/// `$a != $b`.
+pub(crate) fn ne_var(a: &str, b: &str) -> Text {
+    compare(a, " != ", b)
+}
+
+/// `$a`, `op`, then `$b`.
+fn compare(a: &str, op: &str, b: &str) -> Text {
+    let t = var(a).then_lit(op);
     match Expr::new(&GITLAB, b) {
         Some(e) => t.then_expr(e),
         None => t.then_lit(&format!("${b}")),

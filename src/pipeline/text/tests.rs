@@ -1,4 +1,4 @@
-use super::{concat, eq, eq_var, var};
+use super::{concat, eq, eq_var, ne_var, var};
 use crate::yaml::GITLAB;
 
 #[test]
@@ -29,4 +29,10 @@ fn an_eq_var_compares_two_vars() {
 fn concat_keeps_every_part() {
     let t = concat(var("A").then_lit(" && "), &eq("B", "c"));
     assert_eq!(t.render(&GITLAB), "$A && $B == \"c\"");
+}
+
+#[test]
+fn a_ne_var_tells_two_vars_apart() {
+    let t = ne_var("A", "B");
+    assert_eq!(t.render(&GITLAB), "$A != $B");
 }

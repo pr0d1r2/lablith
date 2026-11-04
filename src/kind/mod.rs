@@ -24,6 +24,8 @@ pub(crate) use contract::{Kind, Tables};
 pub(crate) use error::KindError;
 pub(crate) use job::{Depth, NIX_IMAGE, NixJob, nix_job, runnable};
 pub(crate) use row::{EXTRAS, check};
-pub(crate) use rules::{ROW, bump_rules, change_rules, default_branch_rules};
+pub(crate) use rules::{
+    ROW, bump_rules, change_rules, default_branch_rules, never_from_fork,
+};
 pub(crate) use secret::{DEFAULT_TOKEN, Secret};
 pub(crate) use shell::quote;

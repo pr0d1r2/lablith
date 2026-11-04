@@ -57,6 +57,13 @@ page, the code and those specs in step.
 - A cache push goes through `scripts/lablith/cachix.sh`, which pushes
   only when `CACHIX_AUTH_TOKEN` (masked, protected) is set and the
   pipeline is not a merge request from a fork.
+- A job whose tags come from a `## runners` row runs on the
+  repository's own runner, so its first rule is
+  `if: $CI_MERGE_REQUEST_SOURCE_PROJECT_ID != $CI_MERGE_REQUEST_PROJECT_ID`
+  with `when: never`. It never runs for a merge request from a fork,
+  whether that pipeline runs in the fork or in the parent project, and
+  there is no switch to allow it. Also keep such a runner registered to
+  the one project.
 
 ## `gate`
 

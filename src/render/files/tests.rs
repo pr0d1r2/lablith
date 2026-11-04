@@ -179,7 +179,7 @@ fn first_rules(text: &str) -> Vec<String> {
 
 const ONE_GATE: &str = "format 1\n## workflows\nid|kind|systems|cache|args\nci|gate|x86_64-linux|-|-\n";
 
-/// `src/kind:V76`.
+/// `src/kind/rules:V76`.
 #[test]
 fn a_job_on_an_own_runner_never_runs_for_a_fork_merge_request() {
     let text = format!("{ONE_GATE}## runners\nsystem|tags\nx86_64-linux|big\n");
@@ -188,7 +188,7 @@ fn a_job_on_an_own_runner_never_runs_for_a_fork_merge_request() {
     assert_eq!(first_rules(&text), [guard.to_owned()]);
 }
 
-/// `src/kind:V76`: built-in tags carry no guard.
+/// `src/kind/rules:V76`: built-in tags carry no guard.
 #[test]
 fn a_job_on_built_in_tags_keeps_its_rules() {
     let want = "$CI_PIPELINE_SOURCE == \"schedule\"|Some(Never)".to_owned();
