@@ -36,7 +36,7 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 ## §C CONSTRAINTS
 
-- deps: `src/core` (pipelith `cache`), `src/script`. section grammar, kinds & every row check = pipelith's (its `src/cache` V82–V85); lablith ⊥ re-checks, ⊥ narrows (`.:V4`).
+- deps: `src/core` (pipelith `cache`), `src/script`. section grammar, kinds & every row check = pipelith's (its `src/cache` §V, through its read netrc https check); lablith ⊥ re-checks, ⊥ narrows (`.:V4`).
 - a secret value ⊥ in `.lablith`, ⊥ in a rendered file, ⊥ in a job log: lines name the variable, seeded scripts read it (`secret:NAME` arg → `${!NAME}`), ⊥ echo url.
 
 ## §I INTERFACES
