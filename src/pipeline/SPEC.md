@@ -16,6 +16,7 @@ sib|src/yaml|GitLab dialect for pipelith YAML writer: `$NAME` expressions, `$` e
 sib|src/system|nix system → runner tags table, built-in + `## runners`
 sib|src/pin|image pin table: built-in + `## images`; `image:` lines
 sib|src/fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code
+sib|src/cache|`## caches` on GitLab: read, push, verify, secrets
 sib|src/kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets
 sib|src/gate|kind `gate`: hk gate per system
 sib|src/build|kind `build`: build, flake check, verify-cache

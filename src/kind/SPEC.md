@@ -22,6 +22,7 @@ sib|src/system|nix system → runner tags table, built-in + `## runners`
 sib|src/pin|image pin table: built-in + `## images`; `image:` lines
 sib|src/fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code
 sib|src/pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix
+sib|src/cache|`## caches` on GitLab: read, push, verify, secrets
 sib|src/gate|kind `gate`: hk gate per system
 sib|src/build|kind `build`: build, flake check, verify-cache
 sib|src/bump|kinds `update-pins` & `upstream`: scheduled bump MRs

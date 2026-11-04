@@ -16,6 +16,7 @@ sib|src/yaml|GitLab dialect for pipelith YAML writer: `$NAME` expressions, `$` e
 sib|src/pin|image pin table: built-in + `## images`; `image:` lines
 sib|src/fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code
 sib|src/pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix
+sib|src/cache|`## caches` on GitLab: read, push, verify, secrets
 sib|src/kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets
 sib|src/gate|kind `gate`: hk gate per system
 sib|src/build|kind `build`: build, flake check, verify-cache
@@ -41,7 +42,7 @@ R8|runner fleet|decided (Q1): self-hosted `x86_64-linux` NixOS hosts, `shell` ex
 
 V56: system w/ ⊥ entry in runner table (built-in + `## runners`) → exit 2 naming system & `## runners` fix; ⊥ untagged job (would land on any shared runner)
 V72: `## runners` row `<system>|-` = SKIP: ⊥ runner for system on this forge ∴ its per-system jobs (`gate:<system>`, `build:<system>`) ⊥ rendered, build `check` evaluates it like an untagged system, `verify-cache` omits it; a job that must run on it (bump row's system, system-free jobs on `x86_64-linux`) → exit 2 naming the skip; row w/ every system skipped → exit 2; `report` marks it skipped. rows stay = `.actlith` (`.:V4`); SKIP ⊥ portability finding (GitLab-only section)
-V75: `-` systems = pipelith `DEFAULT_SYSTEMS` ∩ table (built-in + `## runners`, SKIP rows incl.) ∴ `x86_64-darwin` (⊥ built-in tags) in `-` only w/ row; output for a `.lablith` w/o such row = pipelith 0.1
+V75: `-` systems = pipelith `DEFAULT_SYSTEMS` ∩ table (built-in + `## runners`, SKIP incl.) ∴ `x86_64-darwin` in `-` only w/ row; w/o row bytes as before
 
 ## §T TASKS
 

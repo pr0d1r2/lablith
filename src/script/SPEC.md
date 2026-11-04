@@ -17,6 +17,7 @@ sib|src/system|nix system → runner tags table, built-in + `## runners`
 sib|src/pin|image pin table: built-in + `## images`; `image:` lines
 sib|src/fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code
 sib|src/pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix
+sib|src/cache|`## caches` on GitLab: read, push, verify, secrets
 sib|src/kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets
 sib|src/gate|kind `gate`: hk gate per system
 sib|src/build|kind `build`: build, flake check, verify-cache
@@ -36,10 +37,10 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 
 V16: ∀ `script:` line = 1 command; longer logic → seeded script
 V26: `open-mr.sh` talks GitLab API via `curl`; ⊥ extra CLI in dev shell
-V79: `runner-system.sh` (`src/kind:V77`) needs runner nix ≥ 2.20 (`nix config show`); older → exit 1 naming found & minimum, before ∀ config query
+V79: `runner-system.sh` (`src/kind:V77`) needs runner nix ≥ 2.20 (`nix config show`); older → exit 1 naming found & minimum first
 
 ## §T TASKS
 
 id|status|task|cites
 T20|x|seeded scripts `update-pins.sh` & `open-mr.sh` (GitLab API via `curl`, `LABLITH_TOKEN`) + bats; written by `gen` w/ header|`src/gen:V5`,V16,V26
-T70|x|V79 version check; test below, at, above 2.20|V79,`src/kind:V77`
+T70|x|V79: test below, at, above 2.20|V79,`src/kind:V77`

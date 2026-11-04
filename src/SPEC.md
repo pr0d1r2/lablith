@@ -14,6 +14,7 @@ system|nix system → runner tags table, built-in + `## runners`|system names (p
 pin|image pin table: built-in + `## images`; `image:` lines|network lookup (`src/fetch`)|-
 fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code|pin table shape (`src/pin`)|-
 pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix|kind job content (`src/kind` & kind nodes)|-
+cache|`## caches` on GitLab: read, push, verify, secrets|section grammar & checks (pipelith), script text (`src/script`)|-
 kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets|one kind's jobs (kind nodes)|-
 gate|kind `gate`: hk gate per system|shared job parts (`src/kind`)|-
 build|kind `build`: build, flake check, verify-cache|shared job parts (`src/kind`)|-

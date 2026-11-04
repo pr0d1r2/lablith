@@ -11,6 +11,8 @@
 # `itok estimate --bpe`, chain rows with `sherd budget`. src/kind/rules
 # split from src/kind 2026-11-04 (src/kind/rules:T71): its file row is
 # set for the fork guard rows that land next, its chain as src/kind's.
+# src/cache added 2026-11-04 (src/cache:T72): ~12% over its first
+# measure, 1396 file, 3427 chain.
 
 # Files
 SPEC.md                      3420
@@ -18,6 +20,7 @@ dev/SPEC.md                  555
 nix/SPEC.md                  3150
 src/SPEC.md                  1060
 src/build/SPEC.md            810
+src/cache/SPEC.md            1560
 src/bump/SPEC.md             840
 src/check/SPEC.md            890
 src/cli/SPEC.md              780
@@ -43,6 +46,7 @@ dev                          3050
 nix                          4200
 src                          3120
 src/build                    3220
+src/cache                    3850
 src/bump                     3400
 src/check                    3440
 src/cli                      3200

@@ -16,6 +16,7 @@ sib|src/system|nix system → runner tags table, built-in + `## runners`
 sib|src/pin|image pin table: built-in + `## images`; `image:` lines
 sib|src/fetch|OCI registry tag → digest for `pin` via `curl`; ONLY network code
 sib|src/pipeline|GitLab pipeline model: root `.gitlab-ci.yml`, per-row file, stages, `workflow: rules`, job-name prefix
+sib|src/cache|`## caches` on GitLab: read, push, verify, secrets
 sib|src/kind|what every kind shares: `Kind` trait, job rules, timeout, interruptible, `GIT_DEPTH`, nix & cachix parts, secrets
 sib|src/gate|kind `gate`: hk gate per system
 sib|src/build|kind `build`: build, flake check, verify-cache
@@ -31,7 +32,7 @@ sib|src/cli|clap verbs, flags, exit codes, completions, man page
 ## §V INVARIANTS
 
 V28: unknown kind | arg key | system | section, missing required arg, `x86_64-darwin` listed w/o `## runners` row (`src/system:V56`) → exit 2 naming it & fix; ⊥ silent default. w/ row → renders on repo's own runner (pipelith 0.2)
-V29: `.lablith` ! carry `format` line; newer than supported → exit 2 naming both versions, ⊥ best-effort parse. missing `.lablith` → `gen`|`check`|`report`|`portable` exit 2, ⊥ empty render. missing optional section (`## images`, `## runners`, `## hand-written`) = empty
+V29: `.lablith` ! carry `format` line; newer than supported → exit 2 naming both versions, ⊥ best-effort parse. missing `.lablith` → `gen`|`check`|`report`|`portable` exit 2, ⊥ empty render. missing optional section (`## images`, `## runners`, `## caches`, `## hand-written`) = empty
 V55: row `id` charset = pipelith's (`RawRow::from_cells`: `[A-Za-z0-9._-]`, ⊥ leading dot) & lablith ⊥ narrows it (`.:V4`). each such id renders safely as file stem, `<id>:` job prefix, `resource_group` & quoted `rules:` string; test per form
 
 ## §T TASKS
