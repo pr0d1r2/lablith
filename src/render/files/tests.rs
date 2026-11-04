@@ -271,7 +271,8 @@ fn an_https_cache_is_pushed_by_cache_push() {
     let script = jobs.first().map(|j| j.2.clone()).unwrap_or_default();
     let push = format!(
         "bash scripts/lablith/cache-push.sh https 'https://cache.example.org' \
-         EXAMPLE_NETRC any '{GATE}'"
+         EXAMPLE_NETRC any '{GATE}' \
+         .#devShells.x86_64-linux.default.inputDerivation"
     );
     assert_eq!(script.last(), Some(&push), "{script:?}");
     let scripts = seeded_scripts(&text);
@@ -328,7 +329,7 @@ fn https_build_line(name: &str) -> String {
 fn a_build_row_pushes_https_on_the_default_branch() {
     let build = "bash scripts/lablith/cache-push.sh https 'https://cache.example.org' \
                  EXAMPLE_NETRC default 'nix build --print-build-logs \
-                 .#packages.x86_64-linux.hk'";
+                 .#packages.x86_64-linux.hk' .#packages.x86_64-linux.hk";
     assert_eq!(https_build_line("pkg:build:x86_64-linux"), build);
 }
 
