@@ -75,13 +75,13 @@ esac
 
 # A `default` entry matches every host, so nix would send its credential
 # to any substituter; only `machine` entries scope it to the cache. The
-# scan reads tokens as curl does: keywords in any case, a quoted token
-# whole (with \-escapes), an unquoted `#` at the start of a token ending
-# the line, the token after login, password, machine and macdef a value
-# (curl has no `account`, so the token after it is a keyword), and a
-# macdef body up to the next blank line. It exits 3 on a `default` entry; any
-# status but 0 or 3 is a scan that could not read the file, and is
-# refused too.
+# scan keeps no grammar state, which libcurl does not share and which
+# would let a dangling `password` or `account` hide the entry after it:
+# any token equal to `default`, in any case and wherever it stands, a
+# value or a comment word included, is refused. A quoted token (with
+# \-escapes) is one token, so `"a default b"` reads. It exits 3 on such
+# a token; any status but 0 or 3 is a scan that could not read the
+# file, and is refused too.
 status=0
 awk '
   function split_tokens(line, n, i, c, t, q, esc, in_tok) {
@@ -96,29 +96,21 @@ awk '
       } else if (c == " " || c == "\t" || c == "\r") {
         if (in_tok) { tok[++n] = t; t = ""; in_tok = 0 }
       } else if (c == "\"" && !in_tok) { q = 1; in_tok = 1 }
-      else if (c == "#" && !in_tok) break
       else { t = t c; in_tok = 1 }
     }
     if (in_tok) tok[++n] = t
     return n
   }
-  mac { if ($0 ~ /^[[:space:]]*$/) mac = 0; next }
   {
     n = split_tokens($0)
-    for (k = 1; k <= n; k++) {
-      if (skip) { skip = 0; continue }
-      w = tolower(tok[k])
-      if (w ~ /^(machine|login|password)$/) skip = 1
-      else if (w == "macdef") { skip = 1; mac = 1 }
-      else if (w == "default") found = 1
-    }
+    for (k = 1; k <= n; k++) if (tolower(tok[k]) == "default") found = 1
   }
   END { exit found ? 3 : 0 }
 ' "$file" 2>/dev/null || status=$?
 case "$status" in
 0) ;;
 3)
-  echo "cache-read: cache $cache: the netrc in $netrc has a default entry, which would reach every host; use machine entries only" >&2
+  echo "cache-read: cache $cache: the netrc in $netrc has a default token, and a default entry would reach every host; use machine entries only" >&2
   exit 1
   ;;
 *)
