@@ -27,9 +27,12 @@ the bytes lablith emits for the same inputs is at least a minor version
 ### Added
 
 - `## caches` (pipelith 0.2.1), columns `name|kind|url|key|push`: a row
-  names a `cachix` or `https` nix binary cache whose url, key and push
-  may each be a literal or `secret:NAME`. A `.lablith` without the
-  section renders the same bytes as before. With it:
+  names a `cachix` or `https` nix binary cache. An https url and key are
+  required, each a literal or `secret:NAME`; a cachix url is `-` or its
+  own, never a secret; a push is `-` or `secret:NAME`, never a literal
+  (docs/REGISTRY.md has the full table). A `.lablith` without the
+  section renders the same bytes as before. With it, each row naming
+  such a cache changes its `.gitlab/ci/<id>.yml` jobs as below:
   - literal url and key join `NIX_CONFIG`; a secret one is added at the
     job's start by the new seeded `scripts/lablith/cache-read.sh`, only
     when both values are there, so a pipeline without protected
@@ -43,8 +46,8 @@ the bytes lablith emits for the same inputs is at least a minor version
   - a `build` row on an https cache verifies it with the new seeded
     `scripts/lablith/https-verify.sh`;
   - `lablith report` lists push and read secrets (`cache read`,
-    `cachix push`, `https cache push (netrc file)`).
-  - An https push is best-effort, a failed copy a warning before the
+    `cachix push`, `https cache push (netrc file)`);
+  - an https push is best-effort, a failed copy a warning before the
     command still runs, and a url that is not `https://` is refused
     before any netrc is used.
 

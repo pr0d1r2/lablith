@@ -105,8 +105,9 @@ aarch64-darwin|-
 
 Optional, and the same section as in `.actlith` (pipelith's): a row
 names a nix binary cache a `## workflows` row's `cache` cell may use.
-`url`, `key` and `push` are each `-`, a literal, or `secret:NAME`, a
-GitLab CI/CD variable; a row with a built-in cache's name replaces it.
+`secret:NAME` names a GitLab CI/CD variable that holds the value; which
+cells take a literal, a secret or `-` depends on the kind (table
+below). A row with a built-in cache's name replaces it.
 
 ```text
 ## caches
@@ -122,7 +123,7 @@ What each cell takes; anything else is refused while the file is read:
 | --- | --- | --- |
 | `name` | the cachix cache name: lower-case letters, digits, `-` | letters, digits, `.`, `_`, `-`; not starting with `-` |
 | `url` | `-` or `https://<name>.cachix.org`; never a secret | required: `https://<host>...` with no `user@`, or `secret:NAME` |
-| `key` | `<keyname>:<base64>`, `secret:NAME`, or `-` when lablith knows the cache's key | required: `<keyname>:<base64>` of an ed25519 key, or `secret:NAME` |
+| `key` | `<keyname>:<base64>`, `secret:NAME`, or `-` when pipelith knows the cache's key | required: `<keyname>:<base64>` of an ed25519 key, or `secret:NAME` |
 | `push` | `-` (read-only) or `secret:NAME` (the auth token); never a literal | `-` (read-only) or `secret:NAME` (a netrc file); never a literal |
 
 `NAME` is letters, digits and `_`, not starting with a digit. Each name
