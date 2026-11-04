@@ -289,13 +289,47 @@ fn a_secret_cache_is_read_at_job_start_and_a_read_only_one_not_pushed() {
     let jobs = cache_jobs(&text).unwrap_or_default();
     let (_, config, script) = jobs.first().cloned().unwrap_or_default();
     assert!(!config.contains("extra-substituters"), "{config}");
-    let read = "export NIX_CONFIG=\"$NIX_CONFIG$(bash scripts/lablith/cache-read.sh \
+    let read = "NIX_CONFIG=\"$NIX_CONFIG$(bash scripts/lablith/cache-read.sh \
                 'secret:HIDDEN_URL' 'secret:HIDDEN_KEY')\"";
     assert_eq!(script.get(1).map(String::as_str), Some(read), "{script:?}");
     assert_eq!(script.last().map(String::as_str), Some(GATE), "{script:?}");
     let scripts = seeded_scripts(&text);
     assert!(scripts.contains(&"scripts/lablith/cache-read.sh".to_owned()));
     assert!(!scripts.contains(&"scripts/lablith/cache-push.sh".to_owned()));
+}
+
+/// A gate row on an https cache read with `READ_NETRC` and pushed with
+/// `PUSH_NETRC`.
+fn private_gate() -> String {
+    let push = "read=secret:READ_NETRC, push=secret:PUSH_NETRC";
+    let row = format!("private|https|https://cache.example.org|{KEY}|{push}\n");
+    with_caches(&row, "ci|gate|x86_64-linux|private|-")
+}
+
+/// `src/cache/read:V86`: a read netrc is written by `cache-read.sh`
+/// right after the runner check, and the push keeps its own netrc.
+#[test]
+fn a_read_netrc_cache_is_read_at_job_start_and_pushed_apart() {
+    let jobs = cache_jobs(&private_gate()).unwrap_or_default();
+    let (_, config, script) = jobs.first().cloned().unwrap_or_default();
+    assert!(!config.contains("extra-substituters"), "{config}");
+    let read = format!(
+        "NIX_CONFIG=\"$NIX_CONFIG$(bash scripts/lablith/cache-read.sh \
+         'https://cache.example.org' '{KEY}' READ_NETRC private)\""
+    );
+    assert_eq!(script.get(1), Some(&read), "{script:?}");
+    let push = script.last().cloned().unwrap_or_default();
+    assert!(push.contains(" PUSH_NETRC any "), "{push}");
+    assert!(!push.contains("READ_NETRC"), "{push}");
+}
+
+/// `src/kind/rules:V76`: the fork guard stays the first rule of a job
+/// that reads with a netrc.
+#[test]
+fn a_read_netrc_job_keeps_the_fork_guard_first() {
+    let guard = "$CI_MERGE_REQUEST_SOURCE_PROJECT_ID != \
+                 $CI_MERGE_REQUEST_PROJECT_ID|Some(Never)";
+    assert_eq!(first_rules(&private_gate()), [guard.to_owned()]);
 }
 
 /// `src/cache:V82`: a cachix row with its own token pushes through

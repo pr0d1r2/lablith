@@ -81,3 +81,72 @@ fn no_cache_needs_nothing() {
     assert!(secrets(None).is_empty());
     assert!(scripts(None, true).is_empty());
 }
+
+/// An https cache read with its own netrc and pushed with another.
+fn private() -> Option<BinaryCache> {
+    let push = "read=secret:READ_NETRC, push=secret:PUSH_NETRC";
+    cache(&format!(
+        "private|https|https://cache.example.org|{KEY}|{push}"
+    ))
+}
+
+/// `src/cache/read:V86`: a read netrc keeps the settings out of
+/// `NIX_CONFIG` and goes to `cache-read.sh` with the cache's name, on a
+/// line that assigns rather than exports, so a refusal stops the job.
+#[test]
+fn a_read_netrc_is_passed_to_cache_read() {
+    let c = private();
+    assert_eq!(nix_config(c.as_ref()), "");
+    let line = read_line(c.as_ref()).unwrap_or_default();
+    let want = format!(
+        "NIX_CONFIG=\"$NIX_CONFIG$(bash scripts/lablith/cache-read.sh \
+         'https://cache.example.org' '{KEY}' READ_NETRC private)\""
+    );
+    assert_eq!(line, want);
+    assert_eq!(
+        scripts(c.as_ref(), false),
+        [Script::CacheRead, Script::CachePush]
+    );
+}
+
+/// `src/cache/read:V81`: a secret setting is read on an assignment too.
+#[test]
+fn a_secret_setting_is_assigned_not_exported() {
+    let line = read_line(hidden().as_ref()).unwrap_or_default();
+    assert!(
+        line.starts_with("NIX_CONFIG=\"$NIX_CONFIG$(bash "),
+        "{line}"
+    );
+}
+
+/// `src/cache/read:V86`: the push keeps its own netrc, and verify reads
+/// with the read one.
+#[test]
+fn the_push_netrc_stays_apart_from_the_read_netrc() {
+    let c = private();
+    let push = c
+        .as_ref()
+        .map(|c| push_line(c, Branches::Any, "true", "-"))
+        .unwrap_or_default();
+    assert!(push.contains(" PUSH_NETRC any "), "{push}");
+    assert!(!push.contains("READ_NETRC"), "{push}");
+    let verify = c
+        .as_ref()
+        .map(|c| verify_line(c, "hk", &["x86_64-linux"]))
+        .unwrap_or_default();
+    assert!(verify.contains(" READ_NETRC hk "), "{verify}");
+}
+
+/// `src/cache/read:V86`: `report` lists the read netrc as one.
+#[test]
+fn the_read_netrc_is_reported_as_a_netrc() {
+    let needs: Vec<(String, &str)> = secrets(private().as_ref())
+        .into_iter()
+        .map(|s| (s.name.clone(), s.why()))
+        .collect();
+    let want = [
+        ("PUSH_NETRC".to_owned(), "https cache push (netrc file)"),
+        ("READ_NETRC".to_owned(), "https cache read (netrc file)"),
+    ];
+    assert_eq!(needs, want);
+}
