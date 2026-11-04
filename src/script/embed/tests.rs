@@ -910,6 +910,45 @@ fn cache_read_takes_default_as_a_password() -> io::Result<()> {
     Ok(())
 }
 
+/// `src/cache/read:V87`: curl reads netrc keywords in any case, so
+/// `DEFAULT` is refused too.
+#[test]
+fn cache_read_refuses_a_default_entry_in_any_case() -> io::Result<()> {
+    let text = "machine cache.example.org login r password secret-r\n\
+                DEFAULT login d password secret-d\n";
+    let (ran, _) = read_text("cr-upper", CACHE_URL, Some(text), &[])?;
+    assert_eq!(ran.code, Some(1), "{}", ran.stdout);
+    assert!(!ran.stderr.contains("secret-"), "{}", ran.stderr);
+    Ok(())
+}
+
+/// `src/cache/read:V87`: a quoted token is one value, as curl reads it.
+#[test]
+fn cache_read_takes_a_quoted_password_whole() -> io::Result<()> {
+    let text =
+        "machine cache.example.org login r password \"safe default value\"\n";
+    let (ran, _) = read_text("cr-quoted", CACHE_URL, Some(text), &[])?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    assert!(ran.stdout.contains("netrc-file = "), "{}", ran.stdout);
+    Ok(())
+}
+
+/// `src/cache/read:V87`: a netrc the scan cannot read is refused,
+/// naming the cache and the variable, rather than passed on.
+#[test]
+fn cache_read_refuses_a_netrc_it_cannot_read() -> io::Result<()> {
+    let env = [("READ_NETRC", "/nonexistent/lablith/netrc")];
+    let (ran, _) = read_text("cr-unread", CACHE_URL, None, &env)?;
+    assert_eq!(ran.code, Some(1));
+    assert_eq!(ran.stdout, "");
+    assert!(
+        ran.stderr.contains("private") && ran.stderr.contains("READ_NETRC"),
+        "{}",
+        ran.stderr
+    );
+    Ok(())
+}
+
 /// `cache-push.sh` for a cachix cache with `env`, running `nix flake check`.
 fn cachix_push(name: &str, env: &[(&str, &str)]) -> io::Result<Ran> {
     let args = [
