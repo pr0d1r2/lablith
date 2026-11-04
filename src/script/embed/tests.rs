@@ -788,17 +788,27 @@ fn read_private(
     netrc: bool,
     env: &[(&str, &str)],
 ) -> io::Result<(Ran, PathBuf)> {
+    read_text(name, url, netrc.then_some(READ_NETRC), env)
+}
+
+/// `read_private` with `text` as the netrc, or no netrc secret.
+fn read_text(
+    name: &str,
+    url: &str,
+    text: Option<&str>,
+    env: &[(&str, &str)],
+) -> io::Result<(Ran, PathBuf)> {
     let dir = scratch(name)?;
     let tmp = dir.join("tmp");
     fs::create_dir_all(&tmp)?;
     let file = tmp.join("READ_NETRC");
-    fs::write(&file, READ_NETRC)?;
+    fs::write(&file, text.unwrap_or(READ_NETRC))?;
     fs::set_permissions(&file, fs::Permissions::from_mode(0o644))?;
     let (tmp_s, file_s) =
         (tmp.display().to_string(), file.display().to_string());
     let mut env: Vec<_> = env.to_vec();
     env.push(("RUNNER_TEMP_PROJECT_DIR", tmp_s.as_str()));
-    if netrc {
+    if text.is_some() {
         env.push(("READ_NETRC", file_s.as_str()));
     }
     let args = [url, CACHE_KEY, "READ_NETRC", "private"];
@@ -873,6 +883,30 @@ fn cache_read_refuses_a_url_that_is_not_https() -> io::Result<()> {
     for leak in [plain, "secret-r"] {
         assert!(!ran.stderr.contains(leak), "{}", ran.stderr);
     }
+    Ok(())
+}
+
+/// `src/cache/read:V87`: a netrc with a `default` entry, whose
+/// credential would go to any host, is refused like a non-https url.
+#[test]
+fn cache_read_refuses_a_netrc_default_entry() -> io::Result<()> {
+    let text = "machine cache.example.org login r password secret-r\n\
+                default login d password secret-d\n";
+    let (ran, tmp) = read_text("cr-default", CACHE_URL, Some(text), &[])?;
+    assert_eq!(ran.code, Some(1));
+    assert_eq!((ran.stdout.as_str(), netrc_mode(&tmp)?), ("", 0o644));
+    assert!(ran.stderr.contains("READ_NETRC"), "{}", ran.stderr);
+    assert!(!ran.stderr.contains("secret-"), "{}", ran.stderr);
+    Ok(())
+}
+
+/// `src/cache/read:V87`: `default` as a password is not an entry.
+#[test]
+fn cache_read_takes_default_as_a_password() -> io::Result<()> {
+    let text = "machine cache.example.org login default password default\n";
+    let (ran, _) = read_text("cr-pass", CACHE_URL, Some(text), &[])?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    assert!(ran.stdout.contains("netrc-file = "), "{}", ran.stdout);
     Ok(())
 }
 
