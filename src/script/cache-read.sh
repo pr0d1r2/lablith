@@ -75,23 +75,54 @@ esac
 
 # A `default` entry matches every host, so nix would send its credential
 # to any substituter; only `machine` entries scope it to the cache. The
-# token after login, password, account, machine and macdef is a value,
-# and a macdef body runs to the next blank line.
-if awk '
+# scan reads tokens as curl does: keywords in any case, a quoted token
+# whole (with \-escapes), the token after login, password, account,
+# machine and macdef a value, and a macdef body up to the next blank
+# line. It exits 3 on a `default` entry; any status but 0 or 3 is a scan
+# that could not read the file, and is refused too.
+status=0
+awk '
+  function split_tokens(line, n, i, c, t, q, esc, in_tok) {
+    n = 0; t = ""; q = 0; esc = 0; in_tok = 0
+    for (i = 1; i <= length(line); i++) {
+      c = substr(line, i, 1)
+      if (q) {
+        if (esc) { t = t c; esc = 0 }
+        else if (c == "\\") esc = 1
+        else if (c == "\"") q = 0
+        else t = t c
+      } else if (c == " " || c == "\t" || c == "\r") {
+        if (in_tok) { tok[++n] = t; t = ""; in_tok = 0 }
+      } else if (c == "\"" && !in_tok) { q = 1; in_tok = 1 }
+      else { t = t c; in_tok = 1 }
+    }
+    if (in_tok) tok[++n] = t
+    return n
+  }
   mac { if ($0 ~ /^[[:space:]]*$/) mac = 0; next }
   {
-    for (i = 1; i <= NF; i++) {
+    n = split_tokens($0)
+    for (k = 1; k <= n; k++) {
       if (skip) { skip = 0; continue }
-      if ($i ~ /^(machine|login|password|account)$/) skip = 1
-      else if ($i == "macdef") { skip = 1; mac = 1 }
-      else if ($i == "default") found = 1
+      w = tolower(tok[k])
+      if (w ~ /^(machine|login|password|account)$/) skip = 1
+      else if (w == "macdef") { skip = 1; mac = 1 }
+      else if (w == "default") found = 1
     }
   }
-  END { exit !found }
-' "$file"; then
+  END { exit found ? 3 : 0 }
+' "$file" 2>/dev/null || status=$?
+case "$status" in
+0) ;;
+3)
   echo "cache-read: cache $cache: the netrc in $netrc has a default entry, which would reach every host; use machine entries only" >&2
   exit 1
-fi
+  ;;
+*)
+  echo "cache-read: cache $cache: cannot read the netrc in $netrc; refusing to use it" >&2
+  exit 1
+  ;;
+esac
 chmod 600 "$file"
 printf '\nextra-substituters = %s\nextra-trusted-public-keys = %s\nnetrc-file = %s\n' \
   "$url" "$key" "$file"
