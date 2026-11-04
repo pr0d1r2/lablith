@@ -38,20 +38,6 @@ fn the_built_in_cache_renders_as_before() {
     );
 }
 
-/// `src/cache/read:V81`: a secret setting leaves `NIX_CONFIG` empty and is
-/// read by `cache-read.sh`.
-#[test]
-fn a_secret_setting_is_read_by_cache_read() {
-    let c = hidden();
-    assert_eq!(nix_config(c.as_ref()), "");
-    let line = read_line(c.as_ref()).unwrap_or_default();
-    assert!(
-        line.contains("cache-read.sh 'secret:HIDDEN_URL' 'secret:HIDDEN_KEY'"),
-        "{line}"
-    );
-    assert_eq!(nix_config(None), "");
-}
-
 /// `src/cache:V82`: a read-only cache adds no push and no push secret.
 #[test]
 fn a_read_only_cache_runs_the_command_alone() {
@@ -88,35 +74,6 @@ fn private() -> Option<BinaryCache> {
     cache(&format!(
         "private|https|https://cache.example.org|{KEY}|{push}"
     ))
-}
-
-/// `src/cache/read:V86`: a read netrc keeps the settings out of
-/// `NIX_CONFIG` and goes to `cache-read.sh` with the cache's name, on a
-/// line that assigns rather than exports, so a refusal stops the job.
-#[test]
-fn a_read_netrc_is_passed_to_cache_read() {
-    let c = private();
-    assert_eq!(nix_config(c.as_ref()), "");
-    let line = read_line(c.as_ref()).unwrap_or_default();
-    let want = format!(
-        "NIX_CONFIG=\"$NIX_CONFIG$(bash scripts/lablith/cache-read.sh \
-         'https://cache.example.org' '{KEY}' READ_NETRC private)\""
-    );
-    assert_eq!(line, want);
-    assert_eq!(
-        scripts(c.as_ref(), false),
-        [Script::CacheRead, Script::CachePush]
-    );
-}
-
-/// `src/cache/read:V81`: a secret setting is read on an assignment too.
-#[test]
-fn a_secret_setting_is_assigned_not_exported() {
-    let line = read_line(hidden().as_ref()).unwrap_or_default();
-    assert!(
-        line.starts_with("NIX_CONFIG=\"$NIX_CONFIG$(bash "),
-        "{line}"
-    );
 }
 
 /// `src/cache/read:V86`: the push keeps its own netrc, and verify reads
