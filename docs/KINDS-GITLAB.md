@@ -72,12 +72,15 @@ page, the code and those specs in step.
   project runners locked to this project; jobs on them run only for
   protected refs, on runners set to run only protected refs; or every
   instance and group runner with matching tags is one you trust.
-- A fork's merge request therefore gets no pipeline, and with
-  **Pipelines must succeed** on, GitLab blocks its merge: a merge request
-  with no pipeline cannot merge. Running its pipeline in the parent
-  project does not help, since the guard excludes those jobs too. To
-  merge it, a maintainer pushes the fork's branch to this project and
-  merges that branch's merge request, whose pipeline runs as usual.
+- With only generated jobs, a fork's merge request therefore gets no
+  pipeline, and with **Pipelines must succeed** on, GitLab blocks its
+  merge: a merge request with no pipeline cannot merge. Running its
+  pipeline in the parent project does not help, since the guard
+  excludes the generated jobs there too. To merge it, a maintainer
+  pushes the fork's branch to this project and merges that branch's
+  merge request, whose pipeline runs as usual. An unguarded job in a
+  `## hand-written` file still joins a fork's merge request pipeline,
+  which then runs that job alone and decides the merge check by it.
 
 ## `gate`
 
