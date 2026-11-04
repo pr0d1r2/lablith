@@ -791,8 +791,9 @@ fn read_private(
     let dir = scratch(name)?;
     let tmp = dir.join("tmp");
     fs::create_dir_all(&tmp)?;
-    let file = dir.join("netrc");
+    let file = tmp.join("READ_NETRC");
     fs::write(&file, READ_NETRC)?;
+    fs::set_permissions(&file, fs::Permissions::from_mode(0o644))?;
     let (tmp_s, file_s) =
         (tmp.display().to_string(), file.display().to_string());
     let mut env: Vec<_> = env.to_vec();
@@ -816,17 +817,23 @@ fn netrc_file(stdout: &str) -> &str {
         .unwrap_or_default()
 }
 
-/// `src/cache/read:V86`: a read netrc is copied to a 0600 file in the
-/// job temp dir, named by `netrc-file` after both settings.
+/// The mode of the File variable `read_private` sets in `tmp`.
+fn netrc_mode(tmp: &Path) -> io::Result<u32> {
+    let meta = fs::metadata(tmp.join("READ_NETRC"))?;
+    Ok(meta.permissions().mode() & 0o777)
+}
+
+/// `src/cache/read:V86`: the read netrc's own File variable file is made
+/// 0600 and named by `netrc-file` after both settings; no copy is left
+/// in the job temp dir.
 #[test]
-fn cache_read_writes_the_read_netrc_and_names_it() -> io::Result<()> {
+fn cache_read_names_the_read_netrc_in_place() -> io::Result<()> {
     let (ran, tmp) = read_private("cr-netrc", CACHE_URL, true, &[])?;
     assert_eq!(ran.code, Some(0), "{}", ran.stderr);
-    let file = netrc_file(&ran.stdout);
-    assert!(Path::new(file).starts_with(&tmp), "{:?}", ran.stdout);
-    assert_eq!(fs::read_to_string(file)?, READ_NETRC);
-    let mode = fs::metadata(file)?.permissions().mode() & 0o777;
-    assert_eq!(mode, 0o600, "{mode:o}");
+    let file = tmp.join("READ_NETRC");
+    assert_eq!(Path::new(netrc_file(&ran.stdout)), file, "{:?}", ran.stdout);
+    assert_eq!(netrc_mode(&tmp)?, 0o600);
+    assert_eq!(left_in(&tmp)?, 1);
     assert!(!ran.stdout.contains("secret-r"));
     Ok(())
 }
@@ -836,19 +843,19 @@ fn left_in(tmp: &Path) -> io::Result<usize> {
     Ok(fs::read_dir(tmp)?.count())
 }
 
-/// `src/cache/read:V86`: without the netrc secret (a fork merge
-/// request), nothing is printed and no file is written.
+/// `src/cache/read:V86`: without the netrc secret (an unprotected
+/// ref), nothing is printed and nothing is written.
 #[test]
 fn cache_read_without_the_read_netrc_prints_nothing() -> io::Result<()> {
     let (ran, tmp) = read_private("cr-nonetrc", CACHE_URL, false, &[])?;
     assert_eq!(ran.code, Some(0), "{}", ran.stderr);
     assert_eq!(ran.stdout, "");
-    assert_eq!(left_in(&tmp)?, 0);
+    assert_eq!(left_in(&tmp)?, 1);
     Ok(())
 }
 
 /// `src/cache/read:V87`: a resolved url that is not https stops the
-/// job before the netrc is written, naming the cache and the secret
+/// job before the netrc is touched, naming the cache and the secret
 /// but never the url or the netrc.
 #[test]
 fn cache_read_refuses_a_url_that_is_not_https() -> io::Result<()> {
@@ -856,7 +863,7 @@ fn cache_read_refuses_a_url_that_is_not_https() -> io::Result<()> {
     let env = [("HIDDEN_URL", plain)];
     let (ran, tmp) = read_private("cr-http", "secret:HIDDEN_URL", true, &env)?;
     assert_eq!(ran.code, Some(1));
-    assert_eq!(left_in(&tmp)?, 0);
+    assert_eq!((left_in(&tmp)?, netrc_mode(&tmp)?), (1, 0o644));
     assert_eq!(ran.stdout, "");
     assert!(
         ran.stderr.contains("private") && ran.stderr.contains("READ_NETRC"),
