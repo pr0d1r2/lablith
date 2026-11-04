@@ -51,6 +51,17 @@ the bytes lablith emits for the same inputs is at least a minor version
     command still runs, and a url that is not `https://` is refused
     before any netrc is used.
 
+- A private `https` cache (pipelith 0.2.2), read with its own netrc:
+  the seeded `scripts/lablith/cache-read.sh` takes the netrc's File
+  variable and the cache name after the url and key. It checks that the
+  resolved url is `https://` before it writes anything, and stops
+  naming the cache and the variable, never the url, when it is not;
+  then it copies the netrc to a file only the job can read, in a new
+  directory under `$RUNNER_TEMP_PROJECT_DIR`, and prints
+  `netrc-file = <that file>` after both settings. Without the secret
+  (a fork's merge request) it prints nothing and the job runs without
+  the cache.
+
 - Every nix job's `script:` starts with `bash
   scripts/lablith/runner-system.sh <system>`. It passes when the
   runner's nix `system` setting is `<system>` or its nix lists it in
