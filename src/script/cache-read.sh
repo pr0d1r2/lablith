@@ -13,7 +13,9 @@
 # fork merge request) gets no cache line at all, never an empty
 # substituter, and runs without the cache. The values go to stdout for
 # the job's NIX_CONFIG only; nothing is logged. A later setting (a
-# netrc-file for a cache that needs credentials to read) joins here.
+# netrc-file for a cache that needs credentials to read) joins here, and
+# with it the cache-push.sh rule: a url that is not `https://` is refused
+# before any netrc is used.
 set -euo pipefail
 
 if [ "$#" -ne 2 ]; then

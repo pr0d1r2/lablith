@@ -44,6 +44,9 @@ the bytes lablith emits for the same inputs is at least a minor version
     `scripts/lablith/https-verify.sh`;
   - `lablith report` lists push and read secrets (`cache read`,
     `cachix push`, `https cache push (netrc file)`).
+  - An https push is best-effort, a failed copy a warning before the
+    command still runs, and a url that is not `https://` is refused
+    before any netrc is used.
 
 - Every nix job's `script:` starts with `bash
   scripts/lablith/runner-system.sh <system>`. It passes when the
