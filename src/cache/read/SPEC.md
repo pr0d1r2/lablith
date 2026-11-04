@@ -31,4 +31,4 @@ T74|x|split from `src/cache` at its ceiling: spec, then code after T75; ⊥ beha
 T75|x|pipelith 0.2.2 read netrc: script arg, https check, assignment, verify & `report`; fork guard 1st|V86,V87,`src/kind/rules:V76`
 T76|x|#37: netrc in place, ⊥ copy|V86
 T77|x|#37: refuse `default`; NAR url & daemon doc|V87
-T78|.|#37: curl-like scan, fail closed; redirect doc|V87
+T78|x|#37: curl-like scan, fail closed; redirect doc|V87
