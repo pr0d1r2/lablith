@@ -293,3 +293,13 @@ fn v77_every_job_first_checks_its_runner_system() {
         assert!(known, "{}: {first}", job.name);
     }
 }
+
+/// `src/kind/rules:V76`: every job of every fixture, any kind and any tags,
+/// starts with the fork guard.
+#[test]
+fn v76_every_job_first_refuses_a_fork_merge_request() {
+    let guard = crate::kind::never_from_fork();
+    for (_, job) in jobs() {
+        assert_eq!(job.rules.first(), Some(&guard), "{}", job.name);
+    }
+}
