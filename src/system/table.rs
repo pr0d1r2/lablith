@@ -3,7 +3,7 @@
 //! systems themselves, their names and the defaults are pipelith's
 //! (`src/core`).
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 use std::fmt;
 
 use crate::core::system as neutral;
@@ -39,13 +39,9 @@ pub(crate) enum SystemError {
     Skipped(System),
 }
 
-/// Runner tags per system: built-in, then `## runners` overrides, and
-/// the systems those overrides put on the repository's own runner.
+/// Runner tags per system: built-in, then `## runners` overrides.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) struct RunnerTable(
-    BTreeMap<&'static str, Vec<String>>,
-    BTreeSet<&'static str>,
-);
+pub(crate) struct RunnerTable(BTreeMap<&'static str, Vec<String>>);
 
 impl RunnerTable {
     /// The built-in table.
@@ -53,7 +49,7 @@ impl RunnerTable {
         let row = |&(s, tags): &(System, [&str; 2])| {
             (s.name(), tags.iter().map(|&t| t.to_owned()).collect())
         };
-        Self(BUILTIN.iter().map(row).collect(), BTreeSet::new())
+        Self(BUILTIN.iter().map(row).collect())
     }
 
     /// This table with each `## runners` row replacing its system's tags.
@@ -69,7 +65,6 @@ impl RunnerTable {
                 }
             })?;
             self.0.insert(system.name(), row.tags.clone());
-            self.1.insert(system.name());
         }
         Ok(self)
     }
@@ -77,12 +72,6 @@ impl RunnerTable {
     /// Whether the table has a row for `system`, tags or a skip (`V75`).
     pub(crate) fn covers(&self, system: System) -> bool {
         self.0.contains_key(system.name())
-    }
-
-    /// Whether a `## runners` row names `system`'s runner, the
-    /// repository's own (`src/kind/rules:V76`).
-    pub(crate) fn own(&self, system: System) -> bool {
-        self.1.contains(system.name())
     }
 
     /// Whether `## runners` skips `system` on this forge (`V72`).

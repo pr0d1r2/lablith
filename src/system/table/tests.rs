@@ -89,14 +89,3 @@ fn covers_names_the_systems_a_row_or_the_builtin_maps() {
     let t = t.with_overrides(&[row("x86_64-darwin", &[])]);
     assert!(t.is_ok_and(|t| t.covers(System::X86_64Darwin)));
 }
-
-/// `src/kind/rules:V76`: only a `## runners` row makes a runner the
-/// repository's own.
-#[test]
-fn own_names_the_systems_a_runners_row_maps() {
-    let t = RunnerTable::builtin();
-    assert!(!t.own(System::X86_64Linux));
-    let t = t.with_overrides(&[row("x86_64-linux", &["big"])]);
-    let t = t.unwrap_or_else(|_| RunnerTable::builtin());
-    assert!(t.own(System::X86_64Linux) && !t.own(System::Aarch64Linux));
-}

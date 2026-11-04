@@ -40,7 +40,7 @@ fn selected(source: &str, id: &str) -> Text {
     and(row, eq("CI_COMMIT_REF_PROTECTED", "true"))
 }
 
-/// First rule of a job on the repository's own runner (`src/kind/rules:V76`):
+/// First rule of every job (`src/kind/rules:V76`):
 /// never for a merge request from a fork, whether its pipeline runs in
 /// the fork or in this project (`src/kind/rules:R20`). Outside merge request
 /// pipelines both variables are unset, so the rule never matches.
