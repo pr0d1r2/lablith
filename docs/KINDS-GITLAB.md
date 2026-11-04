@@ -86,7 +86,16 @@ page, the code and those specs in step.
     `nix copy --option netrc-file <file> --to <url> <installable>`
     before the command, so a gate's inputs are pushed even when the gate
     fails. It never prints the url; the endpoint must accept
-    authenticated `PUT`.
+    authenticated `PUT`. A resolved url that is not `https://` is refused
+    before the netrc is touched. The push is best-effort: a failed copy is
+    a warning and the command still runs and sets the job's status, so a
+    push never fails a `gate`; for `build`, `<id>:verify-cache` fails when
+    the cache lacks a path.
+  - Signing: `nix copy` uploads paths as built, unsigned. Readers trust
+    the row's `key`, and nix refuses an unsigned path from a cache it
+    trusts by key, so the paths an https cache serves must be signed:
+    by the cache when it serves them, or upstream before they are
+    pushed. lablith has no signing-key column.
 - Every generated job's first rule is
   `if: $CI_MERGE_REQUEST_SOURCE_PROJECT_ID != $CI_MERGE_REQUEST_PROJECT_ID`
   with `when: never`. No generated job runs for a merge request from a

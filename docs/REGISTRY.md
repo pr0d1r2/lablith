@@ -116,6 +116,18 @@ hidden-cache|https|secret:HIDDEN_URL|secret:HIDDEN_KEY|-
 own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
 ```
 
+What each cell takes; anything else is refused while the file is read:
+
+| column | `cachix` | `https` |
+| --- | --- | --- |
+| `name` | the cachix cache name: lower-case letters, digits, `-` | letters, digits, `.`, `_`, `-`; not starting with `-` |
+| `url` | `-` or `https://<name>.cachix.org`; never a secret | required: `https://<host>...` with no `user@`, or `secret:NAME` |
+| `key` | `<keyname>:<base64>`, `secret:NAME`, or `-` when lablith knows the cache's key | required: `<keyname>:<base64>` of an ed25519 key, or `secret:NAME` |
+| `push` | `-` (read-only) or `secret:NAME` (the auth token); never a literal | `-` (read-only) or `secret:NAME` (a netrc file); never a literal |
+
+`NAME` is letters, digits and `_`, not starting with a digit. Each name
+appears once in the section.
+
 Make each variable protected, so only protected refs see it. A url or
 key variable, and a cachix token, are of type Variable and masked; mask
 a secret url above all, since `nix copy` and nix's own errors can print
