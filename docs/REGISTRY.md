@@ -114,6 +114,7 @@ below). A row with a built-in cache's name replaces it.
 name|kind|url|key|push
 example-cache|https|https://cache.example.org|example-cache-1:<base64>|secret:EXAMPLE_NETRC
 hidden-cache|https|secret:HIDDEN_URL|secret:HIDDEN_KEY|-
+private-cache|https|https://private.example.org|private-cache-1:<base64>|read=secret:PRIVATE_READ_NETRC, push=secret:PRIVATE_PUSH_NETRC
 own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
 ```
 
@@ -124,16 +125,23 @@ What each cell takes; anything else is refused while the file is read:
 | `name` | the cachix cache name: lower-case letters, digits, `-` | letters, digits, `.`, `_`, `-`; not starting with `-` |
 | `url` | `-` or `https://<name>.cachix.org`; never a secret | required: `https://<host>...` with no `user@`, or `secret:NAME` |
 | `key` | `<keyname>:<base64>`, `secret:NAME`, or `-` when pipelith knows the cache's key | required: `<keyname>:<base64>` of an ed25519 key, or `secret:NAME` |
-| `push` | `-` (read-only) or `secret:NAME` (the auth token); never a literal | `-` (read-only) or `secret:NAME` (a netrc file); never a literal |
+| `push` | `-` (read-only) or `secret:NAME` (the auth token); never a literal | `-` (read-only), `secret:NAME` (a netrc file), or args `read=secret:R, push=secret:P` (either or both); never a literal |
 
 `NAME` is letters, digits and `_`, not starting with a digit. Each name
 appears once in the section.
 
+A private https cache, one that answers only with credentials, names
+the netrc it is read with as `read=secret:R` in the `push` cell, with
+`push=secret:P` beside it when it is pushed to as well; the two may be
+the same variable. A `push` cell without `=` keeps its plain meaning.
+`read` is refused on a `cachix` row.
+
 Make each variable protected, so only protected refs see it. A url or
 key variable, and a cachix token, are of type Variable and masked; mask
 a secret url above all, since `nix copy` and nix's own errors can print
-it. An https `push` variable is of type File holding a netrc for the
-cache's host. pipelith checks every row while it reads the file; see
+it. An https `push` variable, and a `read` one, is of type File holding
+a netrc for the cache's host; keep a read-only credential in `read` and
+the one that may write in `push`. pipelith checks every row while it reads the file; see
 [KINDS-GITLAB.md](KINDS-GITLAB.md) for what each renders to.
 
 ## `## hand-written`

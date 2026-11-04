@@ -64,12 +64,24 @@ page, the code and those specs in step.
     `extra-substituters` and `extra-trusted-public-keys`.
   - Reading, either a secret: neither is in `NIX_CONFIG`. Right after the
     runner check the job runs
-    `export NIX_CONFIG="$NIX_CONFIG$(bash scripts/lablith/cache-read.sh <url> <key>)"`,
+    `NIX_CONFIG="$NIX_CONFIG$(bash scripts/lablith/cache-read.sh <url> <key>)"`,
     each argument a literal or `secret:NAME`. The script prints both
     settings only when both values are there, so a pipeline that cannot
     see protected variables runs without the cache, never with an empty
-    substituter. Reading a cache that needs credentials is not
-    supported yet.
+    substituter. The line assigns rather than exports: `NIX_CONFIG` is
+    already an exported job variable, and `export` would hide the
+    script's exit status, so a refusal would not stop the job.
+  - Reading with a netrc (`read=secret:R`): the same line passes `R` and
+    the cache's name after the url and key, whether those are literals
+    or secrets. When `R` is set, the script checks that the resolved url
+    is `https://`, and otherwise stops the job naming the cache and `R`,
+    never the url, before it writes anything. Then, with `umask 077`, it
+    copies the netrc file `R` points at to a 0600 file in a new
+    directory under `$RUNNER_TEMP_PROJECT_DIR`, where GitLab keeps the
+    File variable itself, and prints `netrc-file = <file>` after both
+    settings; nix reads the cache with it. Without `R` (a fork's merge
+    request, an unprotected ref) it prints nothing and the job runs
+    without the cache. The push below keeps its own netrc.
   - Pushing, `push` is `-`: no push step. pipelith refuses a `build` row
     on a read-only cache.
   - Pushing, `secret:NAME`: the command runs through
@@ -145,7 +157,8 @@ has it.
   system without runner tags), and `<id>:verify-cache` on the verify
   stage, needing every build, on the default branch only: through
   `verify-cache.sh` for cachix, or `https-verify.sh`, which asks
-  `<url>/<hash>.narinfo` with the push netrc, for an https cache.
+  `<url>/<hash>.narinfo` with the read netrc, else the push netrc, for
+  an https cache.
 - args: `package` (required), `timeout` (job minutes, default `30`).
 
 ## `update-pins`
