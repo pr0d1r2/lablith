@@ -188,9 +188,11 @@ fn a_job_on_an_own_runner_never_runs_for_a_fork_merge_request() {
     assert_eq!(first_rules(&text), [guard.to_owned()]);
 }
 
-/// `src/kind/rules:V76`: built-in tags carry no guard.
+/// `src/kind/rules:V76`: built-in tags land on the owner's runners on a
+/// self-hosted GitLab too, so their jobs carry the same guard.
 #[test]
-fn a_job_on_built_in_tags_keeps_its_rules() {
-    let want = "$CI_PIPELINE_SOURCE == \"schedule\"|Some(Never)".to_owned();
-    assert_eq!(first_rules(ONE_GATE), [want]);
+fn a_job_on_built_in_tags_never_runs_for_a_fork_merge_request() {
+    let guard = "$CI_MERGE_REQUEST_SOURCE_PROJECT_ID != \
+                 $CI_MERGE_REQUEST_PROJECT_ID|Some(Never)";
+    assert_eq!(first_rules(ONE_GATE), [guard.to_owned()]);
 }
