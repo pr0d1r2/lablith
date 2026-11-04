@@ -88,9 +88,9 @@ version = "0.1.0"
 
 [[package]]
 name = "pipelith"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd1a14e5496cd81da5cb1dd4dbd975f0fb954ccc6a291d7d231f42031f35a4b6"
+checksum = "f31bddc814d4f91119b80e05f8809346969e9bd9f63a2a2320fdeffd41663b2e"
 
 [[package]]
 name = "proc-macro2"
