@@ -922,6 +922,18 @@ fn cache_read_refuses_a_default_entry_in_any_case() -> io::Result<()> {
     Ok(())
 }
 
+/// `src/cache/read:V87`: curl ends a line at a `#` token, so a keyword
+/// in a comment does not hide the `default` entry after it.
+#[test]
+fn cache_read_ends_a_line_at_a_comment() -> io::Result<()> {
+    let text = "machine cache.example.org login r password secret-r\n\
+                # password\ndefault login d password secret-d\n";
+    let (ran, _) = read_text("cr-comment", CACHE_URL, Some(text), &[])?;
+    assert_eq!(ran.code, Some(1), "{}", ran.stdout);
+    assert!(ran.stderr.contains("default entry"), "{}", ran.stderr);
+    Ok(())
+}
+
 /// `src/cache/read:V87`: a quoted token is one value, as curl reads it.
 #[test]
 fn cache_read_takes_a_quoted_password_whole() -> io::Result<()> {
