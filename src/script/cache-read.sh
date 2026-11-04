@@ -76,9 +76,10 @@ esac
 # A `default` entry matches every host, so nix would send its credential
 # to any substituter; only `machine` entries scope it to the cache. The
 # scan reads tokens as curl does: keywords in any case, a quoted token
-# whole (with \-escapes), a `#` token ending the line, the token after
-# login, password, account, machine and macdef a value, and a macdef
-# body up to the next blank line. It exits 3 on a `default` entry; any
+# whole (with \-escapes), an unquoted `#` at the start of a token ending
+# the line, the token after login, password, machine and macdef a value
+# (curl has no `account`, so the token after it is a keyword), and a
+# macdef body up to the next blank line. It exits 3 on a `default` entry; any
 # status but 0 or 3 is a scan that could not read the file, and is
 # refused too.
 status=0
@@ -107,7 +108,7 @@ awk '
     for (k = 1; k <= n; k++) {
       if (skip) { skip = 0; continue }
       w = tolower(tok[k])
-      if (w ~ /^(machine|login|password|account)$/) skip = 1
+      if (w ~ /^(machine|login|password)$/) skip = 1
       else if (w == "macdef") { skip = 1; mac = 1 }
       else if (w == "default") found = 1
     }
