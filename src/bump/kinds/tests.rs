@@ -78,16 +78,16 @@ fn a_bump_job_names_its_token_variable_never_its_value() {
 
 #[test]
 fn a_bump_job_runs_only_on_its_own_schedule_or_web_run() {
-    let j = job(&UpdatePins, "pins|update-pins|-|-|-");
-    let conds: Vec<String> = j
-        .map(|j| {
-            j.rules
-                .iter()
-                .filter_map(|r| r.cond.as_ref())
-                .map(|c| c.render(&GITLAB))
-                .collect()
-        })
-        .unwrap_or_default();
+    let rules = job(&UpdatePins, "pins|update-pins|-|-|-").map(|j| j.rules);
+    let rules = rules.unwrap_or_default();
+    assert_eq!(rules.first(), Some(&crate::kind::never_from_fork()));
+    // Past the fork guard (`src/kind/rules:V76`), the rules that admit it.
+    let conds: Vec<String> = rules
+        .iter()
+        .skip(1)
+        .filter_map(|r| r.cond.as_ref())
+        .map(|c| c.render(&GITLAB))
+        .collect();
     assert_eq!(conds.len(), 2);
     assert!(
         conds.iter().all(|c| c.contains("$LABLITH_ROW == \"pins\"")),

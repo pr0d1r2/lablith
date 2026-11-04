@@ -2,9 +2,8 @@
 //! `src/kind:V14`, `src/kind:V57`): the pinned nix image with flakes on,
 //! the row's cache as a substituter, the system's runner tags, the row's
 //! timeout and a per-kind clone depth. Its first command checks that
-//! the runner's nix system is the job's (`src/kind:V77`), and a job on
-//! the repository's own runner never runs for a fork's merge request
-//! (`src/kind/rules:V76`).
+//! the runner's nix system is the job's (`src/kind:V77`), and no job runs
+//! for a fork's merge request (`src/kind/rules:V76`).
 
 use super::contract::Tables;
 use super::error::KindError;
@@ -104,7 +103,7 @@ pub(crate) fn nix_job(
         interruptible: !bump,
         resource_group: bump.then(|| format!("lablith-{}", row.id)),
         needs: Vec::new(),
-        rules: guarded(tables, spec.system, spec.rules),
+        rules: guarded(spec.rules),
         variables: variables(spec.depth, row.cache.as_ref()),
         script: checked(spec.system, spec.script),
     })
@@ -117,13 +116,13 @@ fn checked(system: System, script: Vec<Text>) -> Vec<Text> {
     std::iter::once(check).chain(script).collect()
 }
 
-/// `rules`, behind the fork guard when `system` runs on the
-/// repository's own runner (`src/kind/rules:V76`).
-fn guarded(tables: &Tables, system: System, mut rules: Vec<Rule>) -> Vec<Rule> {
-    if tables.runners.own(system) {
-        rules.insert(0, super::rules::never_from_fork());
-    }
-    rules
+/// `rules` behind the fork guard (`src/kind/rules:V76`): on a self-hosted
+/// GitLab every runner a job's tags reach is the owner's, built-in tags
+/// included, so no job runs a fork's code.
+fn guarded(rules: Vec<Rule>) -> Vec<Rule> {
+    std::iter::once(super::rules::never_from_fork())
+        .chain(rules)
+        .collect()
 }
 
 /// `GIT_DEPTH` and `NIX_CONFIG`.
