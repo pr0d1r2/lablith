@@ -21,11 +21,12 @@ self|src/cache/read|job reads a `## caches` cache: `NIX_CONFIG` lines, `cache-re
 
 V81: read secret → ⊥ in `NIX_CONFIG`; `cache-read.sh` prints both setting lines iff url & key both non-empty, else nothing ∴ pipeline w/o protected vars (unprotected ref, fork MR) runs w/o cache, ⊥ empty substituter
 
-V86: read netrc → `cache-read.sh` prints `netrc-file = <file>` after both setting lines; file = copy of `$R`'s file, `umask 077` → 0600, in `mktemp -d` under `$RUNNER_TEMP_PROJECT_DIR` (GitLab's job temp dir, where File variables live; else `$TMPDIR`). url, key | `$R` empty (fork MR, unprotected ref) → prints nothing ∴ ⊥ cache, ⊥ file. `https-verify.sh` asks w/ read netrc ∃, else push netrc (`src/cache:V84`); `report` purpose `https cache read (netrc file)`
-V87: before writing netrc, `cache-read.sh` checks RESOLVED url starts `https://`; else exit 1, ⊥ file, message names cache & `R`, ⊥ url, ⊥ secret value (pipelith V87)
+V86: read netrc → `cache-read.sh` prints `netrc-file = <file>` after both setting lines; file = `$R`'s own File variable file (runner writes it in job temp dir, removes it at job end), `chmod 600` after V87 check; ⊥ copy (⊥ `after_script` to remove one) ∴ ⊥ credential outlives job. url, key | `$R` empty (unprotected ref; fork MR stopped earlier by `src/kind/rules:V76`) → prints nothing ∴ ⊥ cache. `https-verify.sh` asks w/ read netrc ∃, else push netrc (`src/cache:V84`); `report` purpose `https cache read (netrc file)`
+V87: before handing netrc to nix (chmod, `netrc-file`), `cache-read.sh` checks RESOLVED url starts `https://`; else exit 1, ⊥ `netrc-file`, message names cache & `R`, ⊥ url, ⊥ secret value (pipelith V87)
 
 ## §T TASKS
 
 id|status|task|cites
 T74|x|split from `src/cache` at its token ceiling: spec, then `nix_config` & `read_line` → `read/` after T75; ⊥ behaviour change|V81
 T75|x|pipelith 0.2.2 read netrc: `cache-read.sh` netrc arg, run-time https check, assignment line, verify & `report` w/ read netrc; test per V; fork guard stays 1st rule|V86,V87,`src/kind/rules:V76`
+T76|.|review #37: netrc in place, ⊥ copy left on runner|V86
