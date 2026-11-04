@@ -59,7 +59,7 @@ Then make all of the following changes in one reviewed commit:
    ```sh
    actlith gen --check
    actlith check
-   actionlint .github/workflows/*.yml .github/workflows/*.yaml
+   actionlint
    ```
 
 6. Delete the GitLab-generated files and directory:
