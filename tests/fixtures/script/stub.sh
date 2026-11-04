@@ -65,6 +65,7 @@ case "$tool $*" in
   # one form macOS and Linux both print the same.
   # shellcheck disable=SC2012
   printf 'netrc-mode %s\n' "$(ls -l "$4" | cut -c1-10)" >>"$STUB_LOG"
+  if [ "${STUB_COPY_FAILS:-}" = 1 ]; then exit 1; fi
   ;;
 "curl "*)
   url="${*: -1}"
