@@ -6,6 +6,7 @@
 
 mod build;
 mod bump;
+mod cache;
 mod check;
 mod cli;
 mod core;

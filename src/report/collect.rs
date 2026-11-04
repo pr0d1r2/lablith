@@ -6,7 +6,7 @@
 use std::collections::BTreeSet;
 
 use super::model::{Manual, Need, Report, RowReport, Schedule, Tagged};
-use crate::core::kind::Purpose;
+use crate::kind::Purpose;
 use crate::kind::{ROW, Tables};
 use crate::registry::Registry;
 use crate::render::{RenderError, RowPlan, plan, tables};

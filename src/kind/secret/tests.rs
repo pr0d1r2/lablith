@@ -1,5 +1,5 @@
 use super::{DEFAULT_TOKEN, Secret};
-use crate::core::kind::Purpose;
+use crate::kind::Purpose;
 
 #[test]
 fn cachix_reads_the_auth_token_to_push() {

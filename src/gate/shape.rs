@@ -3,10 +3,11 @@
 //! through `cachix.sh`, which pushes only where the pipeline may
 //! (`src/kind:V14`).
 
+use crate::cache::{self, Branches};
 use crate::core::yaml::Text;
 use crate::kind::{
     Depth, GATE, Kind, KindError, KindSpec, NixJob, Row, Secret, Tables,
-    change_rules, nix_job, quote, runnable,
+    change_rules, nix_job, runnable,
 };
 use crate::pipeline::{Job, Stage};
 use crate::script::Script;
@@ -29,23 +30,23 @@ impl Kind for Gate {
     }
 
     fn secrets(&self, row: &Row) -> Vec<Secret> {
-        row.cache.iter().map(|_| Secret::cachix()).collect()
+        cache::secrets(row.cache.as_ref())
     }
 
     fn scripts(&self, row: &Row) -> Vec<Script> {
-        row.cache.iter().map(|_| Script::Cachix).collect()
+        cache::scripts(row.cache.as_ref(), false)
     }
 
     fn jobs(&self, row: &Row, tables: &Tables) -> Result<Vec<Job>, KindError> {
-        let script = vec![command(row)];
         let job = |&system: &System| {
+            let script = vec![command(row, system)];
             let spec = NixJob {
                 name: format!("gate:{}", system.name()),
                 stage: Stage::Gate,
                 system,
                 depth: Depth::Full,
                 rules: change_rules(),
-                script: script.clone(),
+                script,
                 why: Some(WHY),
             };
             nix_job(row, tables, spec)
@@ -54,18 +55,17 @@ impl Kind for Gate {
     }
 }
 
-/// The row's command, through `cachix.sh` when the row names a cache.
-fn command(row: &Row) -> Text {
+/// The row's command, pushing to the row's cache on any ref when it may
+/// (`src/cache:V82`); an https push copies the system's dev shell inputs,
+/// everything `nix develop` needs, first.
+fn command(row: &Row, system: System) -> Text {
     let command = row.args.get("command").unwrap_or(COMMAND);
-    match &row.cache {
-        Some(cache) => Text::lit(&format!(
-            "bash {} {} {}",
-            Script::Cachix.path(),
-            cache.name(),
-            quote(command)
-        )),
-        None => Text::lit(command),
-    }
+    let shell =
+        format!(".#devShells.{}.default.inputDerivation", system.name());
+    Text::lit(&row.cache.as_ref().map_or_else(
+        || command.to_owned(),
+        |c| cache::push_line(c, Branches::Any, command, &shell),
+    ))
 }
 
 #[cfg(test)]

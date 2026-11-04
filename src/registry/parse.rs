@@ -1,10 +1,11 @@
 //! `.lablith` text to a [`Registry`] (`src/registry:T12`): pipelith reads
-//! the grammar against lablith's four sections, then each row is typed.
+//! the grammar against lablith's five sections, then each row is typed.
 //! Every error names its line (`src/registry:V28`, `src/registry:V29`).
 
 use super::model::Registry;
 use super::rows::{hand, image, runner};
 use crate::core::ConfigError;
+use crate::core::cache::{CACHES, Caches};
 use crate::core::kind::{self, RawRow};
 use crate::core::registry::{self, Schema, SectionSpec};
 
@@ -28,6 +29,7 @@ const SCHEMA: Schema<'static> = Schema {
             required: false,
             key: Some(0),
         },
+        CACHES,
         SectionSpec {
             name: "hand-written",
             columns: &["path", "reason"],
@@ -54,6 +56,7 @@ pub(crate) fn parse(text: &str) -> Result<Registry, ConfigError> {
         hand_written: rows("hand-written")
             .map(hand)
             .collect::<Result<_, _>>()?,
+        caches: Caches::from_document(FILE, &doc)?,
     })
 }
 

@@ -7,7 +7,8 @@
 
 use super::contract::Tables;
 use super::error::KindError;
-use crate::core::kind::{Cache, Row};
+use super::row::Row;
+use crate::core::cache::BinaryCache;
 use crate::core::yaml::{Comment, Text};
 use crate::pipeline::{Job, Rule, Stage};
 use crate::script::Script;
@@ -105,7 +106,7 @@ pub(crate) fn nix_job(
         needs: Vec::new(),
         rules: guarded(spec.rules),
         variables: variables(spec.depth, row.cache.as_ref()),
-        script: checked(spec.system, spec.script),
+        script: checked(spec.system, read(row.cache.as_ref(), spec.script)),
     })
 }
 
@@ -114,6 +115,13 @@ fn checked(system: System, script: Vec<Text>) -> Vec<Text> {
     let path = Script::RunnerSystem.path();
     let check = Text::lit(&format!("bash {path} {}", system.name()));
     std::iter::once(check).chain(script).collect()
+}
+
+/// `script` after the line that reads a secret cache setting, if the
+/// row's cache has one (`src/cache:V81`).
+fn read(cache: Option<&BinaryCache>, script: Vec<Text>) -> Vec<Text> {
+    let line = crate::cache::read_line(cache).map(|l| Text::lit(&l));
+    line.into_iter().chain(script).collect()
 }
 
 /// `rules` behind the fork guard (`src/kind/rules:V76`). The guard is part of the
@@ -127,12 +135,15 @@ fn guarded(rules: Vec<Rule>) -> Vec<Rule> {
 }
 
 /// `GIT_DEPTH` and `NIX_CONFIG`.
-fn variables(depth: Depth, cache: Option<&Cache>) -> Vec<(&'static str, Text)> {
+fn variables(
+    depth: Depth,
+    cache: Option<&BinaryCache>,
+) -> Vec<(&'static str, Text)> {
     let depth = match depth {
         Depth::Full => "0",
         Depth::Shallow => "1",
     };
-    let config = cache.map_or_else(String::new, Cache::nix_config);
+    let config = crate::cache::nix_config(cache);
     vec![
         ("GIT_DEPTH", Text::lit(depth)),
         ("NIX_CONFIG", Text::lit(&format!("{FLAKES}{config}"))),

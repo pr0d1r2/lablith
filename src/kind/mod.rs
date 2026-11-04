@@ -18,14 +18,14 @@ mod secret;
 mod shell;
 
 pub(crate) use crate::core::kind::{
-    Args, BUILD, GATE, KindSpec, Purpose, Row, UPDATE_PINS, UPSTREAM,
+    Args, BUILD, GATE, KindSpec, UPDATE_PINS, UPSTREAM,
 };
 pub(crate) use contract::{Kind, Tables};
 pub(crate) use error::KindError;
 pub(crate) use job::{Depth, NIX_IMAGE, NixJob, nix_job, runnable};
-pub(crate) use row::{EXTRAS, check};
+pub(crate) use row::{EXTRAS, Row, check};
 pub(crate) use rules::{
     ROW, bump_rules, change_rules, default_branch_rules, never_from_fork,
 };
-pub(crate) use secret::{DEFAULT_TOKEN, Secret};
+pub(crate) use secret::{DEFAULT_TOKEN, Purpose, Secret};
 pub(crate) use shell::quote;
