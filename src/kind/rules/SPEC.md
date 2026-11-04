@@ -25,5 +25,5 @@ V76: ∀ job → 1st rule `$CI_MERGE_REQUEST_SOURCE_PROJECT_ID != $CI_MERGE_REQU
 ## §T TASKS
 
 id|status|task|cites
-T66|.|V76 guard on ∀ job; tests|V76,R20
+T66|x|V76 guard on ∀ job; tests|V76,R20
 T71|x|split from `src/kind` at its token ceiling; ⊥ behaviour change|V50
