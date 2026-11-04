@@ -65,3 +65,22 @@ fn a_skipped_system_is_marked_in_the_report() {
         .collect();
     assert_eq!(got, [("x86_64-linux", false), ("aarch64-linux", true)]);
 }
+
+/// `src/cache:V85`: a row's push secret and read secrets are reported.
+#[test]
+fn a_caches_row_reports_its_push_and_read_secrets() {
+    let text = "format 1\n## workflows\nid|kind|systems|cache|args\n\
+                ci|gate|x86_64-linux|hidden-cache|-\n\
+                ## caches\nname|kind|url|key|push\n\
+                hidden-cache|https|secret:HIDDEN_URL|secret:HIDDEN_KEY|secret:HIDDEN_NETRC\n";
+    let r = collect(&parse(text).unwrap_or_default()).unwrap_or_default();
+    let needs = r.rows.iter().flat_map(|r| &r.secrets);
+    let secrets: Vec<(String, &str)> =
+        needs.map(|n| (n.name.clone(), n.purpose)).collect();
+    let want = [
+        ("HIDDEN_KEY".to_owned(), "cache read"),
+        ("HIDDEN_NETRC".to_owned(), "https cache push (netrc file)"),
+        ("HIDDEN_URL".to_owned(), "cache read"),
+    ];
+    assert_eq!(secrets, want);
+}

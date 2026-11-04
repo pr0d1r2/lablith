@@ -56,6 +56,7 @@ const PINS_CALLS: [&str; 5] = [
 struct Ran {
     code: Option<i32>,
     log: String,
+    stdout: String,
     stderr: String,
 }
 
@@ -148,10 +149,12 @@ fn run_in(
 
 fn ran(out: &Output, log: &Path) -> io::Result<Ran> {
     let stderr = String::from_utf8_lossy(&out.stderr).into_owned();
+    let stdout = String::from_utf8_lossy(&out.stdout).into_owned();
     let log = fs::read_to_string(log)?;
     Ok(Ran {
         code: out.status.code(),
         log,
+        stdout,
         stderr,
     })
 }
@@ -166,6 +169,7 @@ fn update_pins(name: &str, args: &[&str], env: &[(&str, &str)]) -> Ran {
     run(name, "update-pins.sh", args, &env).unwrap_or(Ran {
         code: None,
         log: String::new(),
+        stdout: String::new(),
         stderr: String::new(),
     })
 }
@@ -179,7 +183,10 @@ fn mr(name: &str, args: &[&str], env: &[(&str, &str)]) -> io::Result<Ran> {
 fn scripts_are_published_under_scripts_lablith_sorted() {
     let paths: Vec<_> = scripts().iter().map(|(path, _)| *path).collect();
     let want = [
+        "scripts/lablith/cache-push.sh",
+        "scripts/lablith/cache-read.sh",
         "scripts/lablith/cachix.sh",
+        "scripts/lablith/https-verify.sh",
         "scripts/lablith/open-mr.sh",
         "scripts/lablith/runner-system.sh",
         "scripts/lablith/update-pins.sh",
@@ -723,5 +730,209 @@ fn verify_cache_fails_when_a_path_is_missing() -> io::Result<()> {
         ran.stderr
     );
     assert!(ran.log.contains("aarch64linux.narinfo"), "{}", ran.log);
+    Ok(())
+}
+
+/// A valid ed25519 public key for an example cache.
+const CACHE_KEY: &str =
+    "example-cache-1:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+const CACHE_URL: &str = "https://cache.example.org";
+
+/// `src/cache:V81`: literal url and key give both nix settings.
+#[test]
+fn cache_read_prints_both_settings_for_literals() -> io::Result<()> {
+    let ran = run("cr-lit", "cache-read.sh", &[CACHE_URL, CACHE_KEY], &[])?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    let want = format!(
+        "extra-substituters = {CACHE_URL}\nextra-trusted-public-keys = {CACHE_KEY}\n"
+    );
+    assert!(ran.stdout.ends_with(&want), "{:?}", ran.stdout);
+    Ok(())
+}
+
+/// `src/cache:V81`: secret values are read from their variables.
+#[test]
+fn cache_read_reads_secret_values_from_their_variables() -> io::Result<()> {
+    let args = ["secret:HIDDEN_URL", "secret:HIDDEN_KEY"];
+    let env = [("HIDDEN_URL", CACHE_URL), ("HIDDEN_KEY", CACHE_KEY)];
+    let ran = run("cr-sec", "cache-read.sh", &args, &env)?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    assert!(
+        ran.stdout
+            .contains(&format!("extra-substituters = {CACHE_URL}"))
+    );
+    Ok(())
+}
+
+/// `src/cache:V81`: a missing secret drops both settings, so the job
+/// runs without the cache rather than with an empty substituter.
+#[test]
+fn cache_read_prints_nothing_when_a_secret_is_missing() -> io::Result<()> {
+    let args = ["secret:HIDDEN_URL", CACHE_KEY];
+    let ran = run("cr-none", "cache-read.sh", &args, &[])?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    assert_eq!(ran.stdout, "");
+    Ok(())
+}
+
+/// `cache-push.sh` for a cachix cache with `env`, running `nix flake check`.
+fn cachix_push(name: &str, env: &[(&str, &str)]) -> io::Result<Ran> {
+    let args = [
+        "cachix",
+        "own-cachix",
+        "OWN_TOKEN",
+        "any",
+        "nix flake check",
+    ];
+    run(name, "cache-push.sh", &args, env)
+}
+
+/// `src/cache:V82`: a cachix push runs the command under watch-exec.
+#[test]
+fn cache_push_pushes_to_cachix_with_the_row_token() -> io::Result<()> {
+    let ran = cachix_push("cp-cachix", &[("OWN_TOKEN", "t")])?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    let want = "nix shell --inputs-from . nixpkgs#cachix --command cachix \
+                watch-exec own-cachix -- bash -c nix flake check";
+    assert_eq!(calls(&ran), [want]);
+    Ok(())
+}
+
+/// `src/cache:V82`: no token, or a fork merge request, runs the command
+/// alone.
+#[test]
+fn cache_push_runs_the_command_alone_without_token_or_from_a_fork()
+-> io::Result<()> {
+    let fork = [
+        ("OWN_TOKEN", "t"),
+        ("CI_MERGE_REQUEST_SOURCE_PROJECT_ID", "9"),
+        ("CI_MERGE_REQUEST_PROJECT_ID", "7"),
+    ];
+    for (name, env) in [("cp-none", &fork[1..]), ("cp-fork", &fork[..])] {
+        let ran = cachix_push(name, env)?;
+        assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+        assert_eq!(calls(&ran), ["nix flake check"], "{name}");
+        assert!(ran.stdout.contains("cache-push: not pushing"), "{name}");
+    }
+    Ok(())
+}
+
+/// Whether `cache-push.sh ... default ...` pushes on `branch` of `main`.
+fn pushes_on(name: &str, branch: &str) -> io::Result<bool> {
+    let args = [
+        "cachix",
+        "own-cachix",
+        "OWN_TOKEN",
+        "default",
+        "nix flake check",
+    ];
+    let env = [
+        ("OWN_TOKEN", "t"),
+        ("CI_COMMIT_BRANCH", branch),
+        ("CI_DEFAULT_BRANCH", "main"),
+    ];
+    let ran = run(name, "cache-push.sh", &args, &env)?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    Ok(calls(&ran).iter().any(|c| c.contains("watch-exec")))
+}
+
+/// `src/cache:V83`: `default` pushes only on the default branch.
+#[test]
+fn cache_push_default_pushes_only_on_the_default_branch() -> io::Result<()> {
+    assert!(pushes_on("cp-main", "main")?);
+    assert!(!pushes_on("cp-topic", "topic")?);
+    Ok(())
+}
+
+/// `cache-push.sh` for an https cache whose url is `url`, with a netrc
+/// file in the scratch dir; the command builds `/nix/store/new`.
+fn https_push(name: &str, url: &str, env: &[(&str, &str)]) -> io::Result<Ran> {
+    let dir = scratch(name)?;
+    let netrc = dir.join("netrc");
+    fs::write(&netrc, "machine cache.example.org login u password p\n")?;
+    let netrc = netrc.display().to_string();
+    let store = [
+        ("EXAMPLE_NETRC", netrc.as_str()),
+        ("STUB_STORE_BEFORE", "/nix/store/old"),
+        ("STUB_NEW_PATH", "/nix/store/new"),
+    ];
+    let env: Vec<_> = store.iter().chain(env).copied().collect();
+    let args = ["https", url, "EXAMPLE_NETRC", "any", "nix build .#hk"];
+    run_in(&dir, "cache-push.sh", &args, &env)
+}
+
+/// `src/cache:V82`: an https push copies the paths the command added,
+/// with the netrc in a 0600 file it removes, and never prints the url.
+#[test]
+fn cache_push_copies_new_paths_to_an_https_cache() -> io::Result<()> {
+    let ran = https_push("cp-https", CACHE_URL, &[])?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    let copy = calls(&ran).into_iter().find(|c| c.starts_with("nix copy"));
+    let copy = copy.unwrap_or_default();
+    assert!(
+        copy.ends_with(&format!("--to {CACHE_URL} /nix/store/new")),
+        "{copy}"
+    );
+    let file = copy.split(' ').nth(4).unwrap_or_default();
+    assert!(!Path::new(file).exists(), "{file} left behind");
+    assert!(ran.log.contains("netrc-mode -rw-------"), "{}", ran.log);
+    assert!(!ran.stdout.contains(CACHE_URL) && !ran.stderr.contains(CACHE_URL));
+    Ok(())
+}
+
+/// `src/cache:V82`: a secret url is read from its variable.
+#[test]
+fn cache_push_reads_a_secret_url() -> io::Result<()> {
+    let ran = https_push(
+        "cp-hidden",
+        "secret:HIDDEN_URL",
+        &[("HIDDEN_URL", CACHE_URL)],
+    )?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    let copied = calls(&ran)
+        .iter()
+        .any(|c| c.contains(&format!("--to {CACHE_URL} ")));
+    assert!(copied, "{}", ran.log);
+    Ok(())
+}
+
+#[test]
+fn cache_push_without_its_arguments_is_a_usage_error() -> io::Result<()> {
+    let ran = run("cp-usage", "cache-push.sh", &["https"], &[])?;
+    assert_eq!(ran.code, Some(2));
+    assert!(
+        ran.stderr.contains("usage: cache-push.sh"),
+        "{}",
+        ran.stderr
+    );
+    Ok(())
+}
+
+/// `src/cache:V84`: verify asks `<url>/<hash>.narinfo` with the netrc.
+#[test]
+fn https_verify_asks_the_cache_with_its_netrc() -> io::Result<()> {
+    let args = [CACHE_URL, "EXAMPLE_NETRC", "hk", "x86_64-linux"];
+    let env = [("EXAMPLE_NETRC", "/run/netrc")];
+    let ran = run("hv-ok", "https-verify.sh", &args, &env)?;
+    assert_eq!(ran.code, Some(0), "{}", ran.stderr);
+    let curl = calls(&ran).into_iter().find(|c| c.starts_with("curl "));
+    let curl = curl.unwrap_or_default();
+    assert!(curl.contains("--netrc-file /run/netrc"), "{curl}");
+    assert!(
+        curl.ends_with(&format!("{CACHE_URL}/x8664linux.narinfo")),
+        "{curl}"
+    );
+    assert!(!ran.stdout.contains(CACHE_URL), "{}", ran.stdout);
+    Ok(())
+}
+
+/// `src/cache:V84`: a missing path fails, and `-` asks without a netrc.
+#[test]
+fn https_verify_fails_on_a_missing_path() -> io::Result<()> {
+    let args = [CACHE_URL, "-", "hk", "x86_64-linux"];
+    let env = [("STUB_CURL_MISSING", "x8664linux")];
+    let ran = run("hv-miss", "https-verify.sh", &args, &env)?;
+    assert_eq!(ran.code, Some(1));
+    assert!(!ran.log.contains("--netrc-file"), "{}", ran.log);
     Ok(())
 }
