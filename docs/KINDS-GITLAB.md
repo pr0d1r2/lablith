@@ -54,9 +54,39 @@ page, the code and those specs in step.
   `nix.conf` that lists them over `/etc/nix/nix.conf` through the
   runner's Docker `volumes`. The job's `NIX_CONFIG` names neither
   setting, so the file's values stand.
-- A cache push goes through `scripts/lablith/cachix.sh`, which pushes
-  only when `CACHIX_AUTH_TOKEN` (masked, protected) is set and the
-  pipeline is not a merge request from a fork.
+- A cache push to the built-in cache goes through
+  `scripts/lablith/cachix.sh`, which pushes only when `CACHIX_AUTH_TOKEN`
+  (masked, protected) is set and the pipeline is not a merge request
+  from a fork.
+- A `## caches` cache ([REGISTRY.md](REGISTRY.md)) is read and pushed by
+  its row:
+  - Reading, url and key literal: both join the job's `NIX_CONFIG` as
+    `extra-substituters` and `extra-trusted-public-keys`.
+  - Reading, either a secret: neither is in `NIX_CONFIG`. Right after the
+    runner check the job runs
+    `export NIX_CONFIG="$NIX_CONFIG$(bash scripts/lablith/cache-read.sh <url> <key>)"`,
+    each argument a literal or `secret:NAME`. The script prints both
+    settings only when both values are there, so a pipeline that cannot
+    see protected variables runs without the cache, never with an empty
+    substituter. Reading a cache that needs credentials is not
+    supported yet.
+  - Pushing, `push` is `-`: no push step. pipelith refuses a `build` row
+    on a read-only cache.
+  - Pushing, `secret:NAME`: the command runs through
+    `scripts/lablith/cache-push.sh <kind> <cache> NAME <any|default> <command> [installable]`.
+    It pushes only when `NAME` and the url are set, the pipeline is not
+    a merge request from a fork and, for `build` (`default`), the ref is
+    the default branch; otherwise the command runs alone. A cachix
+    cache runs the command under `cachix watch-exec` with `NAME` as the
+    token. An https cache first checks the flake has the installable,
+    `gate`'s `.#devShells.<system>.default.inputDerivation` (everything
+    `nix develop` needs) or `build`'s package, and stops naming it when
+    it does not; then, with `umask 077`, it copies the netrc file `NAME`
+    points at to a 0600 file it removes on exit and runs
+    `nix copy --option netrc-file <file> --to <url> <installable>`
+    before the command, so a gate's inputs are pushed even when the gate
+    fails. It never prints the url; the endpoint must accept
+    authenticated `PUT`.
 - Every generated job's first rule is
   `if: $CI_MERGE_REQUEST_SOURCE_PROJECT_ID != $CI_MERGE_REQUEST_PROJECT_ID`
   with `when: never`. No generated job runs for a merge request from a
@@ -87,8 +117,9 @@ page, the code and those specs in step.
 The hk gate on every supported system.
 
 - Jobs: `<id>:gate:<system>` per system, stage `gate`, `GIT_DEPTH: 0`.
-- Script: the row's command, through `cachix.sh <cache>` when the row
-  names a cache.
+- Script: the row's command, through `cachix.sh <cache>` for the
+  built-in cache or `cache-push.sh ... any ...` for a `## caches` push
+  secret, pushing the dev shell's inputs to an https cache first.
 - args: `command` (default `nix develop --command hk check --all --check`),
   `timeout` (job minutes, default `30`).
 
@@ -98,10 +129,14 @@ Build and cache a flake package on every system, then prove the cache
 has it.
 
 - Jobs: `<id>:build:<system>` per system (`nix build` of
-  `.#packages.<system>.<package>` through `cachix.sh`), `<id>:check`
+  `.#packages.<system>.<package>` through `cachix.sh`, or
+  `cache-push.sh ... default ...` for a `## caches` push secret, which
+  pushes from the default branch only), `<id>:check`
   (`nix flake check --all-systems`, then an eval of the package on every
   system without runner tags), and `<id>:verify-cache` on the verify
-  stage, needing every build, on the default branch only.
+  stage, needing every build, on the default branch only: through
+  `verify-cache.sh` for cachix, or `https-verify.sh`, which asks
+  `<url>/<hash>.narinfo` with the push netrc, for an https cache.
 - args: `package` (required), `timeout` (job minutes, default `30`).
 
 ## `update-pins`

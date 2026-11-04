@@ -59,7 +59,7 @@ valid here is valid in `.actlith`. Each row is written to
 | `id` | the file name and the prefix of every job: `<id>:<job>` |
 | `kind` | `gate`, `build`, `update-pins` or `upstream`; see [KINDS-GITLAB.md](KINDS-GITLAB.md) |
 | `systems` | nix systems, comma-separated; `-` = the kind's default |
-| `cache` | a cachix cache name; `-` = no cache |
+| `cache` | a `## caches` row's name, or a built-in cachix cache; `-` = no cache |
 | `args` | `key=value` pairs, comma-separated, checked against the kind |
 
 An unknown kind, arg or system is an error, never ignored. Args and
@@ -100,6 +100,28 @@ system|tags
 aarch64-linux|-
 aarch64-darwin|-
 ```
+
+## `## caches`
+
+Optional, and the same section as in `.actlith` (pipelith's): a row
+names a nix binary cache a `## workflows` row's `cache` cell may use.
+`url`, `key` and `push` are each `-`, a literal, or `secret:NAME`, a
+GitLab CI/CD variable; a row with a built-in cache's name replaces it.
+
+```text
+## caches
+name|kind|url|key|push
+example-cache|https|https://cache.example.org|example-cache-1:<base64>|secret:EXAMPLE_NETRC
+hidden-cache|https|secret:HIDDEN_URL|secret:HIDDEN_KEY|-
+own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
+```
+
+Make each variable protected, so only protected refs see it. A url or
+key variable, and a cachix token, are of type Variable and masked; mask
+a secret url above all, since `nix copy` and nix's own errors can print
+it. An https `push` variable is of type File holding a netrc for the
+cache's host. pipelith checks every row while it reads the file; see
+[KINDS-GITLAB.md](KINDS-GITLAB.md) for what each renders to.
 
 ## `## hand-written`
 
