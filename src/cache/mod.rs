@@ -30,13 +30,13 @@ impl Branches {
 }
 
 /// The `NIX_CONFIG` lines that trust `cache` when its url and key are
-/// literals; empty for no cache or a secret setting (`src/cache:V81`).
+/// literals; empty for no cache or a secret setting (`src/cache/read:V81`).
 pub(crate) fn nix_config(cache: Option<&BinaryCache>) -> String {
     cache.and_then(BinaryCache::nix_config).unwrap_or_default()
 }
 
 /// The script line that adds a secret url or key to the job's nix
-/// config at its start, or `None` when both are literals (`src/cache:V81`).
+/// config at its start, or `None` when both are literals (`src/cache/read:V81`).
 pub(crate) fn read_line(cache: Option<&BinaryCache>) -> Option<String> {
     let cache = cache.filter(|c| !c.read_secrets().is_empty())?;
     let [(_, url), (_, key)] = cache.nix_settings();

@@ -12,7 +12,10 @@
 # split from src/kind 2026-11-04 (src/kind/rules:T71): its file row is
 # set for the fork guard rows that land next, its chain as src/kind's.
 # src/cache added 2026-11-04 (src/cache:T72): ~12% over its first
-# measure, 1396 file, 3427 chain.
+# measure, 1396 file, 3427 chain. src/cache/read split from src/cache
+# 2026-11-04 (src/cache/read:T74) at src/cache's file ceiling: its rows
+# are set ~12% over the measure with the read netrc rows that land next
+# (T75), 700 file, 3910 chain.
 
 # Files
 SPEC.md                      3420
@@ -21,6 +24,7 @@ nix/SPEC.md                  3150
 src/SPEC.md                  1060
 src/build/SPEC.md            810
 src/cache/SPEC.md            1560
+src/cache/read/SPEC.md       790
 src/bump/SPEC.md             840
 src/check/SPEC.md            890
 src/cli/SPEC.md              780
@@ -47,6 +51,7 @@ nix                          4200
 src                          3120
 src/build                    3220
 src/cache                    3850
+src/cache/read               4380
 src/bump                     3400
 src/check                    3440
 src/cli                      3200

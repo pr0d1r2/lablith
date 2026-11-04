@@ -280,7 +280,7 @@ fn an_https_cache_is_pushed_by_cache_push() {
     assert!(!scripts.contains(&"scripts/lablith/cachix.sh".to_owned()));
 }
 
-/// `src/cache:V81`: secret url and key stay out of `NIX_CONFIG`; the job
+/// `src/cache/read:V81`: secret url and key stay out of `NIX_CONFIG`; the job
 /// reads them at its start, and a read-only cache gets no push step.
 #[test]
 fn a_secret_cache_is_read_at_job_start_and_a_read_only_one_not_pushed() {
