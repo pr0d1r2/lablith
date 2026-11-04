@@ -75,7 +75,7 @@ pub(crate) struct Job {
     pub(crate) resource_group: Option<String>,
     /// Jobs of the same row this one waits for.
     pub(crate) needs: Vec<String>,
-    /// `rules:` (`src/kind:V50`).
+    /// `rules:` (`src/kind/rules:V50`).
     pub(crate) rules: Vec<Rule>,
     /// `variables:`, in order.
     pub(crate) variables: Vec<(&'static str, Text)>,

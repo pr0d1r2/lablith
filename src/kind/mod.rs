@@ -1,6 +1,6 @@
 //! `src/kind`: what every kind shares: the `Kind` trait, the row check,
 //! declared secrets (`src/kind:V32`), the hardened nix job
-//! (`src/kind:V11` to `src/kind:V15`) and its rules (`src/kind:V50`).
+//! (`src/kind:V11` to `src/kind:V15`) and its rules (`src/kind/rules:V50`).
 //!
 //! Composition only: the logic lives in the submodules.
 #![allow(

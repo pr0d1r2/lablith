@@ -8,7 +8,9 @@
 # chain <= 5500. A node that would pass its cap splits, it does not raise.
 #
 # MEASURED 2026-10-17 right after federating (T10): file rows with
-# `itok estimate --bpe`, chain rows with `sherd budget`.
+# `itok estimate --bpe`, chain rows with `sherd budget`. src/kind/rules
+# split from src/kind 2026-11-04 (src/kind/rules:T71): its file row is
+# set for the fork guard rows that land next, its chain as src/kind's.
 
 # Files
 SPEC.md                      3420
@@ -25,6 +27,7 @@ src/fetch/SPEC.md            810
 src/gate/SPEC.md             790
 src/gen/SPEC.md              680
 src/kind/SPEC.md             1410
+src/kind/rules/SPEC.md       500
 src/pin/SPEC.md              930
 src/pipeline/SPEC.md         1220
 src/registry/SPEC.md         1000
@@ -49,6 +52,7 @@ src/fetch                    3370
 src/gate                     3210
 src/gen                      3240
 src/kind                     3890
+src/kind/rules               3890
 src/pin                      3320
 src/pipeline                 3690
 src/registry                 3550
