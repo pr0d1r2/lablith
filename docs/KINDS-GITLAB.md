@@ -74,8 +74,11 @@ page, the code and those specs in step.
   - Reading with a netrc (`read=secret:R`): the same line passes `R` and
     the cache's name after the url and key, whether those are literals
     or secrets. When `R` is set, the script checks that the resolved url
-    is `https://`, and otherwise stops the job naming the cache and `R`,
-    never the url, before it touches the netrc. Then it makes the file
+    is `https://` and that the netrc has no `default` entry, which
+    would reach every host nix talks to; otherwise it stops the job
+    naming the cache and `R`, never the url or the credential, before
+    it touches the netrc. Use `machine <cache host>` entries only. Then
+    it makes the file
     `R` points at, which the runner writes in the job's temporary
     directory and removes when the job ends, 0600, and prints
     `netrc-file = <file>` after both settings; nix reads the cache with
@@ -83,6 +86,17 @@ page, the code and those specs in step.
     Without `R` (an unprotected ref) it prints nothing and the job runs
     without the cache; a fork's merge request never gets that far, as
     the fork guard skips the job. The push below keeps its own netrc.
+  - What nix does with the netrc afterwards is nix's, and lablith cannot
+    check it. Nix fetches each NAR from the `URL:` of its narinfo, and
+    an absolute `http://` one on the cache's host would carry the
+    credential in cleartext, so the cache must serve relative or
+    `https://` NAR urls. On a multi-user nix (a shell runner whose host
+    runs the nix daemon) the daemon substitutes, and it ignores
+    `netrc-file` and `extra-substituters` from a client it does not
+    trust, so the job runs without the cache: add the runner user to
+    the host's `trusted-users`, or set the cache and its netrc in the
+    host's own `nix.conf`. The pinned `nixos/nix` image of the Docker
+    executor runs single-user nix, where the job's settings apply.
   - Pushing, `push` is `-`: no push step. pipelith refuses a `build` row
     on a read-only cache.
   - Pushing, `secret:NAME`: the command runs through
