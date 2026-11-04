@@ -35,7 +35,7 @@ self|.|-
 - deterministic core: same `.lablith` + same lablith version → byte-identical output. ⊥ LLM, ⊥ heuristic guess, ⊥ clock | rng | hostname in output, ⊥ network except `pin` (V1).
 - lang: Rust edition 2024, stable, MSRV 1.95 = fleet pin (`nixpkgs-lock` → nixos-26.05). MIT. `unsafe_code = "forbid"`.
 - layout: ONE published crate `lablith` (lib + bin `lablith` ∴ `cargo install lablith` gives cmd); `dev/` = `lablith-dev`, `publish = false`. module = dir + `mod.rs` = node.
-- built on `pipelith = "0.2"` from crates.io (≥ 0.2.1), ⊥ git dep (blocks publish, needs `deny.toml` allow-git & nix `outputHashes`). pipelith owns registry grammar, YAML writer, generated-file set, neutral kinds, nix systems, detect. lablith owns only GitLab: pipeline model, runner tags, image pins, hardening, layout, scripts, CLI.
+- built on `pipelith = "0.2"` from crates.io (≥ 0.2.2), ⊥ git dep (blocks publish, needs `deny.toml` allow-git & nix `outputHashes`). pipelith owns registry grammar, YAML writer, generated-file set, neutral kinds, nix systems, detect. lablith owns only GitLab: pipeline model, runner tags, image pins, hardening, layout, scripts, CLI.
 - deps minimal; ∀ dep ! justified in §R & owned by ONE facade node. `clap` (derive) → `src/cli`. JSON-schema validation & YAML reading = test-only deps, each w/ §R row.
 - runtime deps: `git`; `curl` for `pin` & seeded `open-mr.sh` (⊥ HTTP crate). bump kinds run `nix develop --command bash scripts/lablith/....sh` ∴ consumer dev shell ! provide `lablith` (pklith catalog row, pklith issue #70 shape).
 - ⊥ push | PR to another repo w/o explicit approval. agent ⊥ publishes.
