@@ -22,13 +22,12 @@ self|src/cache/read|job reads a `## caches` cache: `NIX_CONFIG` lines, `cache-re
 V81: read secret → ⊥ in `NIX_CONFIG`; `cache-read.sh` prints both setting lines iff url & key both non-empty, else nothing ∴ pipeline w/o protected vars (unprotected ref, fork MR) runs w/o cache, ⊥ empty substituter
 
 V86: read netrc → `cache-read.sh` prints `netrc-file = <file>` after both setting lines; file = `$R`'s own File variable file (runner writes & removes it), `chmod 600` after V87 check; ⊥ copy (⊥ `after_script` to remove one). url, key | `$R` empty (unprotected ref; fork MR stopped earlier by `src/kind/rules:V76`) → prints nothing ∴ ⊥ cache. `https-verify.sh` asks w/ read netrc ∃, else push netrc (`src/cache:V84`); `report` purpose `https cache read (netrc file)`
-V87: before handing netrc to nix (chmod, `netrc-file`), `cache-read.sh` checks RESOLVED url starts `https://`; else exit 1, ⊥ `netrc-file`, message names cache & `R`, ⊥ url, ⊥ secret value (pipelith V87). netrc w/ `default` entry (any host; tokens as curl: any case, quoted) | ⊥ readable → same refusal. NAR urls & redirects ⊥ seen ∴ cache ! keep them `https://` (doc)
+V87: before handing netrc to nix (chmod, `netrc-file`), `cache-read.sh` checks RESOLVED url starts `https://`; else exit 1, ⊥ `netrc-file`, message names cache & `R`, ⊥ url, ⊥ secret value (pipelith V87). netrc w/ any `default` token (any case, quoted token whole, ⊥ grammar state ∴ a value `default` too) | ⊥ readable → same refusal. NAR urls & redirects ⊥ seen ∴ cache ! keep them `https://` (doc)
 
 ## §T TASKS
 
 id|status|task|cites
 T74|x|split from `src/cache` at its ceiling: spec, then code after T75; ⊥ behaviour change|V81
 T75|x|pipelith 0.2.2 read netrc: script arg, https check, assignment, verify & `report`; fork guard 1st|V86,V87,`src/kind/rules:V76`
-T76|x|#37: netrc in place, ⊥ copy|V86
-T77|x|#37: refuse `default`; NAR url & daemon doc|V87
-T78|x|#37: curl-like scan, fail closed; redirect doc|V87
+T76|x|#37 (T76–T78): in-place netrc, curl-like scan, NAR/redirect/daemon doc|V86,V87
+T79|.|#37: state-free `default` scan|V87
