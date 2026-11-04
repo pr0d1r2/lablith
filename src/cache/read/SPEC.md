@@ -30,4 +30,4 @@ id|status|task|cites
 T74|x|split from `src/cache` at its ceiling: spec, then code after T75; ⊥ behaviour change|V81
 T75|x|pipelith 0.2.2 read netrc: script arg, https check, assignment, verify & `report`; fork guard 1st|V86,V87,`src/kind/rules:V76`
 T76|x|review #37: netrc in place, ⊥ copy left on runner|V86
-T77|.|review #37: refuse `default` netrc; doc NAR urls & daemon trust|V87
+T77|x|review #37: refuse `default` netrc; doc NAR urls & daemon trust|V87
