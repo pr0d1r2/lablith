@@ -76,7 +76,7 @@ V24: ∀ kind ∈ pipelith `docs/KINDS.md` ! row in `docs/KINDS-GITLAB.md` & §V
 V25: emitted bytes change for same inputs → ≥ minor version + CHANGELOG naming files consumers see change; golden diff w/o changelog touch → red
 V27: GitLab-only product features (security templates, Auto DevOps, environments, review apps, services) ⊥ rendered; need → `## hand-written`
 V49: ⊥ `import` verb in v1 (R1: 2 hand-written pipelines, neither kind-shaped); existing pipelines → `## hand-written` | rows by hand
-V67: `docs/RELEASE.md` steps, 1 reviewed commit: rename `.lablith` → `.actlith`; drop `## images` & `## runners`; rewrite `## hand-written` paths to `.github/workflows/`; `actlith gen`; delete `.gitlab-ci.yml` & `.gitlab/ci/` & `scripts/lablith/`. then outside repo: delete GitLab schedules & `LABLITH_TOKEN`, create GitHub secrets per `actlith report`
+V67: `docs/RELEASE.md`: reviewed commit: rename `.lablith` → `.actlith`; drop `## images`/`## runners`; convert `## hand-written` to `.github/workflows/`; rewrite path; `actlith gen`; validate `actlith gen --check`, `actlith check`, `actionlint`; delete `.gitlab-ci.yml` & `.gitlab/ci/` & `scripts/lablith/`; delete migrated schedules; delete `LABLITH_TOKEN` if no other GitLab pipeline uses it; create secrets per `actlith report`; retain rest
 
 ## §T TASKS
 
@@ -84,7 +84,7 @@ id|status|task|cites
 T10|x|federate `SPEC.md` w/ sherd: nodes `src/core`, `src/*`, `tests`, `dev`, `nix`; `.context-limits` ~12% over measured. `src/<node>/mod.rs` + build-order edges land w/ `src:T42`|-
 T23|x|`docs/KINDS-GITLAB.md` + parity test vs code & kind nodes (port actlith `nix:T33`)|V24
 T34|x|human docs: README (GitLab CI first line) → INTEGRATION, REGISTRY, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT; badges after pages exist|I.docs
-T35|.|`docs/RELEASE.md` per V67 — blocked on Q3|V67,`tests:V63`,R10
+T35|x|`docs/RELEASE.md` per V67 — blocked on Q3|V67,`tests:V63`,R10
 T37|.|pklith: `lablith-gen-check` catalog row & `.lablith` type (join \| follow pklith #70) — PR ! user approval|I.nix
 T38|.|release `0.1.0`: version bump via PR; owner runs `cargo release` tag, publish, push from `main`; agent ⊥ publishes|V23
 T39|.|fleet rollout: lablith mirror, then private projects 1 at a time: `detect` → reviewed diff → explicit approval|R1
