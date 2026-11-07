@@ -881,11 +881,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1793709694,
-        "narHash": "sha256-O6iAaKa27iacFftDXKwy0i9EreArN9aqzvwbng313JE=",
+        "lastModified": 1794006517,
+        "narHash": "sha256-YeWKi6V6HTbw17E4Us0TJ0nEsct/xUn/jKsvlZk8z20=",
         "owner": "pr0d1r2",
         "repo": "nixpkgs-lock",
-        "rev": "3bb00177324b1cf62fff89d52d8dff797c92d0d5",
+        "rev": "e2466bb33e7e510b9fedb5e7aea04d255fb383a2",
         "type": "github"
       },
       "original": {
