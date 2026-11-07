@@ -168,8 +168,6 @@
             pkgs.rustfmt
             # Dependency policy gate (deny.toml, T7).
             pkgs.cargo-deny
-            # Releases (release.toml, T33).
-            pkgs.cargo-release
             # Semver check against the latest release tag (T7).
             pkgs.cargo-semver-checks
             # Line coverage (T7); the llvm that reads its data must match
