@@ -168,14 +168,14 @@
             pkgs.rustfmt
             # Dependency policy gate (deny.toml, T7).
             pkgs.cargo-deny
-            # Releases (release.toml, T33).
-            pkgs.cargo-release
             # Semver check against the latest release tag (T7).
             pkgs.cargo-semver-checks
             # Line coverage (T7); the llvm that reads its data must match
             # the LLVM major rustc was built against (21 for rustc 1.95).
             pkgs.cargo-llvm-cov
             coverageLlvm
+            # The tracked hook launcher used by the gate.
+            pkgs.lefthook
             # `nixfmt --check` gates this file (T5).
             pkgs.nixfmt
             # GitLab's CLI, the `gh` of the private mirror (nix:R15): pipelines,
