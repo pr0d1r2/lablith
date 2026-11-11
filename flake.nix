@@ -79,6 +79,14 @@
       url = "github:pr0d1r2/xenolith/v0.1.0";
       inputs.nixpkgs-lock.follows = "nixpkgs-lock";
     };
+    # A HOLD: cargo-release 1.1.6. nixos-26.05 ships 1.1.7, which needs
+    # rustc 1.97 against the channel's 1.95, so `pkgs.cargo-release` does
+    # not build. Drop once the channel's own cargo-release builds
+    # (`nix-cargo-release/T2`).
+    nix-cargo-release = {
+      url = "github:pr0d1r2/nix-cargo-release";
+      inputs.nixpkgs-lock.follows = "nixpkgs-lock";
+    };
   };
 
   outputs =
@@ -93,6 +101,7 @@
       rekall,
       xenolith,
       actlith,
+      nix-cargo-release,
       ...
     }:
     let
@@ -102,9 +111,17 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      # The overlay makes `pkgs.hk` nix-hk's hk rather than nixpkgs'.
+      # The overlays make `pkgs.hk` nix-hk's hk rather than nixpkgs', and
+      # `pkgs.cargo-release` nix-cargo-release's held build.
       forAll =
-        f: nixpkgs.lib.genAttrs systems (s: f (nixpkgs.legacyPackages.${s}.extend nix-hk.overlays.default));
+        f:
+        nixpkgs.lib.genAttrs systems (
+          s:
+          f (
+            (nixpkgs.legacyPackages.${s}.extend nix-hk.overlays.default).extend
+              nix-cargo-release.overlays.default
+          )
+        );
 
       tools = {
         inherit
@@ -168,6 +185,9 @@
             pkgs.rustfmt
             # Dependency policy gate (deny.toml, T7).
             pkgs.cargo-deny
+            # Releases (release.toml, T33). Held at 1.1.6 by the
+            # nix-cargo-release overlay (#39).
+            pkgs.cargo-release
             # Semver check against the latest release tag (T7).
             pkgs.cargo-semver-checks
             # Line coverage (T7); the llvm that reads its data must match
