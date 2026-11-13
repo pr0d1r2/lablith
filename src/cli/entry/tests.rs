@@ -79,6 +79,24 @@ fn the_row_verbs_dispatch() {
 }
 
 #[test]
+fn detect_uses_flake_dev_shell_systems() {
+    let root = scratch("entry-row-systems");
+    put(
+        &root,
+        "flake.nix",
+        "systems = [ \"aarch64-darwin\" \"x86_64-linux\" ];\n\
+         devShells = {};\n",
+    );
+    assert!(git(&root, &["init", "-q"]) && git(&root, &["add", "-A"]));
+    let dir = arg(&root);
+    assert_eq!(
+        ran(&["detect", "--root", &dir]).out,
+        "ci|gate|aarch64-darwin, x86_64-linux|-|-\n"
+    );
+    let _ = fs::remove_dir_all(&root);
+}
+
+#[test]
 fn completions_and_man_dispatch() {
     assert!(ran(&["completions", "fish"]).out.contains("lablith"));
     assert!(ran(&["man"]).out.contains(".TH"));

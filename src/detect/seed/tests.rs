@@ -19,7 +19,7 @@ fn scratch(name: &str) -> PathBuf {
 #[test]
 fn writes_the_detected_rows_when_absent() {
     let dir = scratch("absent");
-    let rows = detect(&["flake.nix"], None);
+    let rows = detect(&["flake.nix".to_owned()], None, None);
     let path = seed_init(&dir, &rows).ok();
     assert_eq!(path, Some(dir.join(FILE)));
     let written = fs::read_to_string(dir.join(FILE)).unwrap_or_default();
@@ -33,7 +33,8 @@ fn seed_over_existing(name: &str) -> (Option<SeedError>, PathBuf, String) {
     let dir = scratch(name);
     let path = dir.join(FILE);
     assert!(fs::write(&path, "format 1\n# mine\n").is_ok());
-    let err = seed_init(&dir, &detect(&["flake.nix"], None)).err();
+    let err =
+        seed_init(&dir, &detect(&["flake.nix".to_owned()], None, None)).err();
     let kept = fs::read_to_string(&path).unwrap_or_default();
     let _ = fs::remove_dir_all(&dir);
     (err, path, kept)

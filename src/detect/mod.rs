@@ -11,6 +11,31 @@
 mod seed;
 mod text;
 
-pub(crate) use crate::core::detect::{detect, row_line};
+use crate::core::detect as neutral;
+use crate::registry::WorkflowRow;
+
+pub(crate) use neutral::row_line;
 pub(crate) use seed::{SeedError, seed_init};
-pub(crate) use text::proposal;
+pub(crate) use text::{flake_systems, proposal};
+
+/// Propose rows, specializing the gate row to systems declared by the flake.
+#[must_use]
+pub(crate) fn detect(
+    tracked: &[String],
+    flake_lock: Option<&str>,
+    flake: Option<&str>,
+) -> Vec<WorkflowRow> {
+    let mut rows = neutral::detect(tracked, flake_lock);
+    if let Some(systems) = flake
+        .filter(|flake| flake.contains("devShells"))
+        .map(text::flake_systems)
+        .filter(|s| !s.is_empty())
+        && let Some(row) = rows.iter_mut().find(|row| row.kind == "gate")
+    {
+        row.systems = systems;
+    }
+    rows
+}
+
+#[cfg(test)]
+mod tests;

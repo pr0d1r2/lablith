@@ -10,6 +10,9 @@ the bytes lablith emits for the same inputs is at least a minor version
 
 ### Changed
 
+- `lablith detect` and `seed --init` now name the systems declared by a
+  flake's `devShells` in the proposed gate row, so generated gate jobs do
+  not target systems without a development shell.
 - pipelith 0.2.0: `x86_64-darwin` is a CI system. A row may list it when
   a `## runners` row gives it tags, for example
   `x86_64-darwin|nix, x86_64-darwin`, and its jobs run on that runner;

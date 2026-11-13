@@ -5,6 +5,23 @@
 use crate::core::detect::{row_line, text_with};
 use crate::registry::WorkflowRow;
 
+/// Systems listed by the common `systems = [ ... ]` flake pattern.
+#[must_use]
+pub(crate) fn flake_systems(flake: &str) -> Vec<String> {
+    flake
+        .find("systems = [")
+        .and_then(|start| start.checked_add("systems = [".len()))
+        .and_then(|offset| flake.get(offset..))
+        .and_then(|rest| rest.find(']').map(|end| &rest[..end]))
+        .unwrap_or_default()
+        .split_whitespace()
+        .filter_map(|word| {
+            word.strip_prefix('"').and_then(|w| w.strip_suffix('"'))
+        })
+        .map(str::to_owned)
+        .collect()
+}
+
 /// A whole `.lablith`: pipelith's header, then each row's [`proposal`].
 #[must_use]
 pub(crate) fn text(rows: &[WorkflowRow]) -> String {
