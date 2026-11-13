@@ -38,6 +38,6 @@ V70: `report` Setup section = numbered checklist derived from `.lablith` alone, 
 ## §T TASKS
 
 id|status|task|cites
-T29|x|`report` text/json/md: pins, secrets, schedules to create|`src/bump:V17`,I.cmd
+T29|x|`report` text/json/md: pins, secrets, schedules to create|`src/bump:V17`,`.:I.cmd`
 T53|x|AFTER T29: `report` token scope/role/rotation & schedule list; `docs/SECURITY.md` token section|V64
 T57|.|`report` Setup section text/json/md; 1 fixture per step kind & 1 row-less-secret case|V70,V36,V64
