@@ -84,7 +84,7 @@ id|status|task|cites
 T10|x|ARCHIVED to SPEC-ARCHIVE.md|-
 T23|x|ARCHIVED to SPEC-ARCHIVE.md|V24
 T34|x|ARCHIVED to SPEC-ARCHIVE.md|I.docs
-T35|.|`docs/RELEASE.md` per V67 — blocked on Q3|V67,`tests:V63`,R10
+T35|x|`docs/RELEASE.md` per V67 — blocked on Q3|V67,`tests:V63`,R10
 T37|.|pklith: `lablith-gen-check` catalog row & `.lablith` type (join \| follow pklith #70) — PR ! user approval|`nix:I.nix`
 T38|.|release `0.1.0`: version bump via PR; owner runs `cargo release` tag, publish, push from `main`; agent ⊥ publishes|V23
 T39|.|fleet rollout: lablith mirror, then private projects 1 at a time: `detect` → reviewed diff → explicit approval|R1
