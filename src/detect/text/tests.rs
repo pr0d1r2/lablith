@@ -1,6 +1,6 @@
 //! Row text round-trips through `src/registry` (src/detect:T28, `.:I` file).
 
-use super::{OFF_NOTE, proposal, text};
+use super::{OFF_NOTE, flake_systems, proposal, text};
 use crate::core::detect::{FIRST_ROW, header, row_line};
 use crate::registry::{Arg, WorkflowRow, parse};
 
@@ -87,4 +87,13 @@ fn text_is_pipelith_text_with_proposal() {
     ];
     let neutral = crate::core::detect::text_with(&rows, proposal);
     assert_eq!(text(&rows), neutral);
+}
+
+#[test]
+fn flake_systems_reads_the_dev_shell_system_list() {
+    let flake = r#"
+      systems = [ "aarch64-darwin" "x86_64-linux" ];
+      devShells = nixpkgs.lib.genAttrs systems (system: { default = {}; });
+    "#;
+    assert_eq!(flake_systems(flake), ["aarch64-darwin", "x86_64-linux"]);
 }

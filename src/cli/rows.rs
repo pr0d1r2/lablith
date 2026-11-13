@@ -43,7 +43,8 @@ pub(crate) fn seed(root: &Path, init: bool) -> Ran {
 fn proposed(root: &Path) -> Result<Vec<WorkflowRow>, Outcome> {
     let files = tracked(root)?;
     let lock = fs::read_to_string(root.join("flake.lock")).ok();
-    Ok(propose(&files, lock.as_deref()))
+    let flake = fs::read_to_string(root.join("flake.nix")).ok();
+    Ok(propose(&files, lock.as_deref(), flake.as_deref()))
 }
 
 /// Why `seed --init` wrote nothing, with the fix.
