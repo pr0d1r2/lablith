@@ -33,7 +33,7 @@ Instructions for coding agents working in this repository.
 Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
 
 <!-- BEGIN steps: generated from hk.pkl by `cargo run -p lablith-dev -- agents`; do not edit -->
-55 steps run on every commit and 61 on push and `hk check`; the commit-msg hook checks the message.
+56 steps run on every commit and 62 on push and `hk check`; the commit-msg hook checks the message.
 
 | step | runs on | files | fixes |
 | --- | --- | --- | --- |
@@ -83,6 +83,7 @@ Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
 | `pklith-check` | commit | whole tree | - |
 | `private-names` | commit | `**/*` | - |
 | `no-core-worktree` | commit | `**/*` | - |
+| `cargo-release` | commit | `flake.nix` `nix/pklith.nix` `nix/guard/cargo-release.sh` | - |
 | `hk-parity` | commit | `hk.pkl` `hk.pklith.pkl` `pkl/**` `nix/guard/hk-parity.sh` | - |
 | `ci-schema-pin` | commit | `tests/schema/**` `nix/guard/ci-schema-pin.sh` | - |
 | `gitlab-schema` | commit | `tests/schema/**` `tests/fixtures/**` `src/**` `.gitlab-ci.yml` `.gitlab/ci/**` `nix/guard/gitlab-schema.sh` | - |

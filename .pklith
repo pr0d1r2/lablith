@@ -38,6 +38,7 @@ coverage|coverage|sherd|**/*.rs, Cargo.toml, .coverage|sherd coverage --check|-|
 # committed text; names come from the local, untracked .private/denylist.
 private-names|gate|-|**/*|bash nix/guard/private-names.sh {{files}}|-|-|a committed file holds a name from .private/denylist
 no-core-worktree|gate|-|**/*|bash nix/guard/no-core-worktree.sh|-|-|core.worktree is set in the shared .git/config; unset it
+cargo-release|gate|-|flake.nix, nix/pklith.nix, nix/guard/cargo-release.sh|bash nix/guard/cargo-release.sh|-|-|cargo-release is missing from the dev shell
 # nix:V47: hk's own Pkl evaluator (pklr) sees the steps `pkl eval` sees,
 # each with a command; as pklith's hk-parity.
 hk-parity|gate|jq|hk.pkl, hk.pklith.pkl, pkl/**, nix/guard/hk-parity.sh|bash nix/guard/hk-parity.sh|-|-|hk's own Pkl evaluator does not see the steps pkl eval sees
@@ -70,7 +71,7 @@ type|checks|min|exempt
 editorconfig|-|-|written by pklith (seed or gen)
 gitattributes|-|-|written by pklith (seed or gen)
 md|markdownlint, links|-|-
-nix|nixfmt, statix, deadnix, xnl-check, xnl-lint|-|-
+nix|nixfmt, statix, deadnix, xnl-check, xnl-lint, cargo-release|-|-
 path:**/SPEC.md|markdownlint, links, mth-fmt, mth-check, sherd-check, sherd-nav, sherd-budget, itok|-|-
 pklith|pklith-check, gen-check|-|-
 pkl|xnl-check, xnl-lint, hk-parity|-|-
