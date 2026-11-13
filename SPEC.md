@@ -81,15 +81,15 @@ V67: `docs/RELEASE.md` steps, 1 reviewed commit: rename `.lablith` → `.actlith
 ## §T TASKS
 
 id|status|task|cites
-T10|x|federate `SPEC.md` w/ sherd: nodes `src/core`, `src/*`, `tests`, `dev`, `nix`; `.context-limits` ~12% over measured. `src/<node>/mod.rs` + build-order edges land w/ `src:T42`|-
-T23|x|`docs/KINDS-GITLAB.md` + parity test vs code & kind nodes (port actlith `nix:T33`)|V24
-T34|x|human docs: README (GitLab CI first line) → INTEGRATION, REGISTRY, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT; badges after pages exist|I.docs
+T10|x|ARCHIVED to SPEC-ARCHIVE.md|-
+T23|x|ARCHIVED to SPEC-ARCHIVE.md|V24
+T34|x|ARCHIVED to SPEC-ARCHIVE.md|I.docs
 T35|.|`docs/RELEASE.md` per V67 — blocked on Q3|V67,`tests:V63`,R10
 T37|.|pklith: `lablith-gen-check` catalog row & `.lablith` type (join \| follow pklith #70) — PR ! user approval|`nix:I.nix`
 T38|.|release `0.1.0`: version bump via PR; owner runs `cargo release` tag, publish, push from `main`; agent ⊥ publishes|V23
 T39|.|fleet rollout: lablith mirror, then private projects 1 at a time: `detect` → reviewed diff → explicit approval|R1
 T40|.|paradigm gap round (separate): name guard extension (D12), private projects in registry (D13) — proposal only|V20
-T46|x|pipelith issues: `token` default wording per forge → pr0d1r2/pipelith#9 (docs only). id charset ⊥ needed: pipelith already refuses non-file-stem ids|`src/registry:V55`,`src/kind:V54`
+T46|x|ARCHIVED to SPEC-ARCHIVE.md|`src/registry:V55`,`src/kind:V54`
 
 ## §B BUGS
 
