@@ -39,4 +39,4 @@ R14|CLI crates|`clap` 4.6.7 (derive, no colour), `clap_complete` 4.6.11, `clap_m
 ## §T TASKS
 
 id|status|task|cites
-T31|x|`completions`, `man`|I.cmd
+T31|x|`completions`, `man`|`.:I.cmd`

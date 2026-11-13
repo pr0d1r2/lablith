@@ -38,6 +38,6 @@ V55: row `id` charset = pipelith's (`RawRow::from_cells`: `[A-Za-z0-9._-]`, ⊥ 
 ## §T TASKS
 
 id|status|task|cites
-T12|x|registry: `.lablith` schema = `kind::WORKFLOWS` + `## images`, `## runners`, `## hand-written` SectionSpecs; fixtures 1-to-1|`.:V4`,I.file
+T12|x|registry: `.lablith` schema = `kind::WORKFLOWS` + `## images`, `## runners`, `## hand-written` SectionSpecs; fixtures 1-to-1|`.:V4`,`.:I.file`
 T43|x|AFTER T12: registry errors: unknown section/kind/key/system, `format` newer, missing file, missing optional section; 1 fixture each|V28,V29
 T64|x|pipelith 0.2.0: `x86_64-darwin` row w/ `## runners` row renders tagged jobs; w/o → `src/system:V56` refusal; test each|V28,`src/system:V75`,`.:R3`
