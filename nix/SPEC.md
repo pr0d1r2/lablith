@@ -46,6 +46,7 @@ V46: parallel wave workers share ⊥ git state: pre-commit `stash = "none"`; `co
 V47: change to `hk.pkl` | `hk.pklith.pkl` ! show hk itself runs expected step set; `pkl eval` | `hk validate` passing ⊥ proof
 V48: tests run at pre-push only ∴ ∀ merge, dogfood | generated-file commit ! pass `hk check --all` before committing
 V73: GitHub `main` merges ⊥ squash (folds RED & GREEN into 1 commit, `tdd-order` loses order); merge commit | rebase only; merged branch deleted on merge; auto-merge on; GitLab mirror pushed after each merge (R15)
+V74: the dev shell carries `cargo-release`; `cargo-release` gate fails when it is absent, before release time
 
 ## §T TASKS
 
@@ -75,3 +76,4 @@ T62|.|sherd advisories → 0: per dir sherd flags w/o §F row (`src/report/text`
 id|date|cause|fix
 B1|2026-10-17|crate seed (`nix:T4`, e74ae81) added stub `src/lib.rs` & `src/main.rs` before `tdd-order` existed; ⊥ behaviour for RED test to pin ∴ ⊥ `test:` commit before it|exempt in `nix/guard/tdd-order.exempt` (V44)
 B2|2026-10-18|the hk 2.7.0 parity probe had recorded the `pkl eval` failure for `toMap().remove()` but not pklr's result|pklr also rejects `toMap().remove()`; the probe result is now recorded in `nix:T55` and the `hk-parity` gate remains unchanged
+B3|2026-11-13|a pin refresh removed `pkgs.cargo-release` from the dev shell twice; nixos-26.05's 1.1.7 needs rustc 1.97 while the channel has 1.95|hold `cargo-release` 1.1.6 through the `nix-cargo-release` overlay and add the `cargo-release` gate (V74)
