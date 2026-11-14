@@ -98,3 +98,14 @@ fn flake_systems_reads_the_dev_shell_system_list() {
     "#;
     assert_eq!(flake_systems(flake), ["x86_64-linux"]);
 }
+
+#[test]
+fn flake_systems_ignores_flakes_without_default_shells() {
+    assert!(flake_systems("packages.x86_64-linux.default = {}; ").is_empty());
+}
+
+#[test]
+fn flake_systems_ignores_default_attributes_outside_dev_shells() {
+    let flake = "devShells.x86_64-linux.other = {}; packages.aarch64-linux.default = {};";
+    assert!(flake_systems(flake).is_empty());
+}
