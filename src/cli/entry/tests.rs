@@ -85,13 +85,14 @@ fn detect_uses_flake_dev_shell_systems() {
         &root,
         "flake.nix",
         "systems = [ \"aarch64-darwin\" \"x86_64-linux\" ];\n\
-         devShells = {};\n",
+         packages.aarch64-darwin.default = {};\n\
+         devShells.x86_64-linux.default = {};\n",
     );
     assert!(git(&root, &["init", "-q"]) && git(&root, &["add", "-A"]));
     let dir = arg(&root);
     assert_eq!(
         ran(&["detect", "--root", &dir]).out,
-        "ci|gate|aarch64-darwin, x86_64-linux|-|-\n"
+        "ci|gate|x86_64-linux|-|-\n"
     );
     let _ = fs::remove_dir_all(&root);
 }
