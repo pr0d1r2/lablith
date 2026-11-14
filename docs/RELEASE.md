@@ -12,9 +12,13 @@ Complete the following changes in one reviewed commit. Run
 be usable by actlith before they move.
 
 1. Rename `.lablith` to `.actlith`.
-2. In `hk.pkl`, replace the `lablith-gen-check` and `lablith-check` rows with
-   the matching `actlith-gen-check` and `actlith-check` rows, then regenerate
-   `hk.pklith.pkl`; update `hk.pkl` in this same reviewed commit.
+2. In `.pklith`, remove the `lablith-gen-check` and `lablith-check` rows and
+   the `path:` rows for `.lablith`, `.gitlab-ci.yml`, `.gitlab/ci/*.yml`, and
+   `scripts/lablith/*.sh`; keep the `actlith-gen-check` and `actlith-check`
+   rows. Run `pklith gen` to regenerate `hk.pklith.pkl`. In `hk.pkl`, replace
+   the `lablith-gen-check` and `lablith-check` ids in each `depends` entry
+   with `actlith-gen-check` and `actlith-check`, then commit all four files
+   together.
 3. Remove the `## images` and `## runners` sections from `.actlith`.
 4. Translate each hand-written GitLab workflow to GitHub Actions syntax,
    review the translation, then change its `## hand-written` path to the
