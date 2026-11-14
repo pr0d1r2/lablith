@@ -5,21 +5,24 @@
 use crate::core::detect::{row_line, text_with};
 use crate::registry::WorkflowRow;
 
-/// Systems listed by the common `systems = [ ... ]` flake pattern.
+/// Systems exposing `devShells.<system>.default` in the flake.
 #[must_use]
 pub(crate) fn flake_systems(flake: &str) -> Vec<String> {
-    flake
-        .find("systems = [")
-        .and_then(|start| start.checked_add("systems = [".len()))
-        .and_then(|offset| flake.get(offset..))
-        .and_then(|rest| rest.find(']').map(|end| &rest[..end]))
-        .unwrap_or_default()
+    let Some(start) = flake.find("devShells") else {
+        return Vec::new();
+    };
+    flake[start..]
         .split_whitespace()
-        .filter_map(|word| {
-            word.strip_prefix('"').and_then(|w| w.strip_suffix('"'))
-        })
-        .map(str::to_owned)
+        .filter_map(default_shell_system)
         .collect()
+}
+
+fn default_shell_system(word: &str) -> Option<String> {
+    let (system, _) = word.split_once(".default")?;
+    let system = system.trim_matches(|c: char| {
+        !c.is_ascii_alphanumeric() && c != '_' && c != '-'
+    });
+    system.strip_prefix("devShells.").map(str::to_owned)
 }
 
 /// A whole `.lablith`: pipelith's header, then each row's [`proposal`].

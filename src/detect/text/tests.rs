@@ -93,7 +93,8 @@ fn text_is_pipelith_text_with_proposal() {
 fn flake_systems_reads_the_dev_shell_system_list() {
     let flake = r#"
       systems = [ "aarch64-darwin" "x86_64-linux" ];
-      devShells = nixpkgs.lib.genAttrs systems (system: { default = {}; });
+      packages.aarch64-darwin.default = {};
+      devShells.x86_64-linux.default = {};
     "#;
-    assert_eq!(flake_systems(flake), ["aarch64-darwin", "x86_64-linux"]);
+    assert_eq!(flake_systems(flake), ["x86_64-linux"]);
 }
