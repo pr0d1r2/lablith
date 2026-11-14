@@ -12,12 +12,15 @@ Complete the following changes in one reviewed commit. Run
 be usable by actlith before they move.
 
 1. Rename `.lablith` to `.actlith`.
-2. Remove the `## images` and `## runners` sections from `.actlith`.
-3. In `.actlith`'s `## hand-written` section, change each GitLab workflow
+2. In `hk.pkl`, replace the `lablith-gen-check` and `lablith-check` rows with
+   the matching `actlith-gen-check` and `actlith-check` rows, then regenerate
+   `hk.pklith.pkl`; update `hk.pkl` in this same reviewed commit.
+3. Remove the `## images` and `## runners` sections from `.actlith`.
+4. In `.actlith`'s `## hand-written` section, change each GitLab workflow
    path to its corresponding `.github/workflows/` path.
-4. Run `actlith gen` to render the GitHub workflow files.
-5. Delete `.gitlab-ci.yml`, `.gitlab/ci/`, and `scripts/lablith/`.
-6. Review the complete diff, including that every workflow row and every
+5. Run `actlith gen` to render the GitHub workflow files.
+6. Delete `.gitlab-ci.yml`, `.gitlab/ci/`, and `scripts/lablith/`.
+7. Review the complete diff, including that every workflow row and every
    hand-written workflow is present on GitHub, then commit the migration.
 
 The migration does not rewrite workflow rows or translate pipeline text.
